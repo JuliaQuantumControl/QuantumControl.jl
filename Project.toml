@@ -1,0 +1,13 @@
+name = "QuantumControl"
+uuid = "8a270532-f23f-47a8-83a9-b33d10cad486"
+authors = ["Michael Goerz <mail@michaelgoerz.net>", "Alastair Marshall <alastair@nvision-imaging.com>", "and contributors"]
+version = "0.0.1"
+
+[compat]
+julia = "1.6"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
