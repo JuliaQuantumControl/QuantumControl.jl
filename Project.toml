@@ -3,6 +3,11 @@ uuid = "8a270532-f23f-47a8-83a9-b33d10cad486"
 authors = ["Michael Goerz <mail@michaelgoerz.net>", "Alastair Marshall <alastair@nvision-imaging.com>", "and contributors"]
 version = "0.0.1"
 
+[deps]
+Krotov = "b05dcdc7-62f6-4360-bf2c-0898bba419de"
+QuantumControlBase = "f10a33bc-5a64-497c-be7b-6f86b4f0c2aa"
+QuantumPropagators = "7bf12567-5742-4b91-a078-644e72a65fc1"
+
 [compat]
 julia = "1.6"
 
