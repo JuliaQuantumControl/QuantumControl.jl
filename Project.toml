@@ -8,7 +8,7 @@ QuantumControlBase = "f10a33bc-5a64-497c-be7b-6f86b4f0c2aa"
 
 [compat]
 julia = "1.6"
-QuantumControlBase = "^0"
+QuantumControlBase = "^0.0"
 
 
 [extras]
