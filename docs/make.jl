@@ -10,7 +10,7 @@ makedocs(;
     sitename="QuantumControl.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://quantumcontrol-jl.github.io/QuantumControl.jl",
+        canonical="https://QuantumControl-jl.github.io/QuantumControl.jl",
         assets=String[],
     ),
     pages=[
@@ -19,5 +19,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/quantumcontrol-jl/QuantumControl.jl",
+    repo="github.com/QuantumControl-jl/QuantumControl.jl",
 )
