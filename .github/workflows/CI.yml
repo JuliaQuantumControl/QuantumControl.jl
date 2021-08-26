@@ -32,8 +32,28 @@ jobs:
             ${{ runner.os }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-test-
             ${{ runner.os }}-
-      - uses: julia-actions/julia-buildpkg@v1
-      - uses: julia-actions/julia-runtest@v1
+      - run: |
+          # Install matplotlib into system Python
+          set -x
+          /usr/bin/python3 -m pip install matplotlib
+      - run: |
+          # Instantiate Pkg
+          julia --project=@. -e '
+            using Pkg
+            println("Dev-install QuantumPropagators")
+            Pkg.develop(url="https://github.com/QuantumControl-jl/QuantumPropagators.jl.git#master")
+            println("Dev-install QuantumControlBase")
+            Pkg.develop(url="https://github.com/QuantumControl-jl/QuantumControlBase.jl.git#master")
+            println("Dev-install Krotov")
+            Pkg.develop(url="https://github.com/QuantumControl-jl/Krotov.jl.git#master")
+            println("Pkg.instantiate()")
+            Pkg.instantiate()'
+      - run: |
+          # Run tests
+          julia --project=@. -e '
+            using Pkg
+            Pkg.activate(".")
+            Pkg.test(coverage=true)'
       - uses: julia-actions/julia-processcoverage@v1
       - uses: codecov/codecov-action@v1
         with:
@@ -47,17 +67,34 @@ jobs:
         with:
           version: '1'
       - run: |
+          # Install matplotlib into system Python
+          set -x
+          /usr/bin/python3 -m pip install matplotlib
+      - run: |
+          # Instantiate Pkg
           julia --project=docs -e '
             using Pkg
+            println("Dev-install QuantumPropagators")
+            Pkg.develop(url="https://github.com/QuantumControl-jl/QuantumPropagators.jl.git#master")
+            println("Dev-install QuantumControlBase")
+            Pkg.develop(url="https://github.com/QuantumControl-jl/QuantumControlBase.jl.git#master")
+            println("Dev-install Krotov")
+            Pkg.develop(url="https://github.com/QuantumControl-jl/Krotov.jl.git#master")
+            println("Dev-install package")
             Pkg.develop(PackageSpec(path=pwd()))
+            println("Pkg.instantiate()")
             Pkg.instantiate()'
       - run: |
+          # Run doctests
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
             using QuantumControl
             DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)
             doctest(QuantumControl)'
-      - run: julia --project=docs docs/make.jl
+      - run: |
+          # Make documentation
+          julia --project=docs docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+          JULIA_DEBUG: Documenter
