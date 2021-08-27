@@ -1,5 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Krotov = "b05dcdc7-62f6-4360-bf2c-0898bba419de"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
 QuantumControl = "8a270532-f23f-47a8-83a9-b33d10cad486"
 QuantumControlBase = "f10a33bc-5a64-497c-be7b-6f86b4f0c2aa"
