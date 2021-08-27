@@ -31,6 +31,7 @@ define DEV_PACKAGES
 using Pkg;
 Pkg.develop(path="$(QUANTUMCONTROLBASE)");
 Pkg.develop(path="$(QUANTUMPROPAGATORS)");
+Pkg.develop(path="$(KROTOV)");
 endef
 export DEV_PACKAGES
 
