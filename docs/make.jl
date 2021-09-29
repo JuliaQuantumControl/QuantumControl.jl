@@ -5,6 +5,7 @@ using QuantumControl
 using Documenter
 
 DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)
+println("Starting makedocs")
 
 makedocs(;
     modules=[QuantumPropagators, QuantumControlBase, QuantumControl, Krotov],
@@ -19,8 +20,12 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "User Manual" => "manual.md",
+        "API" => "api.md",
     ],
 )
+
+println("Finished makedocs")
 
 deploydocs(;
     repo="github.com/QuantumControl-jl/QuantumControl.jl",

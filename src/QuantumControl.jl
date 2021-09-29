@@ -1,8 +1,14 @@
 module QuantumControl
-using Reexport
 
-@reexport using QuantumPropagators
-@reexport using QuantumControlBase
-@reexport using Krotov
+using QuantumPropagators
+export propagate, propstep!
+
+using QuantumControlBase
+export ControlProblem
+
+using Krotov
+
+include("optimize.jl")
+export optimize
 
 end
