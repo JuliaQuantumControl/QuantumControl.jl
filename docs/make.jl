@@ -2,6 +2,8 @@ using QuantumPropagators
 using QuantumControlBase
 using Krotov
 using QuantumControl
+using QuantumControl.shapes
+using QuantumControl.functionals
 using Documenter
 
 DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)

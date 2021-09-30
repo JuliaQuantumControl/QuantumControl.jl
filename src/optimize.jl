@@ -20,6 +20,7 @@ optimize(problem, method::Symbol; kwargs...) = optimize(problem, Val(method); kw
 opt_result = optimize(problem; method=:krotov, kwargs...)
 ```
 
-optimizes `problem` using Krotov's method.
+optimizes `problem` using Krotov's method, see
+[`Krotov.optimize_pulses`](@ref).
 """
 optimize(problem, method::Val{:krotov}; kwargs...) = Krotov.optimize_pulses(problem, kwargs...)

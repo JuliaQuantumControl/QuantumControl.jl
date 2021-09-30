@@ -1,10 +1,8 @@
 # API
 
-**Contents**
-
 ```@contents
 Pages = ["api.md"]
-Depth = 3
+Depth = 4
 ```
 
 ## QuantumControl
@@ -12,6 +10,39 @@ Depth = 3
 ```@docs
 optimize
 ```
+
+Re-exported from `QuantumControlBase`:
+
+* [`ControlProblem`](@ref)
+* [`Objective`](@ref)
+* [`WeightedObjective`](@ref)
+* [`liouvillian`](@ref)
+
+
+### Submodules
+
+#### `QuantumControl.shapes`
+
+The `QuantumControl.shapes` contains methods re-exported from `QuantumControlBase`:
+
+* [`QuantumControl.shapes.flattop`](@ref flattop)
+* [`QuantumControl.shapes.box`](@ref box)
+* [`QuantumControl.shapes.blackman`](@ref blackman)
+
+#### `QuantumControl.functionals`
+
+The `QuantumControl.functionals` module contains methods re-exported from `QuantumControlBase`:
+
+* [`QuantumControl.functionals.F_ss`](@ref F_ss)
+* [`QuantumControl.functionals.J_T_ss`](@ref J_T_ss)
+* [`QuantumControl.functionals.chi_ss!`](@ref chi_ss!)
+* [`QuantumControl.functionals.F_sm`](@ref F_sm)
+* [`QuantumControl.functionals.J_T_sm`](@ref J_T_sm)
+* [`QuantumControl.functionals.J_T_chi_sm!`](@ref J_T_chi_sm!)
+* [`QuantumControl.functionals.J_F_re_sm`](@ref J_F_re_sm)
+* [`QuantumControl.functionals.J_T_re`](@ref J_T_re)
+* [`QuantumControl.functionals.chi_re!`](@ref chi_re!)
+
 
 ## Krotov
 
