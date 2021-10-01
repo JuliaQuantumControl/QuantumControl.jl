@@ -1,6 +1,6 @@
 # QuantumControl.jl
 
-[QuantumControl.jl](https://github.com/quantumcontrol-jl/QuantumControl.jl) is Julia framework for quantum optimal control.
+[QuantumControl.jl](https://github.com/JuliaQuantumControl/QuantumControl.jl) is Julia framework for quantum optimal control.
 
 ```@contents
 Pages = [

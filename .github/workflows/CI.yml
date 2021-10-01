@@ -41,11 +41,11 @@ jobs:
           julia --project=@. -e '
             using Pkg
             println("Dev-install QuantumPropagators")
-            Pkg.develop(url="https://github.com/QuantumControl-jl/QuantumPropagators.jl.git#master")
+            Pkg.develop(url="https://github.com/JuliaQuantumControl/QuantumPropagators.jl.git#master")
             println("Dev-install QuantumControlBase")
-            Pkg.develop(url="https://github.com/QuantumControl-jl/QuantumControlBase.jl.git#master")
+            Pkg.develop(url="https://github.com/JuliaQuantumControl/QuantumControlBase.jl.git#master")
             println("Dev-install Krotov")
-            Pkg.develop(url="https://github.com/QuantumControl-jl/Krotov.jl.git#master")
+            Pkg.develop(url="https://github.com/JuliaQuantumControl/Krotov.jl.git#master")
             println("Pkg.instantiate()")
             Pkg.instantiate()'
       - run: |
@@ -75,11 +75,11 @@ jobs:
           julia --project=docs -e '
             using Pkg
             println("Dev-install QuantumPropagators")
-            Pkg.develop(url="https://github.com/QuantumControl-jl/QuantumPropagators.jl.git#master")
+            Pkg.develop(url="https://github.com/JuliaQuantumControl/QuantumPropagators.jl.git#master")
             println("Dev-install QuantumControlBase")
-            Pkg.develop(url="https://github.com/QuantumControl-jl/QuantumControlBase.jl.git#master")
+            Pkg.develop(url="https://github.com/JuliaQuantumControl/QuantumControlBase.jl.git#master")
             println("Dev-install Krotov")
-            Pkg.develop(url="https://github.com/QuantumControl-jl/Krotov.jl.git#master")
+            Pkg.develop(url="https://github.com/JuliaQuantumControl/Krotov.jl.git#master")
             println("Dev-install package")
             Pkg.develop(PackageSpec(path=pwd()))
             println("Pkg.instantiate()")
