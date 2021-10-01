@@ -11,35 +11,32 @@ Depth = 4
 optimize
 ```
 
-Re-exported from `QuantumControlBase`:
+All other types and methods in `QuantumControl` or its submodules are re-exported from lower level packages (`QuantumControlBase`, `QuantumPropagators`, etc.):
 
 * [`ControlProblem`](@ref)
 * [`Objective`](@ref)
 * [`WeightedObjective`](@ref)
 * [`liouvillian`](@ref)
+* [`propagate`](@ref)
+* [`propstep!`](@ref)
 
 
-### Submodules
 
-#### `QuantumControl.shapes`
-
-The `QuantumControl.shapes` contains methods re-exported from `QuantumControlBase`:
+### `QuantumControl.shapes`
 
 * [`QuantumControl.shapes.flattop`](@ref flattop)
 * [`QuantumControl.shapes.box`](@ref box)
 * [`QuantumControl.shapes.blackman`](@ref blackman)
 
-#### `QuantumControl.functionals`
-
-The `QuantumControl.functionals` module contains methods re-exported from `QuantumControlBase`:
+### `QuantumControl.functionals`
 
 * [`QuantumControl.functionals.F_ss`](@ref F_ss)
 * [`QuantumControl.functionals.J_T_ss`](@ref J_T_ss)
 * [`QuantumControl.functionals.chi_ss!`](@ref chi_ss!)
 * [`QuantumControl.functionals.F_sm`](@ref F_sm)
 * [`QuantumControl.functionals.J_T_sm`](@ref J_T_sm)
-* [`QuantumControl.functionals.J_T_chi_sm!`](@ref J_T_chi_sm!)
-* [`QuantumControl.functionals.J_F_re_sm`](@ref J_F_re_sm)
+* [`QuantumControl.functionals.chi_sm!`](@ref chi_sm!)
+* [`QuantumControl.functionals.F_re`](@ref F_re)
 * [`QuantumControl.functionals.J_T_re`](@ref J_T_re)
 * [`QuantumControl.functionals.chi_re!`](@ref chi_re!)
 
@@ -77,20 +74,35 @@ Public = true
 
 ### Private
 
-```@autodocs
-Modules = [QuantumControlBase]
-Private = true
-Public = false
+```@docs
+QuantumControlBase.AbstractControlObjective
+QuantumControlBase.adjoint
+QuantumControlBase.f_tau
+QuantumControlBase.initobjpropwrk
 ```
 
 ## QuantumPropagators
 
 ### Public
 
-```@autodocs
-Modules = [QuantumPropagators]
-Private = false
-Public = true
+```@docs
+specrange
+cheby_coeffs
+cheby_coeffs!
+ChebyWrk
+cheby!
+NewtonWrk
+newton!
+ExpPropWrk
+expprop!
+init_storage
+map_observables
+map_observable
+write_to_storage!
+get_from_storage!
+initpropwrk
+propstep!
+propagate
 ```
 
 ### Private

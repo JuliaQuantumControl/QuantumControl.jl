@@ -2,20 +2,11 @@
 
 [QuantumControl.jl](https://github.com/quantumcontrol-jl/QuantumControl.jl) is Julia framework for quantum optimal control.
 
-### User Manual
-
 ```@contents
 Pages = [
     "manual.md",
-]
-Depth = 1
-```
-
-### API
-
-```@contents
-Pages = [
+    "howto.md",
     "api.md",
 ]
-Depth = 1
+Depth = 2
 ```
