@@ -7,11 +7,9 @@ version = "0.0.1"
 Krotov = "b05dcdc7-62f6-4360-bf2c-0898bba419de"
 QuantumControlBase = "f10a33bc-5a64-497c-be7b-6f86b4f0c2aa"
 QuantumPropagators = "7bf12567-5742-4b91-a078-644e72a65fc1"
-Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 
 [compat]
 julia = "1.6"
 Krotov = "^0.0"
 QuantumControlBase = "^0.0"
 QuantumPropagators = "^0.0"
-Reexport = "^1"
