@@ -7,20 +7,6 @@ The User Manual describes the API of the `QuantumControl` package by outlining t
 * [`ControlProblem`](@ref)
 * [`Objective`](@ref)
 
-## Nomenclature
-
-In the context of the JuliaQuantumControl ecosystem, we apply the following nomenclature. We assume that the dynamical generator takes the form
-
-```math
-H = H_0 + \sum_l f(ϵ_l(t))) H_l
-```
-
-We call the total ``H`` the "generator" ("Hamiltonian/Liouvillian"). It generates the equation of motion as ``Ψ(t+dt) = e^{-i H dt} Ψ(t)``, in the limit of ``dt → 0`` if ``H`` is time-dependent. We also use the symbol ``G`` in the general case encompassing Hamiltonians and Liouvillians. For the individual terms, ``H_0`` is the "drift" ("drift generator/Hamiltonian/Liouvillian"), ``H_l`` is the "control generator" ("control Hamiltonian/Liouvillian"), and ``f(ϵ_l(t))`` the "control", or sometimes "control function" — but the controls need not be functions: they might also be arrays of pulse values, or custom objects. Lastly, the product ``f(ϵ_l(t)) H_l`` is the "control term". Method names should reflect this terminology.
-
-In most cases, we have linear controls, i.e., ``f(ϵ_l(t)) == ϵ_l(t)``, but this is not a requirement. Sometimes, we may write ``ϵ(u_l(t))`` instead of ``f(ϵ_l(t))``. These are equivalent, with the small semantic distinction that e.g. ``ϵ(t) = u_l²(t))`` is an "artificial" parametrization to ensure that the physical control field ``ϵ(t)`` is positive, e.g. as the envelope of a pulse in the rotating wave approximation. In contrast, we may also have a *physical* non-linear control ``ϵ²(t)``, e.g. for the quadratic Stark shift. The control ``ϵ_l(t)`` may further depend on a finite set of "control parameters", which are generally not functions of time (see below).
-
-An important expression in gradient based quantum control is ``μ = \frac{∂H}{∂ϵ_l(t)} = \frac{∂f}{∂ϵ_l}\frac{∂H}{∂f} = \frac{∂f}{∂ϵ_l} H_l``. We call ``μ`` the "control derivative" and ``\frac{∂f}{∂ϵ_l}`` the "non-linearity". In the standard case of linear controls, the non-linearity is one and ``μ=\frac{∂H}{∂ϵ_l(t)}`` is simply the control generator. For a non-unit control derivative, however, ``μ`` is a function of the control and thus time-dependent.
-
 ## Controls and control parameters
 
 The controls that the `QuantumControl` package optimizes are implicit in the dynamical generator (Hamiltonians, Liouvillians) of the [`Objectives`](@ref Objective) in the [`ControlProblem`](@ref).

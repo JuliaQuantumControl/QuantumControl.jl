@@ -18,10 +18,11 @@ makedocs(;
     format=Documenter.HTML(;
         prettyurls=true,
         canonical="https://juliaquantumcontrol.github.io/QuantumControl.jl",
-        assets=String[],
+        assets = ["assets/custom.css"],
     ),
     pages=[
         "Home" => "index.md",
+        "Glossary" => "glossary.md",
         "User Manual" => "manual.md",
         "Howto" => "howto.md",
         "API" => "api.md",

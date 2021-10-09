@@ -4,6 +4,7 @@
 
 ```@contents
 Pages = [
+    "glossary.md",
     "manual.md",
     "howto.md",
     "api.md",
