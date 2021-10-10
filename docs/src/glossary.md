@@ -77,7 +77,7 @@ The derivative of the dynamical [Generator](@ref) with respect to the control fi
 
 ##### Parameter Derivative
 
-The derivative of the dynamical [Generator](@ref) with respect to a single control parameter. Unlike the [Control Derivative](@ref), the parameter derivative is a static operator. The parameter derivative determines the update for the corresponding control parameter in all variations of GRAPE.
+The derivative of a control with respect to a single control parameter. The derivative of the dynamical [Generator](@ref) with respect to that control parameter is then the product of the [Control Derivative](@ref) and the parameter derivative.
 
 ----
 
