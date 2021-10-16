@@ -43,6 +43,7 @@ All other types and methods in `QuantumControl` or its submodules are re-exporte
 * [`QuantumControl.functionals.F_re`](@ref F_re)
 * [`QuantumControl.functionals.J_T_re`](@ref J_T_re)
 * [`QuantumControl.functionals.chi_re!`](@ref chi_re!)
+* [`QuantumControl.functionals.grad_J_T_sm!`](@ref grad_J_T_sm!)
 
 
 ## Krotov
