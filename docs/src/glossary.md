@@ -44,7 +44,7 @@ In Eq. (G3), the ``f(ϵ(t))`` expressing a possible non-linear physical depende
 
 ##### Control Generator
 
-(aka "control Hamiltonian/Liouvillian") —  The operator ``Ĥ_l`` in Eqs. (G2, G3). This is a *static* operator which forms the [Control Term](@ref) together with a [Control Function](@ref). The control generator is not a well-defined concept in the most general case of non-separable controls terms, Eq. (G1)
+(aka "control Hamiltonian/Liouvillian"). The operator ``Ĥ_l`` in Eqs. (G2, G3). This is a *static* operator which forms the [Control Term](@ref) together with a [Control Function](@ref). The control generator is not a well-defined concept in the most general case of non-separable controls terms, Eq. (G1)
 
 ----
 
