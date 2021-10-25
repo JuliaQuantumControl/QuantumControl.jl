@@ -36,7 +36,6 @@ endef
 export DEV_PACKAGES
 
 define ENV_PACKAGES
-using Pkg;
 $(DEV_PACKAGES)
 Pkg.develop(PackageSpec(path=pwd()));
 Pkg.instantiate()
