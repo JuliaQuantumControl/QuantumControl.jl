@@ -7,14 +7,26 @@
 
 A Julia Framework for Quantum Optimal Control.
 
-The `QuantumControl` package collects the following packages that are part of the [JuliaQuantumControl](https://github.com/JuliaQuantumControl) organization:
+The [`QuantumControl.jl`][QuantumControl] package collects the [packages][] in the [JuliaQuantumControl][] organization and provides a single coherent [API](https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/api/#API) for solving the quantum control problem. See the [organization README](https://github.com/JuliaQuantumControl#readme) for details.
 
-| Package | CI Status | Coverage |
-| --- | --- | --- |
-|[QuantumPropagators.jl](https://github.com/JuliaQuantumControl/QuantumPropagators.jl) | [![Build Status](https://github.com/JuliaQuantumControl/QuantumPropagators.jl/workflows/CI/badge.svg)](https://github.com/JuliaQuantumControl/QuantumPropagators.jl/actions) | [![Coverage](https://codecov.io/gh/JuliaQuantumControl/QuantumPropagators.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaQuantumControl/QuantumPropagators.jl) |
-|[QuantumControlBase.jl](https://github.com/JuliaQuantumControl/QuantumControlBase.jl) | [![Build Status](https://github.com/JuliaQuantumControl/QuantumControlBase.jl/workflows/CI/badge.svg)](https://github.com/JuliaQuantumControl/QuantumControlBase.jl/actions) | [![Coverage](https://codecov.io/gh/JuliaQuantumControl/QuantumControlBase.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaQuantumControl/QuantumControlBase.jl) |
-|[Krotov.jl](https://github.com/JuliaQuantumControl/Krotov.jl) | [![Build Status](https://github.com/JuliaQuantumControl/Krotov.jl/workflows/CI/badge.svg)](https://github.com/JuliaQuantumControl/Krotov.jl/actions) | [![Coverage](https://codecov.io/gh/JuliaQuantumControl/Krotov.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaQuantumControl/Krotov.jl) |
-|[GRAPE.jl](https://github.com/JuliaQuantumControl/GRAPE.jl) | [![Build Status](https://github.com/JuliaQuantumControl/GRAPE.jl/workflows/CI/badge.svg)](https://github.com/JuliaQuantumControl/GRAPE.jl/actions) | [![Coverage](https://codecov.io/gh/JuliaQuantumControl/GRAPE.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaQuantumControl/GRAPE.jl) |
+## Documentation
+
+The [full documentation](https://juliaquantumcontrol.github.io/QuantumControl.jl/) is available at <https://juliaquantumcontrol.github.io/QuantumControl.jl/> and includes information about  [all the packages][packages] in the [JuliaQuantumControl][] organization.
 
 
-Read the [full documentation](https://juliaquantumcontrol.github.io/QuantumControl.jl/) for usage information on all of the above packages.
+## Installation
+
+The [`QuantumControl.jl`][QuantumControl] package can be installed via the [standard Pkg manager](https://docs.julialang.org/en/v1/stdlib/Pkg/):
+
+~~~
+pkg> add QuantumControl
+~~~
+
+This will also install [all the packages][packages] of the [JuliaQuantumControl][] organization as dependencies.
+
+**Warning: Currently, the packages in [JuliaQuantumControl][] are undergoing active development, and are in a pre-alpha state. Released version of [`QuantumControl.jl`][QuantumControl] < 0.1 do not provide any functionality. Early adopters should use use the [development version](https://github.com/JuliaQuantumControl#development).**
+
+
+[JuliaQuantumControl]: https://github.com/JuliaQuantumControl
+[QuantumControl]: https://github.com/JuliaQuantumControl/QuantumControl.jl
+[packages]: https://github.com/JuliaQuantumControl#packages
