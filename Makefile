@@ -26,12 +26,14 @@ help:  ## show this help
 QUANTUMCONTROLBASE ?= ../QuantumControlBase.jl
 QUANTUMPROPAGATORS ?= ../QuantumPropagators.jl
 KROTOV ?= ../Krotov.jl
+GRAPE ?= ../GRAPE.jl
 
 define DEV_PACKAGES
 using Pkg;
 Pkg.develop(path="$(QUANTUMCONTROLBASE)");
 Pkg.develop(path="$(QUANTUMPROPAGATORS)");
 Pkg.develop(path="$(KROTOV)");
+Pkg.develop(path="$(GRAPE)");
 endef
 export DEV_PACKAGES
 
@@ -43,7 +45,7 @@ endef
 export ENV_PACKAGES
 
 
-Manifest.toml: Project.toml $(QUANTUMCONTROLBASE)/Project.toml $(QUANTUMPROPAGATORS)/Project.toml $(KROTOV)/Project.toml
+Manifest.toml: Project.toml $(QUANTUMCONTROLBASE)/Project.toml $(QUANTUMPROPAGATORS)/Project.toml $(KROTOV)/Project.toml  $(GRAPE)/Project.toml
 	julia --project=. -e "$$DEV_PACKAGES;Pkg.instantiate()"
 
 
@@ -53,7 +55,7 @@ test:  Manifest.toml  ## Run the test suite
 	@echo "Done. Consider using 'make devrepl'"
 
 
-test/Manifest.toml: test/Project.toml $(QUANTUMCONTROLBASE)/Project.toml $(QUANTUMPROPAGATORS)/Project.toml $(KROTOV)/Project.toml
+test/Manifest.toml: test/Project.toml $(QUANTUMCONTROLBASE)/Project.toml $(QUANTUMPROPAGATORS)/Project.toml $(KROTOV)/Project.toml  $(GRAPE)/Project.toml
 	julia --project=test -e "$$ENV_PACKAGES"
 
 
@@ -61,7 +63,7 @@ devrepl: test/Manifest.toml ## Start an interactive REPL for testing and buildin
 	@julia --project=test --banner=no --startup-file=yes -e 'include("test/init.jl")' -i
 
 
-docs/Manifest.toml: docs/Project.toml $(QUANTUMCONTROLBASE)/Project.toml $(QUANTUMPROPAGATORS)/Project.toml $(KROTOV)/Project.toml
+docs/Manifest.toml: docs/Project.toml $(QUANTUMCONTROLBASE)/Project.toml $(QUANTUMPROPAGATORS)/Project.toml $(KROTOV)/Project.toml $(GRAPE)/Project.toml
 	julia --project=docs -e "$$ENV_PACKAGES"
 
 

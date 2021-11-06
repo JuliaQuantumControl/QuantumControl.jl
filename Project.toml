@@ -5,11 +5,13 @@ version = "0.0.2"
 
 [deps]
 Krotov = "b05dcdc7-62f6-4360-bf2c-0898bba419de"
+GRAPE = "6b52fcaf-80fe-489a-93e9-9f92080510be"
 QuantumControlBase = "f10a33bc-5a64-497c-be7b-6f86b4f0c2aa"
 QuantumPropagators = "7bf12567-5742-4b91-a078-644e72a65fc1"
 
 [compat]
 julia = "1.6"
 Krotov = "^0.0"
+GRAPE = "^0.0"
 QuantumControlBase = "^0.0"
 QuantumPropagators = "^0.0"

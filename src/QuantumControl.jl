@@ -19,6 +19,7 @@ module functionals
 end
 
 using Krotov
+using GRAPE
 
 include("optimize.jl")
 export optimize
