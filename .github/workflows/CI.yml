@@ -11,7 +11,6 @@ jobs:
       matrix:
         version:
           - '1.6'
-          - 'nightly'
         os:
           - ubuntu-latest
         arch:
@@ -49,6 +48,8 @@ jobs:
             Pkg.develop(url="https://github.com/JuliaQuantumControl/QuantumControlBase.jl.git#master")
             println("Dev-install Krotov")
             Pkg.develop(url="https://github.com/JuliaQuantumControl/Krotov.jl.git#master")
+            println("Dev-install GRAPE")
+            Pkg.develop(url="https://github.com/JuliaQuantumControl/GRAPE.jl.git#master")
             println("Pkg.instantiate()")
             Pkg.instantiate()'
       - run: |
@@ -86,6 +87,8 @@ jobs:
             Pkg.develop(url="https://github.com/JuliaQuantumControl/QuantumControlBase.jl.git#master")
             println("Dev-install Krotov")
             Pkg.develop(url="https://github.com/JuliaQuantumControl/Krotov.jl.git#master")
+            println("Dev-install GRAPE")
+            Pkg.develop(url="https://github.com/JuliaQuantumControl/GRAPE.jl.git#master")
             println("Dev-install package")
             Pkg.develop(PackageSpec(path=pwd()))
             println("Pkg.instantiate()")
