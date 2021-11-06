@@ -103,6 +103,14 @@ for (pkgname::Symbol, outfilename) in subpackages
             if (name ∉ public_members) && (name ∈ all_local_members)
         ]
         write(out, "\n\n# $pkgname\n\n")
+        write(out, """
+        ## Index
+
+        ```@index
+        Pages   = ["$outfilename"]
+        ```
+
+        """)
         if length(public_members) > 0
             write(out, "\n## Public\n\n")
             write(out, "```@docs\n")
