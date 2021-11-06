@@ -1,6 +1,7 @@
 using QuantumPropagators
 using QuantumControlBase
 using Krotov
+using GRAPE
 using QuantumControl
 using QuantumControl.shapes
 using QuantumControl.functionals
@@ -9,9 +10,9 @@ using Documenter
 DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)
 println("Starting makedocs")
 
+include("generate_api.jl")
+
 makedocs(;
-    modules=[QuantumPropagators, QuantumControlBase, QuantumControl, Krotov],
-    checkdocs = :exports,
     authors="Michael Goerz <mail@michaelgoerz.net>, Alastair Marshall <alastair@nvision-imaging.com>, and contributors",
     repo="https://github.com/JuliaQuantumControl/QuantumControl.jl/blob/{commit}{path}#{line}",
     sitename="QuantumControl.jl",

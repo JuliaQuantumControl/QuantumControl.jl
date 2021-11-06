@@ -75,6 +75,7 @@ docs: docs/Manifest.toml ## Build the documentation
 clean: ## Clean up build/doc/testing artifacts
 	rm -f src/*.cov test/*.cov
 	rm -rf docs/build
+	rm -f docs/src/api.md
 
 
 distclean: clean ## Restore to a clean checkout state
