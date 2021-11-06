@@ -26,7 +26,15 @@ makedocs(;
         "Glossary" => "glossary.md",
         "User Manual" => "manual.md",
         "Howto" => "howto.md",
-        "API" => "api.md",
+        "API" => [
+            "QuantumControl" => "api/quantum_control.md",
+            "Subpackages" => [
+                "QuantumPropagators" => "api/quantum_propagators.md",
+                "QuantumControlBase" => "api/quantum_control_base.md",
+                "Krotov" => "api/krotov.md",
+                "GRAPE" => "api/grape.md",
+            ],
+         ],
     ],
 )
 

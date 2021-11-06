@@ -49,25 +49,17 @@ quantum_control_sub_modules = get_submodules(QuantumControl)
 
 
 subpackages = [
-    :QuantumPropagators,
-    :QuantumControlBase,
-    :Krotov,
-    :GRAPE,
+    (:QuantumPropagators, "quantum_propagators.md"),
+    (:QuantumControlBase, "quantum_control_base.md"),
+    (:Krotov, "krotov.md"),
+    (:GRAPE, "grape.md"),
 ]
 
 
-open(joinpath(@__DIR__, "src", "api.md"), "w") do out
-    write(out, """
-    # API
-
-    ```@contents
-    Pages = ["api.md"]
-    Depth = 4
-    ```
-
-    ## QuantumControl
-    """)
-
+outfile = joinpath(@__DIR__, "src", "api", "quantum_control.md")
+println("Generating API for QuantumControl in $outfile")
+open(outfile, "w") do out
+    write(out, "# QuantumControl\n\n")
     if length(quantum_control_local_members) > 0
         println(out, "```@docs")
         for name ∈ quantum_control_local_members
@@ -85,17 +77,21 @@ open(joinpath(@__DIR__, "src", "api.md"), "w") do out
     end
 
     for submod in quantum_control_sub_modules
-        write(out, "\n\n### `Quantumcontrol.$submod`\n\n")
+        write(out, "\n\n### `QuantumControl.$submod`\n\n")
         for name in names(getfield(QuantumControl, submod))
             if name ≠ submod
                 println(out, "* [`QuantumControl.$submod.$name`](@ref $submod.$name)")
             end
         end
     end
+end
 
-    write(out, "\n\n## Sub-Packages\n\n")
 
-    for pkgname::Symbol in subpackages
+for (pkgname::Symbol, outfilename) in subpackages
+
+    outfile = joinpath(@__DIR__, "src", "api", outfilename)
+    println("Generating API for $pkgname in $outfile")
+    open(outfile, "w") do out
         pkg = getfield(QuantumControl, pkgname)
         all_local_members = get_local_members(pkg)
         public_members = get_local_members(pkg, all=false)
@@ -106,9 +102,9 @@ open(joinpath(@__DIR__, "src", "api.md"), "w") do out
             name for name in documented_members
             if (name ∉ public_members) && (name ∈ all_local_members)
         ]
-        write(out, "\n\n### $pkgname\n\n")
+        write(out, "\n\n# $pkgname\n\n")
         if length(public_members) > 0
-            write(out, "\n#### Public\n\n")
+            write(out, "\n## Public\n\n")
             write(out, "```@docs\n")
             for name in public_members
                 write(out, "$pkgname.$name\n")
@@ -116,7 +112,7 @@ open(joinpath(@__DIR__, "src", "api.md"), "w") do out
             write(out, "```\n\n")
         end
         if length(documented_private_members) > 0
-            write(out, "\n#### Private\n\n")
+            write(out, "\n## Private\n\n")
             write(out, "```@docs\n")
             for name in documented_private_members
                 write(out, "$pkgname.$name\n")
