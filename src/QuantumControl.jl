@@ -6,6 +6,7 @@ export propagate, propstep!
 using QuantumControlBase
 export ControlProblem, Objective, WeightedObjective, liouvillian
 export discretize, discretize_on_midpoints, getcontrols, get_control_parameters
+export propagate_objective
 
 module shapes
     using QuantumControlBase
