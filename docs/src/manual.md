@@ -24,4 +24,4 @@ More generally, [`get_control_parameters`](@ref) extracts abstract "control para
 
 ## Optimization
 
-* [`optimize_pulses`](@ref)
+* [`optimize`](@ref)
