@@ -6,6 +6,7 @@ The User Manual describes the API of the `QuantumControl` package by outlining t
 
 * [`ControlProblem`](@ref)
 * [`Objective`](@ref)
+* [`WeightedObjective`](@ref)
 
 ## Controls and control parameters
 
@@ -20,6 +21,7 @@ More generally, [`get_control_parameters`](@ref) extracts abstract "control para
 ## Time propagation
 
 * [`propagate`](@ref)
+* [`propagate_objective`](@ref)
 
 
 ## Optimization
