@@ -3,8 +3,8 @@ using QuantumControlBase
 using Krotov
 using GRAPE
 using QuantumControl
-using QuantumControl.shapes
-using QuantumControl.functionals
+using QuantumControl.Shapes
+using QuantumControl.Functionals
 using Documenter
 
 DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)
