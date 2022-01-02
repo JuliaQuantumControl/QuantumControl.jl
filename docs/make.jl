@@ -34,6 +34,7 @@ makedocs(;
                 "GRAPE" => "api/grape.md",
             ],
          ],
+        "History" => "history.md",
     ],
 )
 

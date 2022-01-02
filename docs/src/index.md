@@ -33,3 +33,12 @@ Pages = [
 ]
 Depth = 1
 ```
+
+### History
+
+```@contents
+Pages = [
+    "history.md",
+]
+Depth = 1
+```
