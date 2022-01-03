@@ -16,12 +16,20 @@ Each release of `QuantumControl.jl` is determined by the compatible versions of 
     </thead>
     <tbody>
     <tr>
-        <th scope="row"><tt>0.0.2</tt></th>
+        <th scope="row">0.0.2</th>
         <td>2021-10-02</td>
-        <td><tt>^0.0</tt></td>
-        <td><tt>^0.0</tt></td>
-        <td><tt>^0.0</tt></td>
+        <td>^0.0</td>
+        <td>^0.0</td>
+        <td>^0.0</td>
         <td>—</td>
+    </tr>
+    <tr>
+        <th scope="row">0.0.3</th>
+        <td>2022-01-03</td>
+        <td>0.0.3</td><!-- QuantumPropagators -->
+        <td>0.0.3</td><!-- QuantumControlBase -->
+        <td>0.0.3</td><!-- Krotov -->
+        <td>0.0.2</td><!-- GRAPE -->
     </tr>
     </tbody>
 </table>
