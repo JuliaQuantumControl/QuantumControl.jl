@@ -5,20 +5,29 @@ using GRAPE
 using QuantumControl
 using QuantumControl.Shapes
 using QuantumControl.Functionals
+using Pkg
 using Documenter
 
 DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)
+
+PROJECT_TOML = Pkg.TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))
+VERSION = PROJECT_TOML["version"]
+NAME = PROJECT_TOML["name"]
+AUTHORS = join(PROJECT_TOML["authors"], ", ") * " and contributors"
+GITHUB = "https://github.com/JuliaQuantumControl/QuantumControl.jl"
+
 println("Starting makedocs")
 
 include("generate_api.jl")
 
 makedocs(;
-    authors="Michael Goerz <mail@michaelgoerz.net>, Alastair Marshall <alastair@nvision-imaging.com>, and contributors",
+    authors = AUTHORS,
     sitename="QuantumControl.jl",
     format=Documenter.HTML(;
         prettyurls=true,
         canonical="https://juliaquantumcontrol.github.io/QuantumControl.jl",
         assets = ["assets/custom.css"],
+        footer="[$NAME.jl]($GITHUB) v$VERSION docs powered by [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl)."
     ),
     pages=[
         "Home" => "index.md",
