@@ -73,6 +73,9 @@ subpackages = [
 outfile = joinpath(@__DIR__, "src", "api", "quantum_control.md")
 println("Generating API for QuantumControl in $outfile")
 open(outfile, "w") do out
+    write(out, "```@meta\n")
+    write(out, "EditURL = \"../../generate_api.jl\"\n")
+    write(out, "```\n\n")
     write(out, "# QuantumControl\n\n")
     if length(quantum_control_local_members) > 0
         println(out, "```@docs")
@@ -121,6 +124,9 @@ for (pkgname::Symbol, outfilename) in subpackages
             name for name in documented_members
             if (name ∉ public_members) && (name ∈ all_local_members)
         ]
+        write(out, "```@meta\n")
+        write(out, "EditURL = \"../../generate_api.jl\"\n")
+        write(out, "```\n\n")
         write(out, "\n\n# $pkgname Package\n\n")
         write(out, """
         ## Index
