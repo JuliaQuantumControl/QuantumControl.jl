@@ -1,0 +1,65 @@
+name: CI-release
+on:
+  push:
+    branches:
+      - 'release-*'
+jobs:
+  test:
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - '1.7'
+        os:
+          - ubuntu-latest
+        arch:
+          - x64
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+      - run: |
+          # Install matplotlib into system Python
+          set -x
+          /usr/bin/python3 -m pip install matplotlib
+      - run: |
+          # Set up registries
+          julia --project=@. -e '
+            using Pkg
+            println("Set up registries")
+            Pkg.Registry.add(RegistrySpec(url="https://github.com/JuliaRegistries/General.git"))
+            Pkg.Registry.add(RegistrySpec(url="https://github.com/JuliaQuantumControl/QuantumControlRegistry.git"))'
+      - run: |
+          # Run downstream "QuantumControlBase" tests
+          julia --project=@. --threads auto -e '
+            using Pkg
+            Pkg.activate(".")
+            Pkg.test("QuantumControlBase")'
+      - run: |
+          # Run downstream "QuantumPropagators" tests
+          julia --project=@. --threads auto -e '
+            using Pkg
+            Pkg.activate(".")
+            Pkg.test("QuantumPropagators")'
+      - run: |
+          # Run downstream "Krotov" tests
+          julia --project=@. --threads auto -e '
+            using Pkg
+            Pkg.activate(".")
+            Pkg.test("Krotov")'
+      - run: |
+          # Run downstream "GRAPE" tests
+          julia --project=@. --threads auto -e '
+            using Pkg
+            Pkg.activate(".")
+            Pkg.test("GRAPE")'
+      - run: |
+          # Run tests
+          julia --project=@. -e '
+            using Pkg
+            Pkg.activate(".")
+            Pkg.test()'
