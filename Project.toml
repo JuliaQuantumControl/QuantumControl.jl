@@ -1,7 +1,7 @@
 name = "QuantumControl"
 uuid = "8a270532-f23f-47a8-83a9-b33d10cad486"
 authors = ["Michael Goerz <mail@michaelgoerz.net>", "Alastair Marshall <alastair@nvision-imaging.com>"]
-version = "0.0.3"
+version = "0.0.3+dev"
 
 [deps]
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
