@@ -9,6 +9,7 @@ export discretize, discretize_on_midpoints, getcontrols, get_control_parameters
 export get_tlist_midpoints
 export propagate_objective
 export optimize
+export chain_infohooks
 
 module Shapes
     using QuantumControlBase.Shapes
