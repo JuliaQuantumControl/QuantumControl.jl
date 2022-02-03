@@ -34,6 +34,9 @@ makedocs(;
         "Glossary" => "glossary.md",
         "User Manual" => "manual.md",
         "Howto" => "howto.md",
+        "Examples" => [
+            "List of Examples" => "examples/index.md",
+        ],
         "API" => [
             "QuantumControl" => "api/quantum_control.md",
             "Subpackages" => [

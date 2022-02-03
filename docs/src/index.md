@@ -13,6 +13,14 @@ Pages = [
 Depth = 2
 ```
 
+### Examples
+
+```@contents
+Pages = [
+    "examples/index.md",
+]
+```
+
 ## API
 
 ```@contents
