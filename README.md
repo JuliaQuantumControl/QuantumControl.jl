@@ -24,8 +24,6 @@ pkg> add QuantumControl
 
 This will also install [all the packages][packages] of the [JuliaQuantumControl][] organization as dependencies.
 
-**Warning: Currently, the packages in [JuliaQuantumControl][] are undergoing active development, and are in a pre-alpha state. Released version of [`QuantumControl.jl`][QuantumControl] < 0.1 do not provide any functionality. Early adopters should use use the [development version](https://github.com/JuliaQuantumControl#development).**
-
 
 [JuliaQuantumControl]: https://github.com/JuliaQuantumControl
 [QuantumControl]: https://github.com/JuliaQuantumControl/QuantumControl.jl
