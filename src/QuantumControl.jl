@@ -8,7 +8,8 @@ export ControlProblem, Objective, WeightedObjective, liouvillian
 export discretize, discretize_on_midpoints, getcontrols, get_control_parameters
 export get_tlist_midpoints
 export propagate_objective
-export optimize, @optimize_or_load
+export optimize, @optimize_or_load, optimization_savename, load_optimization
+export default_optimization_savename_kwargs
 export chain_infohooks
 
 module Shapes

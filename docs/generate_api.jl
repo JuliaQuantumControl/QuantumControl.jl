@@ -1,3 +1,4 @@
+#! format: off
 import QuantumControl
 import Documenter
 
@@ -10,15 +11,15 @@ list is filtered to include only exported names.
 """
 function get_local_members(pkg; all=true)
     return [
-        m for m in names(pkg, all=all)
-        if !(
+        m for m in names(pkg, all=all) if !(
             (startswith(String(m), "#")) ||       # compiler-generated names
+            (getfield(pkg, m) isa Union{Dict,Array,Set}) ||  # global variable
             (m == Symbol(pkg)) ||                 # the package itself
             (m == :eval) ||                       # compiler-injected "eval"
             (m == :include) ||                    # compiler-injected "include"
             ((getfield(pkg, m)) isa Module) ||    # sub-modules
             (parentmodule(getfield(pkg, m))) ≠ pkg  # re-exported
-       )
+        )
     ]
 end
 
@@ -27,7 +28,7 @@ end
 function get_submodules(pkg)
     return [
         m for m in names(pkg, all=true)
-        if  (getfield(pkg, m) isa Module) && !(m == Symbol(pkg))
+        if (getfield(pkg, m) isa Module) && !(m == Symbol(pkg))
     ]
 end
 
