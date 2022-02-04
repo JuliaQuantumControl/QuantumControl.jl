@@ -14,7 +14,7 @@ Examples for supported forms a Hamiltonian are the following, from the most gene
 <img src="../assets/controlhams.svg" width="80%"/>
 ```
 
-The ``Ĥ_0`` is the [Drift Term](@ref) and each term under the sum over ``l`` is a [Control Term](@ref). In the most general case, Eq. (G1), the control term is a Hamiltonian that depends on a set of control amplitudes. More commonly, the control term is separable into the [Control Amplitude](@ref) ``a_l(t)`` and the [Control Operator](@ref) ``Ĥ_l``. The control amplitude ``a_l(t)`` depends in term on the [Control Function](@ref)   (or simply "control") ``ϵ_l(t)``, which is the function we can control directly. The control may further depend on a [Pulse Parametrization](@ref), ``ϵ_l(t) = ϵ_l(u_l(t))`` or a set of [Control Parameters](@ref), ``ϵ_l(t) = ϵ_l({u_n})``.
+The ``Ĥ_0`` is the [Drift Term](@ref) and each term under the sum over ``l`` is a [Control Term](@ref). In the most general case, Eq. (G1), the control term is a Hamiltonian that depends on a set of control amplitudes. More commonly, the control term is separable into the [Control Amplitude](@ref) ``a_l(t)`` and the [Control Operator](@ref) ``Ĥ_l``. The control amplitude ``a_l(t)`` depends in turn on the [Control Function](@ref)   (or simply "control") ``ϵ_l(t)``, which is the function we can control directly. The control may further depend on a [Pulse Parametrization](@ref), ``ϵ_l(t) = ϵ_l(u_l(t))`` or a set of [Control Parameters](@ref), ``ϵ_l(t) = ϵ_l({u_n})``.
 
 In an open quantum system, the structure of Eqs. (G1–G3) is the same, but with Liouvillian (super-)operators acting on density matrices instead of Hamiltonians acting on state vectors. See [`liouvillian`](@ref) with `convention=:TDSE`.
 

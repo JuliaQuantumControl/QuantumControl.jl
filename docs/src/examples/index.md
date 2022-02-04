@@ -1,4 +1,4 @@
-# Examples
+# [Examples](@id examples-list)
 
 ## Krotov-specific examples
 

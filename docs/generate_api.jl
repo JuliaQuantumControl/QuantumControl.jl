@@ -77,7 +77,7 @@ open(outfile, "w") do out
     write(out, "```@meta\n")
     write(out, "EditURL = \"../../generate_api.jl\"\n")
     write(out, "```\n\n")
-    write(out, "# QuantumControl\n\n")
+    write(out, "# [QuantumControl](@id quantum-control-api)\n\n")
     if length(quantum_control_local_members) > 0
         println(out, "```@docs")
         for name ∈ quantum_control_local_members
