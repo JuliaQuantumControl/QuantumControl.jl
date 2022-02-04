@@ -7,7 +7,7 @@
 
 A Julia Framework for Quantum Optimal Control.
 
-The [`QuantumControl.jl`][QuantumControl] package collects the [packages][] in the [JuliaQuantumControl][] organization and provides a single coherent [API](https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/api/#API) for solving the quantum control problem. See the [organization README](https://github.com/JuliaQuantumControl#readme) for details.
+The [`QuantumControl.jl`][QuantumControl] package collects the [packages][] in the [JuliaQuantumControl][] organization and provides a single coherent [API](https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/api/quantum_control/#quantum-control-api) for solving the quantum control problem. See the [organization README](https://github.com/JuliaQuantumControl#readme) for details.
 
 ## Documentation
 
