@@ -77,7 +77,7 @@ open(outfile, "w") do out
     write(out, "```@meta\n")
     write(out, "EditURL = \"../../generate_api.jl\"\n")
     write(out, "```\n\n")
-    write(out, "# [QuantumControl](@id quantum-control-api)\n\n")
+    write(out, "# [QuantumControl](@id QuantumControlAPI)\n\n")
     if length(quantum_control_local_members) > 0
         println(out, "```@docs")
         for name ∈ quantum_control_local_members
@@ -97,7 +97,7 @@ open(outfile, "w") do out
     end
 
     for submod in quantum_control_sub_modules
-        write(out, "\n\n### `QuantumControl.$submod`\n\n")
+        write(out, "\n\n### [`QuantumControl.$submod`](@id QuantumControl$(submod)API)\n\n")
         for name in names(getfield(QuantumControl, submod))
             if name ≠ submod
                 obj = getfield(getfield(QuantumControl, submod), name)
@@ -137,7 +137,7 @@ for (pkgname::Symbol, outfilename) in subpackages
         ```
 
         """)
-        write(out, "\n\n## $pkgname\n\n")
+        write(out, "\n\n## [$pkgname](@id $(pkgname)API)\n\n")
         if length(public_members) > 0
             write(out, "\n### Public\n\n")
             write(out, "```@docs\n")
@@ -168,7 +168,7 @@ for (pkgname::Symbol, outfilename) in subpackages
                 if (name ∉ public_members) && (name ∈ all_local_members)
             ]
             if length(public_members) + length(documented_private_members) > 0
-                write(out, "\n## $pkgname.$submodname\n\n")
+                write(out, "\n## [$pkgname.$submodname](@id $(pkgname)$(submodname)API)\n\n")
             end
             if length(public_members) > 0
                 write(out, "\n### Public\n\n")

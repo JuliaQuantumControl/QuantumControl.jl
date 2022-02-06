@@ -21,12 +21,12 @@ println("Starting makedocs")
 include("generate_api.jl")
 
 makedocs(;
-    authors = AUTHORS,
+    authors=AUTHORS,
     sitename="QuantumControl.jl",
     format=Documenter.HTML(;
         prettyurls=true,
         canonical="https://juliaquantumcontrol.github.io/QuantumControl.jl",
-        assets = ["assets/custom.css"],
+        assets=["assets/custom.css"],
         footer="[$NAME.jl]($GITHUB) v$VERSION docs powered by [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl)."
     ),
     pages=[
@@ -34,9 +34,7 @@ makedocs(;
         "Glossary" => "glossary.md",
         "User Manual" => "manual.md",
         "Howto" => "howto.md",
-        "Examples" => [
-            "List of Examples" => "examples/index.md",
-        ],
+        "Examples" => ["List of Examples" => "examples/index.md",],
         "API" => [
             "QuantumControl" => "api/quantum_control.md",
             "Subpackages" => [
@@ -45,13 +43,11 @@ makedocs(;
                 "Krotov" => "api/krotov.md",
                 "GRAPE" => "api/grape.md",
             ],
-         ],
+        ],
         "History" => "history.md",
-    ],
+    ]
 )
 
 println("Finished makedocs")
 
-deploydocs(;
-    repo="github.com/JuliaQuantumControl/QuantumControl.jl",
-)
+deploydocs(; repo="github.com/JuliaQuantumControl/QuantumControl.jl")

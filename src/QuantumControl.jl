@@ -1,8 +1,9 @@
+#! format: off
 module QuantumControl
 include("reexport.jl")
 
 using QuantumPropagators
-export propagate, propstep!, propstep
+@reexport_members(QuantumPropagators)
 
 using QuantumControlBase
 @reexport_members(QuantumControlBase)
