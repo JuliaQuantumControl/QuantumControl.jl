@@ -12,8 +12,8 @@ Krotov = "b05dcdc7-62f6-4360-bf2c-0898bba419de"
 GRAPE = "6b52fcaf-80fe-489a-93e9-9f92080510be"
 
 [compat]
-GRAPE = "0.0.2"
-Krotov = "0.0.3"
-QuantumControlBase = "0.0.3"
-QuantumPropagators = "0.0.3"
+GRAPE = ">=0.0.2"
+Krotov = ">=0.0.3"
+QuantumControlBase = ">=0.0.3"
+QuantumPropagators = ">=0.0.3"
 julia = "1.6"
