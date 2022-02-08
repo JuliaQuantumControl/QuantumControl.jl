@@ -31,6 +31,14 @@ Each release of `QuantumControl.jl` is determined by the compatible versions of 
         <td>0.0.3</td><!-- Krotov -->
         <td>0.0.2</td><!-- GRAPE -->
     </tr>
+    <tr>
+        <th scope="row">0.0.4</th>
+        <td>2022-02-07</td>
+        <td>≥0.1.0</td><!-- QuantumPropagators -->
+        <td>≥0.1.0</td><!-- QuantumControlBase -->
+        <td>≥0.1.0</td><!-- Krotov -->
+        <td>≥0.0.3</td><!-- GRAPE -->
+    </tr>
     </tbody>
 </table>
 ```
