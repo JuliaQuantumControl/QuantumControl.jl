@@ -1,9 +1,0 @@
-[deps]
-Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-GRAPE = "6b52fcaf-80fe-489a-93e9-9f92080510be"
-Krotov = "b05dcdc7-62f6-4360-bf2c-0898bba419de"
-Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
-QuantumControl = "8a270532-f23f-47a8-83a9-b33d10cad486"
-QuantumControlBase = "f10a33bc-5a64-497c-be7b-6f86b4f0c2aa"
-QuantumOptics = "6e0679c1-51ea-5a7c-ac74-d61b76210b0c"
-QuantumPropagators = "7bf12567-5742-4b91-a078-644e72a65fc1"

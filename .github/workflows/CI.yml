@@ -15,6 +15,8 @@ jobs:
           - ubuntu-latest
         arch:
           - x64
+    env:
+      GKSwstype: '100'
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
@@ -32,32 +34,12 @@ jobs:
             ${{ runner.os }}-test-
             ${{ runner.os }}-
       - run: |
-          # Install matplotlib into system Python
-          set -x
-          /usr/bin/python3 -m pip install matplotlib
-      - run: |
           # Instantiate Pkg
-          julia --project=@. -e '
-            using Pkg
-            println("Set up registries")
-            Pkg.Registry.add(RegistrySpec(url="https://github.com/JuliaRegistries/General.git"))
-            Pkg.Registry.add(RegistrySpec(url="https://github.com/JuliaQuantumControl/QuantumControlRegistry.git"))
-            println("Dev-install QuantumPropagators")
-            Pkg.develop(url="https://github.com/JuliaQuantumControl/QuantumPropagators.jl.git#master")
-            println("Dev-install QuantumControlBase")
-            Pkg.develop(url="https://github.com/JuliaQuantumControl/QuantumControlBase.jl.git#master")
-            println("Dev-install Krotov")
-            Pkg.develop(url="https://github.com/JuliaQuantumControl/Krotov.jl.git#master")
-            println("Dev-install GRAPE")
-            Pkg.develop(url="https://github.com/JuliaQuantumControl/GRAPE.jl.git#master")
-            println("Pkg.instantiate()")
-            Pkg.instantiate()'
+          wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
+          julia --project=test installorg.jl
       - run: |
           # Run tests
-          julia --project=@. -e '
-            using Pkg
-            Pkg.activate(".")
-            Pkg.test(coverage=true)'
+          julia --project=test --color=auto --startup-file=yes --code-coverage="user" --depwarn="yes" --check-bounds="yes" -e 'include("test/runtests.jl")'
       - uses: julia-actions/julia-processcoverage@v1
       - uses: codecov/codecov-action@v1
         with:
@@ -71,28 +53,14 @@ jobs:
         with:
           version: '1'
       - run: |
-          # Install matplotlib into system Python
+          # Install Python dependencies
           set -x
-          /usr/bin/python3 -m pip install matplotlib
+          /usr/bin/python3 -m pip install zip-files
       - run: |
           # Instantiate Pkg
-          julia --project=docs -e '
-            using Pkg
-            println("Set up registries")
-            Pkg.Registry.add(RegistrySpec(url="https://github.com/JuliaRegistries/General.git"))
-            Pkg.Registry.add(RegistrySpec(url="https://github.com/JuliaQuantumControl/QuantumControlRegistry.git"))
-            println("Dev-install QuantumPropagators")
-            Pkg.develop("QuantumPropagators")
-            println("Dev-install QuantumControlBase")
-            Pkg.develop("QuantumControlBase")
-            println("Dev-install Krotov")
-            Pkg.develop("Krotov")
-            println("Dev-install GRAPE")
-            Pkg.develop("GRAPE")
-            println("Dev-install package")
-            Pkg.develop(PackageSpec(path=pwd()))
-            println("Pkg.instantiate()")
-            Pkg.instantiate()'
+          wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
+          julia --project=test installorg.jl
+      - run: cp test/*.toml docs/  # Prepare DrWatson
       - run: |
           # Run doctests
           julia --project=docs -e '
@@ -102,8 +70,47 @@ jobs:
             doctest(QuantumControl)'
       - run: |
           # Make documentation
-          julia --project=docs docs/make.jl
+          julia --project=test docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
           JULIA_DEBUG: Documenter
+      - name: Zip the HTML documentation
+        run: zip-folder --debug --auto-root --outfile "docs.zip" docs/build
+      - uses: actions/upload-artifact@v2
+        name: Upload documentation artifacts
+        with:
+          name: Krotov
+          # We need at least two files in the artifact to avoid a weird
+          # double-zip file. Hence README.md
+          path: |
+            README.md
+            ./docs.zip
+  codestyle:
+    name: Codestyle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: '1'
+      - name: Get codestyle settings
+        run: wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/.JuliaFormatter.toml
+      - name: Install JuliaFormatter and format
+        # This will use the latest version by default but you can set the version like so:
+        #
+        # julia  -e 'using Pkg; Pkg.add(PackageSpec(name="JuliaFormatter", version="0.13.0"))'
+        run: |
+          julia  -e 'using Pkg; Pkg.add(PackageSpec(name="JuliaFormatter"))'
+          julia  -e 'using JuliaFormatter; format(".", verbose=true)'
+      - name: Format check
+        run: |
+          julia -e '
+          out = Cmd(`git diff --name-only`) |> read |> String
+          if out == ""
+              exit(0)
+          else
+              @error "Some files have not been formatted !!!"
+              write(stdout, out)
+              exit(1)
+          end'

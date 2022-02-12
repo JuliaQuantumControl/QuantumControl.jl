@@ -2,11 +2,15 @@
 using Pkg
 Pkg.develop(PackageSpec(path=pwd()))
 using Revise
+using Plots
+unicodeplots()
+using JuliaFormatter
 println("""
 *******************************************************************************
 DEVELOPMENT REPL
 
-Revise is active
+Revise is active. JuliaFormatter is active.
+Plots with unicode backend is active.
 
 Run
 
