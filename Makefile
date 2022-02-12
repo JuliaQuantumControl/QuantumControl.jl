@@ -1,7 +1,8 @@
-.PHONY: help test docs clean distclean devrepl codestyle
+.PHONY: help test docs clean distclean devrepl codestyle servedocs
 .DEFAULT_GOAL := help
 
 JULIA ?= julia
+PORT ?= 8000
 
 define PRINT_HELP_JLSCRIPT
 rx = r"^([a-z0-9A-Z_-]+):.*?##[ ]+(.*)$$"
@@ -42,6 +43,8 @@ docs: docs/Manifest.toml  ## Build the documentation
 	$(JULIA) --project=test docs/make.jl
 	@echo "Done. Consider using 'make devrepl'"
 
+servedocs: docs/Manifest.toml  ## Build (auto-rebuild) and serve documentation at PORT=8000
+	$(JULIA) --project=test -e 'include("devrepl.jl"); servedocs(port=$(PORT), verbose=true)'
 
 clean: ## Clean up build/doc/testing artifacts
 	rm -f src/*.cov test/*.cov
