@@ -47,9 +47,7 @@ servedocs: docs/Manifest.toml  ## Build (auto-rebuild) and serve documentation a
 	$(JULIA) --project=test -e 'include("devrepl.jl"); servedocs(port=$(PORT), verbose=true)'
 
 clean: ## Clean up build/doc/testing artifacts
-	rm -f src/*.cov test/*.cov
-	rm -rf docs/build
-	rm -f docs/src/api/*.md
+	$(JULIA) -e 'include("test/clean.jl"); clean()'
 
 codestyle: test/Manifest.toml ../.JuliaFormatter.toml ## Apply the codestyle to the entire project
 	$(JULIA) --project=test -e 'using JuliaFormatter; format(".", verbose=true)'
@@ -57,6 +55,4 @@ codestyle: test/Manifest.toml ../.JuliaFormatter.toml ## Apply the codestyle to 
 
 
 distclean: clean ## Restore to a clean checkout state
-	rm -f Manifest.toml test/Manifest.toml
-	rm -f docs/Manifest docs/Project.toml
-	rm -f .JuliaFormatter.toml
+	$(JULIA) -e 'include("test/clean.jl"); clean(distclean=true)'

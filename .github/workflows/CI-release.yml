@@ -23,10 +23,6 @@ jobs:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
       - run: |
-          # Install matplotlib into system Python
-          set -x
-          /usr/bin/python3 -m pip install matplotlib
-      - run: |
           # Set up registries
           julia --project=@. -e '
             using Pkg
