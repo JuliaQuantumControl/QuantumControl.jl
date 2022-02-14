@@ -9,12 +9,13 @@ include(joinpath(@__DIR__, "clean.jl"))
 
 servedocs(; kwargs...) = _servedocs(; skip_dirs=["docs/src/api"], kwargs...)
 
-println("""
+REPL_MESSAGE = """
 *******************************************************************************
 DEVELOPMENT REPL
 
 Revise, JuliaFormatter, LiveServer, Plots with unicode backend are active.
 
+* `help()` – Show this message
 * `include("test/runtests.jl")` – Run the entire test suite
 * `test()` – Run the entire test suite in a subprocess with coverage
 * `test(genhtml=true)` – Generate an HTML coverage report
@@ -26,4 +27,9 @@ Revise, JuliaFormatter, LiveServer, Plots with unicode backend are active.
 * `clean()` – Clean up build/doc/testing artifacts
 * `distclean()` – Restore to a clean checkout state
 *******************************************************************************
-""")
+"""
+
+"""Show help"""
+help() = println(REPL_MESSAGE)
+
+help()
