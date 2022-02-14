@@ -4,7 +4,7 @@
 Clean up build/doc/testing artifacts. Restore to clean checkout state
 (distclean)
 """
-function clean(; distclean=false)
+function clean(; distclean=false, _exit=true)
 
     _glob(folder, ending) =
         [name for name in readdir(folder; join=true) if (name |> endswith(ending))]
@@ -51,8 +51,10 @@ function clean(; distclean=false)
             @info "rm $name"
             rm(name, force=true, recursive=true)
         end
-        @info "Exiting"
-        exit(0)
+        if _exit
+            @info "Exiting"
+            exit(0)
+        end
     end
 
 end
