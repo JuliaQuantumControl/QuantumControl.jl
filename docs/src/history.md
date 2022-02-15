@@ -34,17 +34,19 @@ Each release of `QuantumControl.jl` is determined by the compatible versions of 
     <tr>
         <th scope="row">0.0.4</th>
         <td>2022-02-07</td>
-        <td>≥0.1.0</td><!-- QuantumPropagators -->
-        <td>≥0.1.0</td><!-- QuantumControlBase -->
-        <td>≥0.1.0</td><!-- Krotov -->
-        <td>≥0.0.3</td><!-- GRAPE -->
+        <td>0.1.0</td><!-- QuantumPropagators -->
+        <td>0.1.0</td><!-- QuantumControlBase -->
+        <td>0.1.0</td><!-- Krotov -->
+        <td>0.0.3</td><!-- GRAPE -->
+    </tr>
+    <tr>
+        <th scope="row">0.1.0</th>
+        <td>2022-02-15</td>
+        <td>0.1</td><!-- QuantumPropagators -->
+        <td>0.2</td><!-- QuantumControlBase -->
+        <td>0.1</td><!-- Krotov -->
+        <td>0.1</td><!-- GRAPE -->
     </tr>
     </tbody>
 </table>
 ```
-
-The
-[carets](https://pkgdocs.julialang.org/stable/compatibility/#Caret-specifiers-1)
-indicate compatibility according to semantic versioning, whereas the
-[tilde](https://pkgdocs.julialang.org/stable/compatibility/#Tilde-specifiers-1)
-indicates compatibility with patch releases.
