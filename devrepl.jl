@@ -41,3 +41,7 @@ if !isfile(joinpath("test", "Manifest.toml"))
     cp(joinpath("test", "Manifest.toml"), joinpath("docs", "Manifest.toml"); force=true)
 end
 include("test/init.jl")
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    help()
+end

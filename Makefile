@@ -22,7 +22,7 @@ help:  ## show this help
 
 
 test:  test/Manifest.toml  ## Run the test suite
-	$(JULIA) --project=test --color=auto --startup-file=yes --code-coverage="user" --depwarn="yes" --check-bounds="yes" -e 'include("test/runtests.jl")'
+	$(JULIA) --project=test --banner=no --startup-file=yes -e 'include("devrepl.jl"); test()'
 	@echo "Done. Consider using 'make devrepl'"
 
 
