@@ -83,7 +83,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         name: Upload documentation artifacts
         with:
-          name: Krotov
+          name: QuantumControl
           # We need at least two files in the artifact to avoid a weird
           # double-zip file. Hence README.md
           path: |
