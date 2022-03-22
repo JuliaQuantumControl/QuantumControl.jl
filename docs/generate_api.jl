@@ -18,10 +18,14 @@ function get_local_members(pkg; all=true)
             (m == :eval) ||                       # compiler-injected "eval"
             (m == :include) ||                    # compiler-injected "include"
             ((getfield(pkg, m)) isa Module) ||    # sub-modules
-            (parentmodule(getfield(pkg, m))) ≠ pkg  # re-exported
+            (_parentmodule(getfield(pkg, m), pkg)) ≠ pkg  # re-exported
         )
     ]
 end
+
+_parentmodule(m, pkg) = parentmodule(m)
+_parentmodule(m::Number, pkg) = pkg
+
 
 """Return a list of symbols for all the sub-modules of `pkg`.
 """
@@ -129,8 +133,14 @@ for (pkgname::Symbol, outfilename) in subpackages
         write(out, "EditURL = \"../../generate_api.jl\"\n")
         write(out, "```\n\n")
         write(out, "\n\n# $pkgname Package\n\n")
+        write(out, "## Index\n\n")
+        write(out, raw"""
+        ``\gdef\tgt{\text{tgt}}``
+        ``\gdef\tr{\operatorname{tr}}``
+        ``\gdef\Re{\operatorname{Re}}``
+        ``\gdef\Im{\operatorname{Im}}``
+        """)
         write(out, """
-        ## Index
 
         ```@index
         Pages   = ["$outfilename"]

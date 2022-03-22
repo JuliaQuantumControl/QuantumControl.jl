@@ -25,6 +25,13 @@ module Functionals
     @reexport_members(QuantumControlBase_Functionals)
 end
 
+module WeylChamber
+    using QuantumControlBase: WeylChamber as QuantumControlBase_WeylChamber
+    using QuantumControlBase.WeylChamber
+    include("reexport.jl")
+    @reexport_members(QuantumControlBase_WeylChamber)
+end
+
 using Krotov
 using GRAPE
 
