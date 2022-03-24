@@ -16,36 +16,44 @@ Each release of `QuantumControl.jl` is determined by the compatible versions of 
     </thead>
     <tbody>
     <tr>
-        <th scope="row">0.0.2</th>
+        <th scope="row"><a href="https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.2.0">0.2.0</a></th>
+        <td>2022-03-23</td>
+        <td><a href="https://github.com/JuliaQuantumControl/QuantumPropagators.jl/releases/tag/v0.1.4">0.1.4</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/QuantumControlBase.jl/releases/tag/v0.3.0">0.3.0</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/Krotov.jl/releases/tag/v0.2.0">0.2.0</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/GRAPE.jl/releases/tag/v0.2.0">0.2.0</a></td>
+    </tr>
+    <tr>
+        <th scope="row"><a href="https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.1.0">0.1.0</a></th>
+        <td>2022-02-15</td>
+        <td><a href="https://github.com/JuliaQuantumControl/QuantumPropagators.jl/releases/tag/v0.1.0">0.1.0</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/QuantumControlBase.jl/releases/tag/v0.2.0">0.2.0</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/Krotov.jl/releases/tag/v0.1.0">0.1.0</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/GRAPE.jl/releases/tag/v0.1.0">0.1.0</a></td>
+    </tr>
+    <tr>
+        <th scope="row"><a href="https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.0.4">0.0.4</a></th>
+        <td>2022-02-07</td>
+        <td><a href="https://github.com/JuliaQuantumControl/QuantumPropagators.jl/releases/tag/v0.1.0">0.1.0</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/QuantumControlBase.jl/releases/tag/v0.1.0">0.1.0</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/Krotov.jl/releases/tag/v0.1.0">0.1.0</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/GRAPE.jl/releases/tag/v0.0.3">0.0.3</a></td>
+    </tr>
+    <tr>
+        <th scope="row"><a href="https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.0.3">0.0.3</a></th>
+        <td>2022-01-03</td>
+        <td><a href="https://github.com/JuliaQuantumControl/QuantumPropagators.jl/releases/tag/v0.0.3">0.0.3</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/QuantumControlBase.jl/releases/tag/v0.0.3">0.0.3</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/Krotov.jl/releases/tag/v0.0.3">0.0.3</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/GRAPE.jl/releases/tag/v0.0.2">0.0.2</a></td>
+    </tr>
+    <tr>
+        <th scope="row"><a href="https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.0.2">0.0.2</a></th>
         <td>2021-10-02</td>
         <td>^0.0</td>
         <td>^0.0</td>
         <td>^0.0</td>
         <td>—</td>
-    </tr>
-    <tr>
-        <th scope="row">0.0.3</th>
-        <td>2022-01-03</td>
-        <td>0.0.3</td><!-- QuantumPropagators -->
-        <td>0.0.3</td><!-- QuantumControlBase -->
-        <td>0.0.3</td><!-- Krotov -->
-        <td>0.0.2</td><!-- GRAPE -->
-    </tr>
-    <tr>
-        <th scope="row">0.0.4</th>
-        <td>2022-02-07</td>
-        <td>0.1.0</td><!-- QuantumPropagators -->
-        <td>0.1.0</td><!-- QuantumControlBase -->
-        <td>0.1.0</td><!-- Krotov -->
-        <td>0.0.3</td><!-- GRAPE -->
-    </tr>
-    <tr>
-        <th scope="row">0.1.0</th>
-        <td>2022-02-15</td>
-        <td>0.1</td><!-- QuantumPropagators -->
-        <td>0.2</td><!-- QuantumControlBase -->
-        <td>0.1</td><!-- Krotov -->
-        <td>0.1</td><!-- GRAPE -->
     </tr>
     </tbody>
 </table>
