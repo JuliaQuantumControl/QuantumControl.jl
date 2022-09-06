@@ -91,7 +91,8 @@ open(outfile, "w") do out
     end
     write(out, """
 
-    QuantumControl re-exports the following members:
+    QuantumControl re-exports the following members from [`QuantumControlBase`](@ref QuantumControlBasePackage) and [`QuantumPropagators`](@ref QuantumPropagatorsPackage):
+
 
     """)
     for name ∈ quantum_control_reexported_members
@@ -110,6 +111,31 @@ open(outfile, "w") do out
             end
         end
     end
+
+    write(out, """
+
+    ### Subpackages
+
+    `QuantumControl` contains the following sub-packages from the
+    [JuliaQuantumControl](https://github.com/JuliaQuantumControl)
+    organization:
+
+    """)
+    for (pkgname::Symbol, outfilename) in subpackages
+        local outfile = joinpath(@__DIR__, "src", "api", outfilename)
+        write(out, "* [`$pkgname`](@ref $(pkgname)Package)\n")
+    end
+    write(out, """
+
+    These (and their submodules) can be accessed directly, e.g.
+
+    ```jldoctest;  filter = r"(generic function with \\d+ methods)"
+    julia> using QuantumControl
+
+    julia> QuantumControl.QuantumPropagators.SpectralRange.specrange
+    specrange (generic function with 5 methods)
+    ```
+    """)
 end
 
 
@@ -132,7 +158,7 @@ for (pkgname::Symbol, outfilename) in subpackages
         write(out, "```@meta\n")
         write(out, "EditURL = \"../../generate_api.jl\"\n")
         write(out, "```\n\n")
-        write(out, "\n\n# $pkgname Package\n\n")
+        write(out, "\n\n# [$pkgname Package](@id $(pkgname)Package)\n\n")
         write(out, "## Index\n\n")
         write(out, raw"""
         ``\gdef\tgt{\text{tgt}}``
@@ -150,7 +176,10 @@ for (pkgname::Symbol, outfilename) in subpackages
         write(out, "\n\n## [$pkgname](@id $(pkgname)API)\n\n")
         if length(public_members) > 0
             write(out, "\n### Public\n\n")
-            write(out, "```@docs\n")
+            for name in public_members
+                write(out, "* [`$name`](@ref $pkgname.$name)\n")
+            end
+            write(out, "\n```@docs\n")
             for name in public_members
                 write(out, "$pkgname.$name\n")
             end
@@ -158,7 +187,10 @@ for (pkgname::Symbol, outfilename) in subpackages
         end
         if length(documented_private_members) > 0
             write(out, "\n### Private\n\n")
-            write(out, "```@docs\n")
+            for name in documented_private_members
+                write(out, "* [`$name`](@ref $pkgname.$name)\n")
+            end
+            write(out, "\n```@docs\n")
             for name in documented_private_members
                 write(out, "$pkgname.$name\n")
             end
@@ -182,7 +214,10 @@ for (pkgname::Symbol, outfilename) in subpackages
             end
             if length(public_members) > 0
                 write(out, "\n### Public\n\n")
-                write(out, "```@docs\n")
+                for name in public_members
+                    write(out, "* [`$name`](@ref $pkgname.$submodname.$name)\n")
+                end
+                write(out, "\n```@docs\n")
                 for name in public_members
                     write(out, "$pkgname.$submodname.$name\n")
                 end
@@ -190,7 +225,10 @@ for (pkgname::Symbol, outfilename) in subpackages
             end
             if length(documented_private_members) > 0
                 write(out, "\n### Private\n\n")
-                write(out, "```@docs\n")
+                for name in documented_private_members
+                    write(out, "* [`$name`](@ref $pkgname.$submodname.$name)\n")
+                end
+                write(out, "\n```@docs\n")
                 for name in documented_private_members
                     write(out, "$pkgname.$submodname.$name\n")
                 end

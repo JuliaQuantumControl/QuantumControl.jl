@@ -8,10 +8,17 @@ using QuantumPropagators
 using QuantumControlBase
 @reexport_members(QuantumControlBase)
 
-module Shapes
-    # we need `QuantumControlBase.Shapes` to be available under a name that
-    # doesn't clash with `QuantumControl.Shapes` in order for the
+module Controls
+    # we need `QuantumPropagators.Controls` to be available under a name that
+    # doesn't clash with `QuantumControl.Controls` in order for the
     # `@reexport_members` macro to work correctly
+    using QuantumPropagators: Controls as QuantumPropagators_Controls
+    using QuantumPropagators.Controls
+    include("reexport.jl")
+    @reexport_members(QuantumPropagators_Controls)
+end
+
+module Shapes
     using QuantumControlBase: Shapes as QuantumControlBase_Shapes
     using QuantumControlBase.Shapes
     include("reexport.jl")

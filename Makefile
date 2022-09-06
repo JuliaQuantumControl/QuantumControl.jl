@@ -31,19 +31,15 @@ test/Manifest.toml: test/Project.toml ../scripts/installorg.jl
 	@touch $@
 
 
-docs/Manifest.toml: test/Manifest.toml
-	cp test/*.toml docs/
-
-
 devrepl:  ## Start an interactive REPL for testing and building documentation
 	$(JULIA) --project=test --banner=no --startup-file=yes -i devrepl.jl
 
 
-docs: docs/Manifest.toml  ## Build the documentation
+docs: test/Manifest.toml  ## Build the documentation
 	$(JULIA) --project=test docs/make.jl
 	@echo "Done. Consider using 'make devrepl'"
 
-servedocs: docs/Manifest.toml  ## Build (auto-rebuild) and serve documentation at PORT=8000
+servedocs: test/Manifest.toml  ## Build (auto-rebuild) and serve documentation at PORT=8000
 	$(JULIA) --project=test -e 'include("devrepl.jl"); servedocs(port=$(PORT), verbose=true)'
 
 clean: ## Clean up build/doc/testing artifacts
