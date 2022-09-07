@@ -4,6 +4,7 @@ using Plots
 unicodeplots()
 using JuliaFormatter
 using QuantumControlBase.TestUtils: test
+using Term
 using LiveServer: LiveServer, serve, servedocs as _servedocs
 include(joinpath(@__DIR__, "clean.jl"))
 
