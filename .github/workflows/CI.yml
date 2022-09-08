@@ -43,7 +43,7 @@ jobs:
       - uses: julia-actions/julia-processcoverage@v1
       - run: |
           # Summarize coverage
-          julia --project=test -e 'using Coverage; coverage = process_folder(); using LocalCoverage; coverage_summary(coverage);'
+          julia --project=test -e 'using QuantumControlBase.TestUtils; show_coverage();'
       - uses: codecov/codecov-action@v1
         with:
           file: lcov.info
