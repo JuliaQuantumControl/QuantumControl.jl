@@ -14,6 +14,7 @@ The [`QuantumControl.jl`][QuantumControl] package collects the [packages][] in t
 
 The [full documentation](https://juliaquantumcontrol.github.io/QuantumControl.jl/) is available at <https://juliaquantumcontrol.github.io/QuantumControl.jl/> and includes information about  [all the packages][packages] in the [JuliaQuantumControl][] organization.
 
+Support is also available in the `#quantumcontrol` channel in the [Julia Slack](https://julialang.org/slack/).
 
 ## Installation
 
