@@ -16,6 +16,14 @@ Each release of `QuantumControl.jl` is determined by the compatible versions of 
     </thead>
     <tbody>
     <tr>
+        <th scope="row"><a href="https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.3.1">0.3.1</a></th>
+        <td>2022-09-26</td>
+        <td><a href="https://github.com/JuliaQuantumControl/QuantumPropagators.jl/releases/tag/v0.2.1">0.2.1</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/QuantumControlBase.jl/releases/tag/v0.5.0">0.5.0</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/Krotov.jl/releases/tag/v0.3.1">0.3.1</a></td>
+        <td><a href="https://github.com/JuliaQuantumControl/GRAPE.jl/releases/tag/v0.3.1">0.3.1</a></td>
+    </tr>
+    <tr>
         <th scope="row"><a href="https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.3.0">0.3.0</a></th>
         <td>2022-09-09</td>
         <td><a href="https://github.com/JuliaQuantumControl/QuantumPropagators.jl/releases/tag/v0.2.0">0.2.0</a></td>
