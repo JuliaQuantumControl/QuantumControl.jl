@@ -36,12 +36,8 @@ A very typical overall workflow is to set up the control problem, then propagate
 
 ## Optimization
 
-The most direct way to solve a [`ControlProblem`](@ref) is with the [`optimize`](@ref) routine. It has a mandatory `method` argument that then delegates the optimization to the appropriate sub-package implementing that method. However, if the optimization takes more than a few minutes to complete, you should use [`@optimize_or_load`](@ref) instead of just [`optimize`](@ref). This routine runs the optimization and then write the result to file. When called again, it will then simply load the result instead of rerunning the optimization.
+The most direct way to solve a [`ControlProblem`](@ref) is with the [`optimize`](@ref) routine. It has a mandatory `method` argument that then delegates the optimization to the appropriate sub-package implementing that method.
 
-A workflow [`@optimize_or_load`](@ref) using integrates particularly well with using the [DrWatson](https://juliadynamics.github.io/DrWatson.jl/stable/) package to organize your research project[^2]. In fact, [`@optimize_or_load`](@ref) is directly inspired by [`DrWatson.produce_or_load`](https://juliadynamics.github.io/DrWatson.jl/stable/save/#Produce-or-Load-1) and uses it under the hood. Just like `produce_or_load`, [`@optimize_or_load`](@ref) by default chooses an automatic filename that includes the keyword arguments that define the [`ControlProblem`](@ref). That automatic filename is determined by the [`optimization_savename`](@ref) routine.
-
-[^2]: You are encouraged, but not *required* to use [DrWatson](https://juliadynamics.github.io/DrWatson.jl/stable/) for your projects. Here, we merely borrow some concepts from `DrWatson` for automatically storing computational results.
-
-The [`@optimize_or_load`](@ref) also embeds some metadata in the output file, including (by default) the commit hash of the project repository containing the script that called [`@optimize_or_load`](@ref) and the filename of the script and line number where the call was made. This functionality is again borrowed from `DrWatson`.
+However, if the optimization takes more than a few minutes to complete, you should use [`@optimize_or_load`](@ref) instead of just [`optimize`](@ref). This routine runs the optimization and then writes the result to file. When called again, it will then simply load the result instead of rerunning the optimization. The [`@optimize_or_load`](@ref) also embeds some metadata in the output file, including (by default) the commit hash of the project repository containing the script that called [`@optimize_or_load`](@ref) and the filename of the script and line number where the call was made.
 
 The output file written by [`@optimize_or_load`](@ref) can be read via the [`load_optimization`](@ref) function. This can recover both the optimization result and the metadata.
