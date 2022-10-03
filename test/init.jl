@@ -8,7 +8,10 @@ using LiveServer: LiveServer, serve, servedocs as _servedocs
 using Term
 include(joinpath(@__DIR__, "clean.jl"))
 
-servedocs(; kwargs...) = _servedocs(; skip_dirs=["docs/src/api"], kwargs...)
+function servedocs(; kwargs...)
+    clean()  # otherwise, we get an infinite loop
+    _servedocs(; skip_dirs=["docs/src/api"], kwargs...)
+end
 
 REPL_MESSAGE = """
 *******************************************************************************
