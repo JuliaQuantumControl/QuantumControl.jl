@@ -8,14 +8,14 @@ using QuantumPropagators
 using QuantumControlBase
 @reexport_members(QuantumControlBase)
 
-module Controls
-    # we need `QuantumPropagators.Controls` to be available under a name that
-    # doesn't clash with `QuantumControl.Controls` in order for the
+module Generators
+    # we need `QuantumPropagators.Generators` to be available under a name that
+    # doesn't clash with `QuantumControl.Generators` in order for the
     # `@reexport_members` macro to work correctly
-    using QuantumPropagators: Controls as QuantumPropagators_Controls
-    using QuantumPropagators.Controls
+    using QuantumPropagators: Generators as QuantumPropagators_Generators
+    using QuantumPropagators.Generators
     include("reexport.jl")
-    @reexport_members(QuantumPropagators_Controls)
+    @reexport_members(QuantumPropagators_Generators)
 end
 
 module Shapes

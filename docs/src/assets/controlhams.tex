@@ -9,10 +9,12 @@
 \begin{document}
 
 \begin{align}
-  \Op{H} &= \overbrace{\Op{H}_0}^\text{drift term} \hspace{-5pt} + \sum_l \overbrace{\Op{H}_l(\{a_{l'}(\epsilon_{l'}(t))\})}^\text{control term}  \tag{G1} \\
-  \Op{H} &= \Op{H}_0 + \sum_l \hspace{-10pt} \overbrace{a_{l}(
-            \hspace{-15pt} \underbrace{\epsilon_{l}(t)}_\text{control function} \hspace{-15pt}
-           )}^\text{control amplitude} \hspace{-10pt} \Op{H}_l \tag{G2} \\
+  \Op{H} &= \overbrace{\Op{H}_0}^\text{drift term} \hspace{-5pt} + \sum_l \overbrace{\Op{H}_l(\{\epsilon_{l'}(t)\}, t)}^\text{control term}  \tag{G1} \\
+  \Op{H} &= \Op{H}_0 + \sum_l \overbrace{a_{l}(
+            \{ \hspace{-15pt}
+              \underbrace{\epsilon_{l'}(t)}_\text{control function}
+            \hspace{-15pt} \}, t
+           )}^\text{control amplitude} \Op{H}_l \tag{G2} \\
   \Op{H} &= \Op{H}_0 + \sum_l \overbrace{\epsilon_l(t)}
             \hspace{-15pt} \underbrace{\Op{H}_l}_\text{control operator} \tag{G3}
 \end{align}

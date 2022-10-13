@@ -5,7 +5,7 @@ using GRAPE
 using QuantumControl
 using QuantumControl.Shapes
 using QuantumControl.Functionals
-using QuantumControl.Controls
+using QuantumControl.Generators
 using Pkg
 using Documenter
 

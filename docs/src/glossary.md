@@ -14,9 +14,21 @@ Examples for supported forms a Hamiltonian are the following, from the most gene
 <img src="../assets/controlhams.svg" width="80%"/>
 ```
 
-The ``Ĥ_0`` is the [Drift Term](@ref) and each term under the sum over ``l`` is a [Control Term](@ref). In the most general case, Eq. (G1), the control term is a Hamiltonian that depends on a set of control amplitudes. More commonly, the control term is separable into the [Control Amplitude](@ref) ``a_l(t)`` and the [Control Operator](@ref) ``Ĥ_l``. The control amplitude ``a_l(t)`` depends in turn on the [Control Function](@ref)   (or simply "control") ``ϵ_l(t)``, which is the function we can control directly. The control may further depend on a [Pulse Parametrization](@ref), ``ϵ_l(t) = ϵ_l(u_l(t))`` or a set of [Control Parameters](@ref), ``ϵ_l(t) = ϵ_l({u_n})``.
+In Eq. (G1), ``Ĥ_0`` is the [Drift Term](@ref) (which may be zero) and each term under the sum over ``l`` is a [Control Term](@ref). Each control term is a Hamiltonian that depends on a set of [control functions](#Control-Function) (or simply "controls"). The controls are the functions directly tunable via optimal control.
+The control term may also contain an explicit time dependence outside of the controls. This most general form (G1) is supported only via custom user-implemented generator objects, see the documentation of the [QuantumPropagators package](https://juliaquantumcontrol.github.io/QuantumPropagators.jl/stable/).
+
+More commonly, each control term is separable into the [Control Amplitude](@ref) ``a_l(t)`` and the [Control Operator](@ref) ``Ĥ_l``, as in Eq. (G2). This is the most general form supported by the built-in [`Generator`](@ref) object, which can be initialized via the [`hamiltonian`](@ref) or [`liouvillian`](@ref) functions. The control amplitude ``a_l(t)`` depends in turn on one ore more function ``\{ϵ_{l'}(t)\}``, where each ``ϵ_{l'}(t)`` is as [Control Function](@ref). It may also contain an explicit time dependence.
+
+In the most common case, ``a_l ≡ ϵ_l``, as in Eq. (G3). The control may further depend on a [Pulse Parametrization](@ref), ``ϵ_l(t) = ϵ_l(u_l(t))`` or a set of [Control Parameters](@ref), ``ϵ_l(t) = ϵ_l({u_n})``.
 
 In an open quantum system, the structure of Eqs. (G1–G3) is the same, but with Liouvillian (super-)operators acting on density matrices instead of Hamiltonians acting on state vectors. See [`liouvillian`](@ref) with `convention=:TDSE`.
+
+
+----
+
+##### Operator
+
+A static, non-time-dependent object that can be multiplied to a state. An operator can be obtained from a time-dependent [Generator](@ref) by plugging in values for the controls and potentially any explicit time dependence. For example, an [`Operator`](@ref) is obtained from a [`Generator`](@ref) via [`evalcontrols`](@ref).
 
 ----
 
@@ -25,6 +37,7 @@ In an open quantum system, the structure of Eqs. (G1–G3) is the same, but wit
 A term in the dynamical generator that does not depend on any controls.
 
 ----
+
 ##### Control Term
 
 A term in the dynamical generator that depends on one or more controls.
@@ -33,19 +46,19 @@ A term in the dynamical generator that depends on one or more controls.
 
 ##### Control Function
 
-(aka "**Control**") A function ``ϵ_l(t)`` in the [Generator](@ref) that is directly controllable, typically corresponding to a physical [Control Field](@ref). Conceptually a function, but may be specified in terms of [Control Parameters](@ref).
+(aka "**Control**") A function ``ϵ_l(t)`` in the [Generator](@ref) that is directly tuned by an optimal control method, either as [Pulse](@ref) values or via [Control Parameters](@ref).
 
 ----
 
 ##### Control Field
 
-A function that corresponds directly to some kind of *physical* drive (laser amplitude, microwave pulse, etc.). The term can be ambiguous in that it usually corresponds to the [Control Function](@ref) ``ϵ(t)``, but depending on how the control problem is formulated, it can also correspond to the [Control Amplitude](@ref) ``a(t)``.
+A function that corresponds directly to some kind of *physical* drive (laser amplitude, microwave pulse, etc.). The term can be ambiguous in that it usually corresponds to the [Control Amplitude](@ref) ``a(t)``, but depending on how the control problem is formulated, it can also correspond to the [Control Function](@ref) ``ϵ(t)``
 
 ----
 
 ##### Control Operator
 
-(aka "control Hamiltonian/Liouvillian"). The operator ``Ĥ_l`` in Eqs. (G2, G3). This is a *static* operator which forms the [Control Term](@ref) together with a [Control Amplitude](@ref). The control generator is not a well-defined concept in the most general case of non-separable controls terms, Eq. (G1)
+(aka "control Hamiltonian/Liouvillian"). The operator ``Ĥ_l`` in Eqs. (G2, G3). This is a *static* operator which forms the [Control Term](@ref) together with a [Control Amplitude](@ref). The control generator is not a well-defined concept in the most general case of non-separable controls terms, Eq. (G1).
 
 
 ----
@@ -53,11 +66,11 @@ A function that corresponds directly to some kind of *physical* drive (laser amp
 
 ##### Control Amplitude
 
-The time-dependent coefficient for the [Control Operator](@ref) in Eq. (G2), or, in the most general case of Eq. (G1), a function on which the control term depends directly. The mapping from a [Control Function](@ref) to an Control Amplitude can encompass a variety of different concepts:
+The time-dependent coefficient ``a_l(t)`` for the [Control Operator](@ref) in Eq. (G2). A control amplitude may depend on on or more control functions, as well as have an explicit time dependency. Some conceptual examples for control amplitudes and how they may depend on a [Control Function](@ref) are the following:
 
 * Non-linear coupling of a control field to the operator, e.g., the quadratic coupling of the laser field to a Stark shift operator
 * Transfer functions, e.g., to model the response of an electronic device to the optimal control field ``ϵ(t)``.
-* Noise in the amplitude of the control field
+* Noise in the amplitude of the control function
 * Non-controllable aspects of the control amplitude, e.g. a "guided" control amplitude ``a_l(t) = R(t) + ϵ_l(t)`` or a non-controllable envelope ``S(t)`` in ``a_l(t) = S(t) ϵ(t)`` that ensures switch-on- and switch-off in a CRAB pulse `ϵ(t)`.
 
 In [Qiskit Dynamics](https://qiskit.org/documentation/dynamics/index.html), the "control amplitude" is called ["Signal"](https://qiskit.org/documentation/dynamics/apidocs/signals.html), see [Connecting Qiskit Pulse with Qiskit Dynamics](https://qiskit.org/documentation/dynamics/tutorials/qiskit_pulse.html), where a Qiskit "pulse" corresponds roughly to our [Control Function](@ref).
