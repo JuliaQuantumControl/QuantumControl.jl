@@ -19,7 +19,7 @@ The control term may also contain an explicit time dependence outside of the con
 
 More commonly, each control term is separable into the [Control Amplitude](@ref) ``a_l(t)`` and the [Control Operator](@ref) ``Ĥ_l``, as in Eq. (G2). This is the most general form supported by the built-in [`Generator`](@ref) object, which can be initialized via the [`hamiltonian`](@ref) or [`liouvillian`](@ref) functions. The control amplitude ``a_l(t)`` depends in turn on one ore more function ``\{ϵ_{l'}(t)\}``, where each ``ϵ_{l'}(t)`` is as [Control Function](@ref). It may also contain an explicit time dependence.
 
-In the most common case, ``a_l ≡ ϵ_l``, as in Eq. (G3). The control may further depend on a [Pulse Parametrization](@ref), ``ϵ_l(t) = ϵ_l(u_l(t))`` or a set of [Control Parameters](@ref), ``ϵ_l(t) = ϵ_l({u_n})``.
+In the most common case, ``a_l ≡ ϵ_l``, as in Eq. (G3). The control may further depend on a set of [Control Parameters](@ref), ``ϵ_l(t) = ϵ_l({u_n})``.
 
 In an open quantum system, the structure of Eqs. (G1–G3) is the same, but with Liouvillian (super-)operators acting on density matrices instead of Hamiltonians acting on state vectors. See [`liouvillian`](@ref) with `convention=:TDSE`.
 
@@ -69,6 +69,7 @@ A function that corresponds directly to some kind of *physical* drive (laser amp
 The time-dependent coefficient ``a_l(t)`` for the [Control Operator](@ref) in Eq. (G2). A control amplitude may depend on on or more control functions, as well as have an explicit time dependency. Some conceptual examples for control amplitudes and how they may depend on a [Control Function](@ref) are the following:
 
 * Non-linear coupling of a control field to the operator, e.g., the quadratic coupling of the laser field to a Stark shift operator
+* [Pulse Parametrization](@ref) as a way to enforce bounds on a [Control Field](@ref)
 * Transfer functions, e.g., to model the response of an electronic device to the optimal control field ``ϵ(t)``.
 * Noise in the amplitude of the control function
 * Non-controllable aspects of the control amplitude, e.g. a "guided" control amplitude ``a_l(t) = R(t) + ϵ_l(t)`` or a non-controllable envelope ``S(t)`` in ``a_l(t) = S(t) ϵ(t)`` that ensures switch-on- and switch-off in a CRAB pulse `ϵ(t)`.
@@ -95,7 +96,7 @@ More generally, the control parameters could also be spectral coefficients (CRAB
 
 ##### Pulse Parametrization
 
-The use of a function ``u(t)`` such that ``ϵ(t) = ϵ(u(t))`` for the purpose of constraining the amplitude of the control field ``ϵ(t)``. See e.g. [`SquareParametrization`](@ref), where ``ϵ(t) = u^2(t)`` to ensure that ``ϵ(t)`` is positive. Since Krotov's method inherently has no constraints on the optimized control fields, pulse parameterization is a method of imposing constraints on the amplitude in this context. This is different from, albeit related to, the [Control Amplitude](@ref), e.g. ``a(ϵ(t)) = ϵ^2(t)`` in that the amplitude parameterization does not reflect how the control field *physically* couples to the control Hamiltonian. Note that "parameterization" here has nothing to do with the "parametrization" in terms of [Control Parameters](@ref): the pulse parametrization is a parametrization with a *function*, whereas the control parameters are *values*.
+A special case of a [Control Amplitude)(@ref) where ``a(t) = a(ϵ(t))`` at every point in time. The purpose of this is to constrain the amplitude of the control amplitude ``a(t)``. See e.g. [`SquareParametrization`](@ref), where ``a(t) = ϵ^2(t)`` to ensure that ``a(t)`` is positive. Since Krotov's method inherently has no constraints on the optimized control fields, pulse parameterization is a method of imposing constraints on the amplitude in this context.
 
 ----
 

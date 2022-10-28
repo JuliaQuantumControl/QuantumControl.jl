@@ -18,6 +18,20 @@ module Generators
     @reexport_members(QuantumPropagators_Generators)
 end
 
+module PulseParametrizations
+    using QuantumControlBase: PulseParametrizations as QuantumControlBase_PulseParametrizations
+    using QuantumControlBase.PulseParametrizations
+    include("reexport.jl")
+    @reexport_members(QuantumControlBase_PulseParametrizations)
+end
+
+module Amplitudes
+    using QuantumControlBase: Amplitudes as QuantumControlBase_Amplitudes
+    using QuantumControlBase.Amplitudes
+    include("reexport.jl")
+    @reexport_members(QuantumControlBase_Amplitudes)
+end
+
 module Shapes
     using QuantumControlBase: Shapes as QuantumControlBase_Shapes
     using QuantumControlBase.Shapes
