@@ -2,6 +2,9 @@ name: CI
 on:
   - push
   - pull_request
+env:
+  GKSwstype: 100
+  JULIA_PKG_PRECOMPILE_AUTO: false
 jobs:
   test:
     name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
@@ -15,8 +18,6 @@ jobs:
           - ubuntu-latest
         arch:
           - x64
-    env:
-      GKSwstype: '100'
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
