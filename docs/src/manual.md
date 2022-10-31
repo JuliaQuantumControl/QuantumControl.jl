@@ -23,7 +23,7 @@ Mathematically, the control problem is solved by minimizing a functional that is
 
 The controls that the `QuantumControl` package optimizes are implicit in the dynamical generator ([`hamiltonian`](@ref), [`liouvillian`](@ref)) of the [`Objectives`](@ref Objective) in the [`ControlProblem`](@ref).
 
-The [`QuantumControl.Generators.getcontrols`](@ref) method extracts the controls from the objectives. Each control is typically time-dependent, e.g., a function ``ϵ(t)`` or a vector of pulse values on a time grid. For each control, [`QuantumControl.Generators.discretize`](@ref) and [`QuantumControl.Generators.discretize_on_midpoints`](@ref) discretizes the control to an existing time grid. For controls that are implemented through some custom type, these methods must be defined to enable piecewise-constant time propagation or an optimization that assumes piecewise-constant control (most notably, Krotov's method).
+The [`QuantumControl.Controls.getcontrols`](@ref) method extracts the controls from the objectives. Each control is typically time-dependent, e.g., a function ``ϵ(t)`` or a vector of pulse values on a time grid. For each control, [`QuantumControl.Controls.discretize`](@ref) and [`QuantumControl.Controls.discretize_on_midpoints`](@ref) discretizes the control to an existing time grid. For controls that are implemented through some custom type, these methods must be defined to enable piecewise-constant time propagation or an optimization that assumes piecewise-constant control (most notably, Krotov's method).
 
 ## Time propagation
 

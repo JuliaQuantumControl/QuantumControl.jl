@@ -28,7 +28,7 @@ In an open quantum system, the structure of Eqs. (G1–G3) is the same, but wit
 
 ##### Operator
 
-A static, non-time-dependent object that can be multiplied to a state. An operator can be obtained from a time-dependent [Generator](@ref) by plugging in values for the controls and potentially any explicit time dependence. For example, an [`Operator`](@ref) is obtained from a [`Generator`](@ref) via [`evalcontrols`](@ref).
+A static, non-time-dependent object that can be multiplied to a state. An operator can be obtained from a time-dependent [Generator](@ref) by plugging in values for the controls and potentially any explicit time dependence. For example, an [`Operator`](@ref) is obtained from a [`Generator`](@ref) via [`QuantumControl.Controls.evalcontrols`](@ref).
 
 ----
 
@@ -96,7 +96,7 @@ More generally, the control parameters could also be spectral coefficients (CRAB
 
 ##### Pulse Parametrization
 
-A special case of a [Control Amplitude)(@ref) where ``a(t) = a(ϵ(t))`` at every point in time. The purpose of this is to constrain the amplitude of the control amplitude ``a(t)``. See e.g. [`SquareParametrization`](@ref), where ``a(t) = ϵ^2(t)`` to ensure that ``a(t)`` is positive. Since Krotov's method inherently has no constraints on the optimized control fields, pulse parameterization is a method of imposing constraints on the amplitude in this context.
+A special case of a [Control Amplitude)(@ref) where ``a(t) = a(ϵ(t))`` at every point in time. The purpose of this is to constrain the amplitude of the control amplitude ``a(t)``. See e.g. [`QuantumControl.PulseParametrizations.SquareParametrization`](@ref), where ``a(t) = ϵ^2(t)`` to ensure that ``a(t)`` is positive. Since Krotov's method inherently has no constraints on the optimized control fields, pulse parameterization is a method of imposing constraints on the amplitude in this context.
 
 ----
 

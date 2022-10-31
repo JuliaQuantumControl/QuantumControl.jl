@@ -2,7 +2,7 @@
 #
 # For one thing, `@reexport using QuantumControlBase` re-exports not just the
 # members of `QuantumControlBase`, but also `QuantumControlBase` itself. Also,
-# as far as I can tell `@reexport using QuantumControlBase.Shapes` does not
+# as far as I can tell `@reexport using QuantumPropagators.Shapes` does not
 # work when it's inside a module also called `Shapes`, as we're doing.
 #
 # Besides, the macro below is pretty trivial
