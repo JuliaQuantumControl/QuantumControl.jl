@@ -25,8 +25,8 @@ module Controls
     using QuantumPropagators.Controls
     include("reexport.jl")
     @reexport_members(QuantumPropagators_Controls)
-    using QuantumControlBase: getcontrolderiv, getcontrolderivs
-    export getcontrolderiv, getcontrolderivs
+    using QuantumControlBase: get_control_deriv, get_control_derivs
+    export get_control_deriv, get_control_derivs
 end
 
 
