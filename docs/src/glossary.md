@@ -28,7 +28,7 @@ In an open quantum system, the structure of Eqs. (G1–G3) is the same, but wit
 
 ##### Operator
 
-A static, non-time-dependent object that can be multiplied to a state. An operator can be obtained from a time-dependent [Generator](@ref) by plugging in values for the controls and potentially any explicit time dependence. For example, an [`Operator`](@ref) is obtained from a [`Generator`](@ref) via [`QuantumControl.Controls.evalcontrols`](@ref).
+A static, non-time-dependent object that can be multiplied to a state. An operator can be obtained from a time-dependent [Generator](@ref) by plugging in values for the controls and potentially any explicit time dependence. For example, an [`Operator`](@ref) is obtained from a [`Generator`](@ref) via [`QuantumControl.Controls.evaluate`](@ref).
 
 ----
 
