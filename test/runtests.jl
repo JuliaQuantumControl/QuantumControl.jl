@@ -2,8 +2,9 @@ using QuantumControl
 using QuantumPropagators
 using IOCapture
 using Test
+using SafeTestsets
 
-@testset "QuantumControl.jl" begin
+@testset "QuantumControl versions" begin
     captured = IOCapture.capture() do
         QuantumControl.print_versions()
     end
@@ -14,3 +15,16 @@ using Test
     @test :propagate ∈ qp_exports
     @test :QuantumControl ∉ qp_exports
 end
+
+# Note: comment outer @testset to stop after first @safetestset failure
+@time @testset verbose = true "QuantumControl" begin
+
+
+    print("\n* Functionals (test_functionals.jl):")
+    @time @safetestset "Functionals" begin
+        include("test_functionals.jl")
+    end
+
+    print("\n")
+
+end;

@@ -3,7 +3,7 @@ using Revise
 using Plots
 unicodeplots()
 using JuliaFormatter
-using QuantumControlBase.TestUtils: test, show_coverage, generate_coverage_html
+using QuantumControlTestUtils: test, show_coverage, generate_coverage_html
 using LiveServer: LiveServer, serve, servedocs as _servedocs
 using Term
 include(joinpath(@__DIR__, "clean.jl"))

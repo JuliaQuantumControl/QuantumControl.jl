@@ -38,6 +38,14 @@ module Shapes
 end
 
 
+module Storage
+    using QuantumPropagators: Storage as QuantumPropagators_Storage
+    using QuantumPropagators.Storage
+    include("reexport.jl")
+    @reexport_members(QuantumPropagators_Storage)
+end
+
+
 module Amplitudes
     using QuantumPropagators: Amplitudes as QuantumPropagators_Amplitudes
     using QuantumPropagators.Amplitudes
@@ -46,27 +54,13 @@ module Amplitudes
 end
 
 
-module PulseParametrizations
-    using QuantumControlBase: PulseParametrizations as QuantumControlBase_PulseParametrizations
-    using QuantumControlBase.PulseParametrizations
-    include("reexport.jl")
-    @reexport_members(QuantumControlBase_PulseParametrizations)
-end
+include("workflows.jl")  # submodule Workflows
+using .Workflows: run_or_load, @optimize_or_load, load_optimization
+export run_or_load, @optimize_or_load, load_optimization
 
+include("pulse_parametrizations.jl")  # submodule PulseParametrizations
 
-module Functionals
-    using QuantumControlBase: Functionals as QuantumControlBase_Functionals
-    using QuantumControlBase.Functionals
-    include("reexport.jl")
-    @reexport_members(QuantumControlBase_Functionals)
-end
-
-module WeylChamber
-    using QuantumControlBase: WeylChamber as QuantumControlBase_WeylChamber
-    using QuantumControlBase.WeylChamber
-    include("reexport.jl")
-    @reexport_members(QuantumControlBase_WeylChamber)
-end
+include("functionals.jl")  # submodule Functionals
 
 using Krotov
 using GRAPE

@@ -83,15 +83,11 @@ open(outfile, "w") do out
     write(out, "```\n\n")
     write(out, "# [QuantumControl](@id QuantumControlAPI)\n\n")
     if length(quantum_control_local_members) > 0
-        println(out, "```@docs")
-        for name ∈ quantum_control_local_members
-            println(out, name)
-        end
-        println(out, "```")
+        error("QuantumControl has local members. We don't want this")
     end
     write(out, """
 
-    QuantumControl re-exports the following members from [`QuantumControlBase`](@ref QuantumControlBasePackage) and [`QuantumPropagators`](@ref QuantumPropagatorsPackage):
+    QuantumControl (re-)exports the following symbols:
 
 
     """)
@@ -139,6 +135,128 @@ open(outfile, "w") do out
 end
 
 
+local_submodules = [:Functionals, :PulseParametrizations, :Workflows]
+
+local_module_api_id(mod) = replace("$mod", "." => "") * "LocalAPI"
+
+function write_module_api(out, mod, description="")
+
+    members = [
+        m for m in names(mod)
+        if !(
+            (String(Symbol(mod)) |> endswith(".$m")) ||
+            m == Symbol(mod)
+        )
+    ]
+
+    public_members = get_local_members(mod, all=false)
+
+    all_local_members = get_local_members(mod, all=true)
+
+    documented_members = [
+        k.var for k in keys(Documenter.DocSystem.getmeta(mod))
+    ]
+    documented_private_members = [
+        name for name in documented_members
+        if (name ∉ public_members) && (name ∈ all_local_members)
+    ]
+
+    reexported_members = [
+        m for m in members
+        if m ∉ public_members
+    ]
+
+    write(out, "\n\n## [`$mod`](@id $(local_module_api_id(mod)))\n\n")
+    if length(description) > 0
+        write(out, "\n\n")
+        write(out, description)
+        write(out, "\n\n")
+    end
+    if length(public_members) > 0
+        write(out, "\nPublic Members:\n\n")
+        for name ∈ public_members
+            println(out, "* [`$name`](@ref $mod.$name)")
+        end
+        write(out, "\n")
+    end
+    if length(reexported_members) > 0
+        write(out, "\nRe-exported Members:\n\n")
+        for name ∈ reexported_members
+            obj = getfield(mod, name)
+            ref = canonical_name(obj)
+            println(out, "* [`$name`](@ref $ref)")
+        end
+        write(out, "\n")
+    end
+    if length(documented_private_members) > 0
+        write(out, "\nPrivate Members:\n")
+        for name ∈ documented_private_members
+            println(out, "* [`$name`](@ref $mod.$name)")
+        end
+        write(out, "\n")
+    end
+    if length(public_members) > 0
+        write(out, "\n\n#### Public members\n\n")
+        println(out, "```@docs")
+        for name ∈ public_members
+            println(out, "$mod.$name")
+        end
+        println(out, "```")
+    end
+    if length(documented_private_members) > 0
+        write(out, "\n\n#### Private members\n\n")
+        println(out, "```@docs")
+        for name ∈ documented_private_members
+            println(out, "$mod.$name")
+        end
+        println(out, "```")
+    end
+
+end
+
+
+outfile = joinpath(@__DIR__, "src", "api", "quantum_control_reference.md")
+println("Generating local reference for QuantumControl in $outfile")
+open(outfile, "w") do out
+    write(out, "```@meta\n")
+    write(out, "EditURL = \"../../generate_api.jl\"\n")
+    write(out, "```\n\n")
+    write(out, raw"""
+    # Local Submodules
+
+    The following submodules of `QuantumControl` are defined *locally* (as
+    opposed to being re-exported from sub-packages).
+
+    ``\gdef\tgt{\text{tgt}}``
+    ``\gdef\tr{\operatorname{tr}}``
+    ``\gdef\Re{\operatorname{Re}}``
+    ``\gdef\Im{\operatorname{Im}}``
+    """)
+    for name in local_submodules
+        write(out, "* [`QuantumControl.$name`](#$(local_module_api_id(getfield(QuantumControl, name))))\n")
+    end
+    write(out, "\n\n")
+    for name in local_submodules
+        write_module_api(out, getfield(QuantumControl, name))
+    end
+end
+
+
+outfile = joinpath(@__DIR__, "src", "api", "quantum_control_index.md")
+println("Generating index for QuantumControl in $outfile")
+open(outfile, "w") do out
+    write(out, "```@meta\n")
+    write(out, "EditURL = \"../../generate_api.jl\"\n")
+    write(out, "```\n\n")
+    write(out, raw"""
+    # API Index
+
+    ```@index
+    ```
+    """)
+end
+
+
 for (pkgname::Symbol, outfilename) in subpackages
 
     local outfile = joinpath(@__DIR__, "src", "api", outfilename)
@@ -159,7 +277,7 @@ for (pkgname::Symbol, outfilename) in subpackages
         write(out, "EditURL = \"../../generate_api.jl\"\n")
         write(out, "```\n\n")
         write(out, "\n\n# [$pkgname Package](@id $(pkgname)Package)\n\n")
-        write(out, "## Index\n\n")
+        write(out, "## Package Index\n\n")
         write(out, raw"""
         ``\gdef\tgt{\text{tgt}}``
         ``\gdef\tr{\operatorname{tr}}``
@@ -173,31 +291,40 @@ for (pkgname::Symbol, outfilename) in subpackages
         ```
 
         """)
-        write(out, "\n\n## [$pkgname](@id $(pkgname)API)\n\n")
+        write(out, "\n\n## [`$pkgname`](@id $(pkgname)API)\n\n")
         if length(public_members) > 0
-            write(out, "\n### Public\n\n")
+            write(out, "\nPublic Members:\n\n")
             for name in public_members
                 write(out, "* [`$name`](@ref $pkgname.$name)\n")
             end
+        end
+        if length(documented_private_members) > 0
+            write(out, "\nPrivate Members:\n\n")
+            for name in documented_private_members
+                write(out, "* [`$name`](@ref $pkgname.$name)\n")
+            end
+        end
+
+        sub_modules = get_submodules(pkg)
+        if length(sub_modules) > 0
+            write(out, "\nSubmodules:\n\n")
+            for submodname in sub_modules
+                write(out, "* [`$pkgname.$submodname`](#$(pkgname)$(submodname)API)\n")
+            end
+        end
+
+        if length(public_members) + length(documented_private_members) > 0
+            write(out, "\n### Reference\n\n")
             write(out, "\n```@docs\n")
             for name in public_members
                 write(out, "$pkgname.$name\n")
             end
-            write(out, "```\n\n")
-        end
-        if length(documented_private_members) > 0
-            write(out, "\n### Private\n\n")
-            for name in documented_private_members
-                write(out, "* [`$name`](@ref $pkgname.$name)\n")
-            end
-            write(out, "\n```@docs\n")
             for name in documented_private_members
                 write(out, "$pkgname.$name\n")
             end
             write(out, "```\n\n")
         end
 
-        sub_modules = get_submodules(pkg)
         for submodname in sub_modules
             submod = getfield(pkg, submodname)
             all_local_members = get_local_members(submod)
@@ -210,25 +337,26 @@ for (pkgname::Symbol, outfilename) in subpackages
                 if (name ∉ public_members) && (name ∈ all_local_members)
             ]
             if length(public_members) + length(documented_private_members) > 0
-                write(out, "\n## [$pkgname.$submodname](@id $(pkgname)$(submodname)API)\n\n")
+                write(out, "\n## [`$pkgname.$submodname`](@id $(pkgname)$(submodname)API)\n\n")
             end
             if length(public_members) > 0
-                write(out, "\n### Public\n\n")
+                write(out, "\nPublic:\n\n")
                 for name in public_members
                     write(out, "* [`$name`](@ref $pkgname.$submodname.$name)\n")
                 end
+            end
+            if length(documented_private_members) > 0
+                write(out, "\nPrivate:\n\n")
+                for name in documented_private_members
+                    write(out, "* [`$name`](@ref $pkgname.$submodname.$name)\n")
+                end
+            end
+            if length(public_members) +  length(documented_private_members) > 0
+                write(out, "\n### Reference\n\n")
                 write(out, "\n```@docs\n")
                 for name in public_members
                     write(out, "$pkgname.$submodname.$name\n")
                 end
-                write(out, "```\n\n")
-            end
-            if length(documented_private_members) > 0
-                write(out, "\n### Private\n\n")
-                for name in documented_private_members
-                    write(out, "* [`$name`](@ref $pkgname.$submodname.$name)\n")
-                end
-                write(out, "\n```@docs\n")
                 for name in documented_private_members
                     write(out, "$pkgname.$submodname.$name\n")
                 end

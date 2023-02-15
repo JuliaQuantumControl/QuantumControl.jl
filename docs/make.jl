@@ -38,12 +38,14 @@ makedocs(;
         "Examples" => ["List of Examples" => "examples/index.md",],
         "API" => [
             "QuantumControl" => "api/quantum_control.md",
+            "Local Submodules" => "api/quantum_control_reference.md",
             "Subpackages" => [
                 "QuantumPropagators" => "api/quantum_propagators.md",
                 "QuantumControlBase" => "api/quantum_control_base.md",
                 "Krotov" => "api/krotov.md",
                 "GRAPE" => "api/grape.md",
             ],
+            "Index" => "api/quantum_control_index.md",
         ],
         "History" => "history.md",
     ]
