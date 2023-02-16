@@ -66,7 +66,10 @@ jobs:
       - run: |
           # Instantiate Pkg
           wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
-          julia --project=test installorg.jl
+          install -m 600 -D /dev/null ~/.ssh/known_hosts
+          ssh-keyscan -H github.com > ~/.ssh/known_hosts
+          julia --project=test -e 'include("installorg.jl"); installorg(; github="develop")'
+          # installing in develop mode enables proper "source" links in subpackage APIs
       - run: cp test/*.toml docs/  # Prepare DrWatson
       - run: |
           # Run doctests
