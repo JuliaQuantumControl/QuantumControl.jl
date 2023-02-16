@@ -47,7 +47,6 @@ makedocs(;
             ],
             "Index" => "api/quantum_control_index.md",
         ],
-        "History" => "history.md",
     ]
 )
 

@@ -57,9 +57,4 @@ Depth = 1
 
 ### History
 
-```@contents
-Pages = [
-    "history.md",
-]
-Depth = 1
-```
+See the [Releases](https://github.com/JuliaQuantumControl/QuantumControl.jl/releases) on Github.
