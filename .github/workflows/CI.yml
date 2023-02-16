@@ -24,16 +24,7 @@ jobs:
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
-      - uses: actions/cache@v1
-        env:
-          cache-name: cache-artifacts
-        with:
-          path: ~/.julia/artifacts
-          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-test-${{ env.cache-name }}-
-            ${{ runner.os }}-test-
-            ${{ runner.os }}-
+      - uses: julia-actions/cache@v1
       - run: |
           # Instantiate Pkg
           wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
@@ -41,16 +32,28 @@ jobs:
       - run: |
           # Run tests
           julia --project=test --color=auto --startup-file=yes --code-coverage="user" --depwarn="yes" --check-bounds="yes" -e 'include("test/runtests.jl")'
+      - run: |
+          # Run downstream "Krotov" tests
+          julia --project=test -e '
+            using Pkg
+            Pkg.test("Krotov", coverage=true)'
+      - run: |
+          # Run downstream "GRAPE" tests
+          julia --project=test -e '
+            using Pkg
+            Pkg.test("GRAPE", coverage=true)'
       - uses: julia-actions/julia-processcoverage@v1
       - run: |
           # Summarize coverage
           julia --project=test -e 'using QuantumControlTestUtils; show_coverage();'
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v2
         with:
-          file: lcov.info
+          files: lcov.info
   docs:
     name: Documentation
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
@@ -67,7 +70,7 @@ jobs:
       - run: cp test/*.toml docs/  # Prepare DrWatson
       - run: |
           # Run doctests
-          julia --project=docs -e '
+          julia --project=test -e '
             using Documenter: DocMeta, doctest
             using QuantumControl
             DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)
