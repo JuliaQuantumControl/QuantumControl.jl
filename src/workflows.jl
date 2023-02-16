@@ -49,12 +49,6 @@ for details. A common examples would be a
 * [`@optimize_or_load`](@ref) — for wrapping around [`optimize`](@ref)
 * [`DrWatson.@produce_or_load`](https://juliadynamics.github.io/DrWatson.jl/stable/save/#DrWatson.@produce_or_load)
   — a similar but more opinionated function with automatic naming
-* [`DrWatson.@tag!`](https://juliadynamics.github.io/DrWatson.jl/stable/save/#DrWatson.@tag!)
-  — extend the `data` dict with information about the current file and the
-  status of the current git repo
-* [`DrWatson.@strdict`](https://juliadynamics.github.io/DrWatson.jl/stable/name/#DrWatson.@strdict)
-  — convert multiple values into a `Dict{String,Any}`. This is required for
-  JLD2 and other formats.
 """
 function run_or_load(
     f::Function,
