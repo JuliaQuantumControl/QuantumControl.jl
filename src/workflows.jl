@@ -75,6 +75,9 @@ function run_or_load(
                 @info "File $filename does not exist. Creating it now."
             end
         end
+        dir, _ = splitdir(filename)
+        # We want to make sure we can create the output dir *before* we run `f`
+        mkpath(dir)
         data = f()
         try
             save(file, data; kwargs...)
