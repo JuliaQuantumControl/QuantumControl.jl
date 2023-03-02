@@ -81,14 +81,32 @@ function run_or_load(
         data = f()
         try
             save(file, data; kwargs...)
-        catch
-            try
-                JLD2.save_object(filename, data)
-                msg = "Error saving data. Recover with `using JLD2; load_object($(repr(filename)))`"
-                error(msg)
-            catch
-                error("Error saving data. Unable to recover")
+        catch exc
+            # This "emergency fallback" is undocumented on purpose: it's just
+            # to be nice and try to preserve the results of long-running
+            # calculations, but nothing is guaranteed and nobody should rely on
+            # it.
+            if exc isa CapturedException
+                # `showerror` directly for a CapturedException includes the
+                # backtrace, which we don't want.
+                exc = exc.ex
             end
+            exc_msg = sprint(showerror, exc)
+            @error "Error saving data: $exc_msg"
+            tmp = "$(tempname(; cleanup=false)).jld2"
+            try
+                JLD2.save_object(tmp, data)
+            catch exc_inner
+                exc_msg = sprint(showerror, exc_inner)
+                error("Unable to recover by writing data to $tmp: $exc_msg")
+            end
+            # Julia < 1.8 doesn't have `else` for `try`
+            error("""
+            Recover data with:
+
+                using JLD2: load_object
+                data = load_object($(repr(tmp)))
+            """)
         end
     elseif isfile(filename) && verbose
         @info "Loading data from $filename"
