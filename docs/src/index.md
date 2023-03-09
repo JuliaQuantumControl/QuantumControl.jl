@@ -1,5 +1,18 @@
 # QuantumControl.jl
 
+```@eval
+using Markdown
+using Pkg
+
+VERSION = Pkg.dependencies()[Base.UUID("8a270532-f23f-47a8-83a9-b33d10cad486")].version
+
+github_badge = "[![Github](https://img.shields.io/badge/JuliaQuantumControl-QuantumControl.jl-blue.svg?logo=github)](https://github.com/JuliaQuantumControl/QuantumControl.jl)"
+
+version_badge = "![v$VERSION](https://img.shields.io/badge/version-v$VERSION-green.svg)"
+
+Markdown.parse("$github_badge $version_badge")
+```
+
 [QuantumControl.jl](https://github.com/JuliaQuantumControl/QuantumControl.jl) is a [Julia framework for quantum dynamics and control](https://github.com/JuliaQuantumControl).
 
 [Quantum optimal control](https://link.springer.com/article/10.1140%2Fepjd%2Fe2015-60464-1) attempts to steer a quantum system in some desired way by finding optimal control parameters or control fields inside the system Hamiltonian or Liouvillian. Typical control tasks are the preparation of a specific quantum state or the realization of a logical gate in a quantum computer (["pulse level control"](https://arxiv.org/abs/2004.06755)). Thus, quantum control theory is a critical part of realizing quantum technologies at the lowest level. Numerical methods of *open-loop* quantum control (methods that do not involve measurement feedback from a physical quantum device) such as [Krotov's method](https://github.com/JuliaQuantumControl/Krotov.jl) and [GRAPE](https://github.com/JuliaQuantumControl/GRAPE.jl) address the control problem by [simulating the dynamics of the system](https://github.com/JuliaQuantumControl/QuantumPropagators.jl) and then iteratively improving the value of a functional that encodes the desired outcome.
