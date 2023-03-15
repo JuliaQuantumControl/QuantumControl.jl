@@ -8,6 +8,7 @@ using QuantumControl.Functionals
 using QuantumControl.Generators
 using Pkg
 using Documenter
+using QuantumCitations
 
 DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)
 
@@ -21,13 +22,16 @@ println("Starting makedocs")
 
 include("generate_api.jl")
 
-makedocs(;
+bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style=:numeric)
+
+makedocs(
+    bib;
     authors=AUTHORS,
     sitename="QuantumControl.jl",
     format=Documenter.HTML(;
         prettyurls=true,
         canonical="https://juliaquantumcontrol.github.io/QuantumControl.jl",
-        assets=["assets/custom.css"],
+        assets=["assets/custom.css", "assets/citations.css"],
         footer="[$NAME.jl]($GITHUB) v$VERSION docs powered by [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl)."
     ),
     pages=[
@@ -47,6 +51,7 @@ makedocs(;
             ],
             "Index" => "api/quantum_control_index.md",
         ],
+        "References" => "references.md",
     ]
 )
 

@@ -52,6 +52,10 @@ each objective. The weights are not automatically
 normalized, they are assumed to have values such that the resulting ``f_τ``
 lies in the unit circle of the complex plane. Usually, this means that the
 weights should sum to ``N``.
+
+# Reference
+
+* [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
 function f_tau(ϕ, objectives; τ=nothing)
     # TODO: keyword arguments should not use unicode
@@ -82,6 +86,10 @@ F_{\text{ss}} = \frac{1}{N} \sum_{k=1}^{N} w_k |τ_k|^2 \quad\in [0, 1]
 ```
 
 with ``N``, ``w_k`` and ``τ_k`` as in [`f_tau`](@ref).
+
+# Reference
+
+* [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
 function F_ss(ϕ, objectives; τ=nothing)
     N = length(objectives)
@@ -110,6 +118,10 @@ J_{T,\text{ss}} = 1 - F_{\text{ss}} \in [0, 1].
 ```
 
 All arguments are passed to [`F_ss`](@ref).
+
+# Reference
+
+* [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
 function J_T_ss(ϕ, objectives; τ=nothing)
     return 1.0 - F_ss(ϕ, objectives; τ=τ)
@@ -172,6 +184,10 @@ k'th propagated state with the k'th target state, ``τ̄_k`` the complex conjuga
 of ``τ_k``, and ``N`` the number of objectives.
 
 All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
+
+# Reference
+
+* [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
 function F_sm(ϕ, objectives; τ=nothing)
     return abs2(f_tau(ϕ, objectives; τ=τ))
@@ -192,6 +208,10 @@ J_{T,\text{sm}} = 1 - F_{\text{sm}} \quad\in [0, 1].
 
 All arguments are passed to [`f_tau`](@ref) while evaluating ``F_{\text{sm}}``
 in [`F_sm`](@ref).
+
+# Reference
+
+* [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
 function J_T_sm(ϕ, objectives; τ=nothing)
     return 1.0 - F_sm(ϕ, objectives; τ=τ)
@@ -266,6 +286,10 @@ k'th propagated state with the k'th target state, and ``N`` the number of
 objectives.
 
 All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
+
+# Reference
+
+* [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
 function F_re(ϕ, objectives; τ=nothing)
     return real(f_tau(ϕ, objectives; τ=τ))
@@ -289,6 +313,10 @@ J_{T,\text{re}} = 1 - F_{\text{re}} \quad\in \begin{cases}
 
 All arguments are passed to [`f_tau`](@ref) while evaluating ``F_{\text{re}}``
 in [`F_re`](@ref).
+
+# Reference
+
+* [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
 function J_T_re(ϕ, objectives; τ=nothing)
     return 1.0 - F_re(ϕ, objectives; τ=τ)
