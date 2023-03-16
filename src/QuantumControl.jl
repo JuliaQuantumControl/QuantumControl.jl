@@ -55,8 +55,8 @@ end
 
 
 include("workflows.jl")  # submodule Workflows
-using .Workflows: run_or_load, @optimize_or_load, load_optimization
-export run_or_load, @optimize_or_load, load_optimization
+using .Workflows: run_or_load, @optimize_or_load, save_optimization, load_optimization
+export run_or_load, @optimize_or_load, save_optimization, load_optimization
 
 include("pulse_parametrizations.jl")  # submodule PulseParametrizations
 

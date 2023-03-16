@@ -1,7 +1,7 @@
 module Workflows
 
 using QuantumControlBase: optimize
-export run_or_load, @optimize_or_load, load_optimization
+export run_or_load, @optimize_or_load, save_optimization, load_optimization
 
 using FileIO: FileIO, File, DataFormat
 using JLD2: JLD2
@@ -267,13 +267,44 @@ _sourcename(s) = string(s)
 _sourcename(s::LineNumberNode) = string(s.file) * "#" * string(s.line)
 
 
+"""Write an optimization result to file.
+
+```julia
+save_optimization(file, result; metadata=nothing)
+```
+
+writes the result obtained from a call to `optimize` to the given `file` in
+JLD2 format. If given, `metadata` is a dict of additional data that will be
+stored with the result. The `metadata` dict should use strings as keys.
+
+# See also
+
+* [`load_optimization`](@ref): Function to load a file produced by
+  [`@optimize_or_load`](@ref) or [`save_optimization`](@ref)
+* [`@optimize_or_load`](@ref): Run [`optimize`](@ref) and
+  [`save_optimization`](@ref) in one go.
+"""
+function save_optimization(file, result; metadata=nothing)
+    JLD2_fmt = FileIO.DataFormat{:JLD2}
+    data = Dict{String,Any}("result" => result)
+    if !isnothing(metadata)
+        for (k, v) in metadata
+            # This should convert pretty much any key to a string
+            data[String(Symbol(k))] = v
+        end
+    end
+    FileIO.save(File{JLD2_fmt}(file), data)
+end
+
+
 """Load a previously stored optimization.
 
 ```julia
 result = load_optimization(file; verbose=true, kwargs...)
 ```
 
-recovers a `result` previously stored by [`@optimize_or_load`](@ref).
+recovers a `result` previously stored by [`@optimize_or_load`](@ref) or
+[`save_optimization`](@ref).
 
 ```julia
 result, metadata = load_optimization(file; return_metadata=true, kwargs...)
@@ -282,8 +313,8 @@ result, metadata = load_optimization(file; return_metadata=true, kwargs...)
 also obtains a metadata dict, see [`@optimize_or_load`](@ref). This dict maps
 string keys to values.
 
-Calling `load_optimization` with `verbose=true` (default) will show the
-metadata after loading the file.
+Calling `load_optimization` with `verbose=true` (default) will `@info` the
+metadata after loading the file
 """
 function load_optimization(file; return_metadata=false, verbose=true, kwargs...)
     data = FileIO.load(file)
