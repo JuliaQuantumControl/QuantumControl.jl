@@ -1,6 +1,6 @@
 module Workflows
 
-using QuantumControlBase: optimize
+using QuantumControlBase: optimize, set_atexit_save_optimization
 export run_or_load, @optimize_or_load, save_optimization, load_optimization
 
 using FileIO: FileIO, File, DataFormat
@@ -134,8 +134,13 @@ function optimize_or_load(
     save = FileIO.save
     load = FileIO.load
     JLD2_fmt = FileIO.DataFormat{:JLD2}
+    if file isa AbstractString
+        atexit_filename = file
+    else
+        atexit_filename = FileIO.filename(file)
+    end
     data = run_or_load(File{JLD2_fmt}(file); save, load, force, verbose) do
-        result = optimize(problem; method=method, verbose=verbose, kwargs...)
+        result = optimize(problem; method=method, verbose=verbose, atexit_filename, kwargs...)
         data = Dict{String,Any}("result" => result)
         if !isnothing(_filter)
             data = _filter(data)
@@ -228,6 +233,10 @@ If `file` already exists (and `force=false`), load the `result` from that file
 instead of running the optimization.
 
 All other `kwargs` are passed directly to [`optimize`](@ref).
+
+For methods that support this, `@optimize_or_load` will set up a callback to
+dump the optimization result to `file` in case of an unexpected program
+shutdown, see [`set_atexit_save_optimization`](@ref).
 
 ## Related Functions
 
