@@ -4,13 +4,16 @@ using QuantumControl.Functionals
 using QuantumControl.Functionals: chi_re!, chi_sm!, chi_ss!
 using QuantumControlTestUtils.RandomObjects: random_state_vector
 using QuantumControlTestUtils.DummyOptimization: dummy_control_problem
+using StableRNGs: StableRNG
 
 
 N_HILBERT = 10
 N = 4
 L = 2
 N_T = 50
-PROBLEM = dummy_control_problem(; N=N_HILBERT, n_objectives=N, n_controls=L, n_steps=N_T)
+RNG = StableRNG(4290326946)
+PROBLEM =
+    dummy_control_problem(; N=N_HILBERT, n_objectives=N, n_controls=L, n_steps=N_T, rng=RNG)
 
 
 @testset "functionals-tau-no-tau" begin
@@ -21,7 +24,7 @@ PROBLEM = dummy_control_problem(; N=N_HILBERT, n_objectives=N, n_controls=L, n_s
     objectives = PROBLEM.objectives
     χ1 = [similar(obj.initial_state) for obj in objectives]
     χ2 = [similar(obj.initial_state) for obj in objectives]
-    ϕ = [random_state_vector(N_HILBERT) for k = 1:N]
+    ϕ = [random_state_vector(N_HILBERT; rng=RNG) for k = 1:N]
     τ = [obj.target_state ⋅ ϕ[k] for (k, obj) in enumerate(objectives)]
 
     @test J_T_re(ϕ, objectives) ≈ J_T_re(nothing, objectives; τ)
