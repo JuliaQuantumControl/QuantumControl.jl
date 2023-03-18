@@ -26,6 +26,7 @@ bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style=:numeric
 
 makedocs(
     bib;
+    strict=("CI" in keys(ENV)),
     authors=AUTHORS,
     sitename="QuantumControl.jl",
     format=Documenter.HTML(;
