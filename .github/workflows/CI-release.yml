@@ -33,6 +33,12 @@ jobs:
             Pkg.Registry.add(RegistrySpec(url="https://github.com/JuliaRegistries/General.git"))
             Pkg.Registry.add(RegistrySpec(url="https://github.com/JuliaQuantumControl/QuantumControlRegistry.git"))'
       - run: |
+          # Install dev-version of QuantumControlTestUtils
+          julia --project=@. --threads auto -e '
+            using Pkg
+            Pkg.activate(".")
+            Pkg.develop("QuantumControlTestUtils")'
+      - run: |
           # Run downstream "QuantumControlBase" tests
           julia --project=@. --threads auto -e '
             using Pkg
