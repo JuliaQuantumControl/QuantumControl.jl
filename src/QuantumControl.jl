@@ -54,6 +54,14 @@ module Amplitudes
 end
 
 
+module Interfaces
+    using QuantumPropagators.Interfaces: check_state, check_operator, check_amplitude, check_control
+    export check_state, check_operator, check_amplitude, check_control
+    export check_generator
+    include(joinpath("interfaces", "generator.jl"))
+end
+
+
 include("workflows.jl")  # submodule Workflows
 using .Workflows: run_or_load, @optimize_or_load, save_optimization, load_optimization
 export run_or_load, @optimize_or_load, save_optimization, load_optimization

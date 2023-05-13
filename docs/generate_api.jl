@@ -135,7 +135,7 @@ open(outfile, "w") do out
 end
 
 
-local_submodules = [:Functionals, :PulseParametrizations, :Workflows]
+local_submodules = [:Functionals, :PulseParametrizations, :Workflows, :Interfaces]
 
 local_module_api_id(mod) = replace("$mod", "." => "") * "LocalAPI"
 

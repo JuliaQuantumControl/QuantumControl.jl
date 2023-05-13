@@ -23,13 +23,15 @@ Mathematically, the control problem is solved by minimizing a functional that is
 
 The controls that the `QuantumControl` package optimizes are implicit in the dynamical generator ([`hamiltonian`](@ref), [`liouvillian`](@ref)) of the [`Objectives`](@ref Objective) in the [`ControlProblem`](@ref).
 
-The [`QuantumControl.Controls.get_controls`](@ref) method extracts the controls from the objectives. Each control is typically time-dependent, e.g., a function ``ϵ(t)`` or a vector of pulse values on a time grid. For each control, [`QuantumControl.Controls.discretize`](@ref) and [`QuantumControl.Controls.discretize_on_midpoints`](@ref) discretizes the control to an existing time grid. For controls that are implemented through some custom type, these methods must be defined to enable piecewise-constant time propagation or an optimization that assumes piecewise-constant control (most notably, Krotov's method).
+The [`QuantumControl.Controls.get_controls`](@ref) method extracts the controls from the objectives. Each control is typically time-dependent, e.g., a function ``ϵ(t)`` or a vector of pulse values on a time grid. For each control, [`QuantumControl.Controls.discretize`](@ref) and [`QuantumControl.Controls.discretize_on_midpoints`](@ref) discretizes the control to an existing time grid. For controls that are implemented through some custom type, these methods must be defined to enable piecewise-constant time propagation or an optimization that assumes piecewise-constant control (most notably, Krotov's method). See [`QuantumControl.Interfaces.check_control`](@ref) for the full interface required of a control.
+
+See also the [section on Dynamical Generators in the `QuantumPropagators` documentation](https://juliaquantumcontrol.github.io/QuantumPropagators.jl/stable/generators/) and [`QuantumControl.Interfaces.check_generator`](@ref) for details on how generators and controls relate.
 
 ## Time propagation
 
 The `QuantumControl` package uses (and includes) [`QuantumPropagators.jl`](https://github.com/JuliaQuantumControl/QuantumPropagators.jl) as the numerical back-end for simulating the time evolution of all quantum states. The main high-level function provided from that package is [`propagate`](@ref), which simulates the dynamics of a quantum state over an entire time grid. In the context of a [`ControlProblem`](@ref) consisting of one or more [`Objective`](@ref), there is also a [`propagate_objective`](@ref) function that provides a more convenient interface, automatically using the initial state and the dynamical generator from the objective.
 
-A very typical overall workflow is to set up the control problem, then propagate the objectives with the guess control to see how the system behaves, run the optimization, and then propagate the objectives again with the optimized controls, to verify the success of the optimization. For plugging in the optimized controls, [`propagate_objective`](@ref) has a `controls_map` argument.
+A very typical overall workflow is to set up the control problem, then propagate the objectives with the guess control to see how the system behaves, run the optimization, and then propagate the objectives again with the optimized controls, to verify the success of the optimization. For plugging in the optimized controls, [`QuantumControl.Controls.substitute`](@ref) can be used.
 
 
 ## Optimization
