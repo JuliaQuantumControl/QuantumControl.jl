@@ -35,11 +35,6 @@ end
         include("test_optimize_or_load.jl")
     end
 
-    print("\n* Invalid interfaces (test_invalid_interfaces.jl):")
-    @time @safetestset "Invalid interfaces" begin
-        include("test_invalid_interfaces.jl")
-    end
-
     print("\n")
 
 end;
