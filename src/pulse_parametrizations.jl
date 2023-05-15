@@ -10,7 +10,7 @@ export SquareParametrization,
 using QuantumPropagators.Controls: discretize_on_midpoints
 using QuantumPropagators.Amplitudes: ControlAmplitude, ShapedAmplitude
 
-import QuantumPropagators.Controls: evaluate
+import QuantumPropagators.Controls: evaluate, get_controls
 import QuantumControlBase: get_control_deriv
 
 
@@ -229,13 +229,13 @@ function ParametrizedAmplitude(
             return ParametrizedPulseAmplitude(control, parametrization)
         else
             try
-                S_t = shape(0.0)
+                ϵ_t = control(0.0)
             catch
                 error(
                     "A ParametrizedAmplitude control must either be a vector of values or a callable"
                 )
             end
-            return ParametrizedContinousAmplitude(control, parametrization)
+            return ParametrizedContinuousAmplitude(control, parametrization)
         end
     else
         if (control isa Vector{Float64}) && (shape isa Vector{Float64})
@@ -319,21 +319,26 @@ struct ShapedParametrizedContinuousAmplitude <: ShapedParametrizedAmplitude
 end
 
 
-function evaluate(ampl::ParametrizedAmplitude, tlist, n; vals_dict)
-    ϵ = evaluate(ampl.control, tlist, n; vals_dict)
+function evaluate(ampl::ParametrizedAmplitude, args...; kwargs...)
+    ϵ = evaluate(ampl.control, args...; kwargs...)
     return ampl.parametrization.a_of_epsilon(ϵ)
 end
 
 
-function evaluate(ampl::ShapedParametrizedAmplitude, args...; vals_dict=IdDict())
-    ϵ = evaluate(ampl.control, args...; vals_dict)
-    S = evaluate(ampl.shape, args...; vals_dict)
+function evaluate(ampl::ShapedParametrizedAmplitude, args...; kwargs...)
+    ϵ = evaluate(ampl.control, args...; kwargs...)
+    S = evaluate(ampl.shape, args...; kwargs...)
     return S * ampl.parametrization.a_of_epsilon(ϵ)
 end
 
 
 function Base.Array(ampl::ShapedParametrizedPulseAmplitude)
     return ampl.shape .* ampl.parametrization.a_of_epsilon.(ampl.control)
+end
+
+
+function get_controls(ampl::ParametrizedAmplitude)
+    return (ampl.control,)
 end
 
 

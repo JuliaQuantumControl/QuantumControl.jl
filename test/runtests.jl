@@ -35,6 +35,11 @@ end
         include("test_optimize_or_load.jl")
     end
 
+    print("\n* Pulse Parametrizations (test_pulse_parametrizations.jl):")
+    @time @safetestset "Pulse Parametrizations" begin
+        include("test_pulse_parametrizations.jl")
+    end
+
     print("\n")
 
 end;
