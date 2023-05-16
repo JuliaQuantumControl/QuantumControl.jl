@@ -1,7 +1,7 @@
 name = "QuantumControl"
 uuid = "8a270532-f23f-47a8-83a9-b33d10cad486"
 authors = ["Michael Goerz <mail@michaelgoerz.net>"]
-version = "0.7.0+dev"
+version = "0.8.0+dev"
 
 [deps]
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
@@ -23,7 +23,7 @@ FiniteDifferences = "0.12"
 GRAPE = ">=0.5.4"
 JLD2 = "0.4"
 Krotov = ">=0.5.3"
-QuantumControlBase = ">=0.8.2"
-QuantumPropagators = ">=0.5.0"
+QuantumControlBase = ">=0.8.3"
+QuantumPropagators = ">=0.6.0"
 Zygote = "0.6"
 julia = "1.6"
