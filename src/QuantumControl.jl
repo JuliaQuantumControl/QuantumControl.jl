@@ -55,10 +55,10 @@ end
 
 
 module Interfaces
-    using QuantumPropagators.Interfaces: check_state, check_operator, check_amplitude, check_control
-    export check_state, check_operator, check_amplitude, check_control
-    using QuantumControlBase: check_generator
-    export check_generator
+    using QuantumPropagators.Interfaces: check_state, check_operator, check_control
+    export check_state, check_operator, check_control
+    using QuantumControlBase: check_generator, check_amplitude
+    export check_generator, check_amplitude
 end
 
 
