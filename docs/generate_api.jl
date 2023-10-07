@@ -23,8 +23,13 @@ function get_local_members(pkg; all=true)
     ]
 end
 
-_parentmodule(m, pkg) = parentmodule(m)
-_parentmodule(m::Number, pkg) = pkg
+function _parentmodule(m, pkg)
+    try
+        parentmodule(m)
+    catch
+        return pkg
+    end
+end
 
 
 """Return a list of symbols for all the sub-modules of `pkg`.

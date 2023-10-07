@@ -5,7 +5,6 @@ unicodeplots()
 using JuliaFormatter
 using QuantumControlTestUtils: test, show_coverage, generate_coverage_html
 using LiveServer: LiveServer, serve, servedocs as _servedocs
-using Term
 include(joinpath(@__DIR__, "clean.jl"))
 
 function servedocs(; kwargs...)

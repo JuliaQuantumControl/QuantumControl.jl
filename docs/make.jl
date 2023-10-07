@@ -8,7 +8,7 @@ using QuantumControl.Functionals
 using QuantumControl.Generators
 using Pkg
 using Documenter
-using QuantumCitations
+using DocumenterCitations
 
 DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)
 
@@ -24,9 +24,8 @@ include("generate_api.jl")
 
 bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style=:numeric)
 
-makedocs(
-    bib;
-    strict=("CI" in keys(ENV)),
+makedocs(;
+    plugins=[bib],
     authors=AUTHORS,
     sitename="QuantumControl.jl",
     format=Documenter.HTML(;
