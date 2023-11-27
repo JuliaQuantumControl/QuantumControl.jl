@@ -177,7 +177,7 @@ additional shape function, cf. [`ShapedAmplitude`](@ref).
 ampl = ParametrizedAmplitude(control; parametrization)
 ```
 
-initilizes ``a(t) = a(ϵ(t)`` where ``ϵ(t)`` is the `control`, and the mandatory
+initializes ``a(t) = a(ϵ(t)`` where ``ϵ(t)`` is the `control`, and the mandatory
 keyword argument `parametrization` is a [`PulseParametrization`](@ref
 PulseParametrization). The `control` must either be a vector of values
 discretized to the midpoints of a time grid, or a callable `control(t)`.
