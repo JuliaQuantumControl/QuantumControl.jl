@@ -14,6 +14,8 @@
 using Pkg
 using Downloads: download
 
+ENV["GKSwstype"] = 100
+
 cd(@__DIR__)
 Pkg.activate("test")
 
@@ -37,10 +39,12 @@ end
 
 if !isfile(joinpath("test", "Manifest.toml"))
     _instantiate()
-    cp(joinpath("test", "Project.toml"), joinpath("docs", "Project.toml"); force=true)
-    cp(joinpath("test", "Manifest.toml"), joinpath("docs", "Manifest.toml"); force=true)
 end
 include("test/init.jl")
+
+# Disable link-checking in interactive REPL, since it is the slowest part
+# of building the docs.
+ENV["DOCUMENTER_CHECK_LINKS"] = "0"
 
 if abspath(PROGRAM_FILE) == @__FILE__
     help()

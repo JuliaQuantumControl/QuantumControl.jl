@@ -9,6 +9,7 @@ using QuantumControl.Generators
 using Pkg
 using Documenter
 using DocumenterCitations
+using DocumenterInterLinks
 
 DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)
 
@@ -24,14 +25,32 @@ include("generate_api.jl")
 
 bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style=:numeric)
 
+warnonly = [:linkcheck,]
+if get(ENV, "DOCUMENTER_WARN_ONLY", "0") == "1"  # cf. test/init.jl
+    warnonly = true
+end
+warnonly = true # XXX temporarily switch to warnings
+
 makedocs(;
     plugins=[bib],
     authors=AUTHORS,
     sitename="QuantumControl.jl",
+    # Link checking is disabled in REPL, see `devrepl.jl`.
+    linkcheck=(get(ENV, "DOCUMENTER_CHECK_LINKS", "1") != "0"),
+    warnonly,
     format=Documenter.HTML(;
         prettyurls=true,
         canonical="https://juliaquantumcontrol.github.io/QuantumControl.jl",
-        assets=["assets/custom.css", "assets/citations.css"],
+        assets=[
+            "assets/custom.css",
+            "assets/citations.css",
+            asset(
+                "https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/assets/topbar/topbar.css"
+            ),
+            asset(
+                "https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/assets/topbar/topbar.js"
+            ),
+        ],
         footer="[$NAME.jl]($GITHUB) v$VERSION docs powered by [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl)."
     ),
     pages=[
