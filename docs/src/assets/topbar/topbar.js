@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", function() {
             name = name.concat(".jl");
         }
     }
+    var footerMessageElement = document.querySelector('p.footer-message');
+    var devSuffix = '';
+    if (footerMessageElement && (footerMessageElement.textContent.includes('+dev') || footerMessageElement.textContent.includes('-dev'))) {
+        devSuffix = 'dev/';
+    }
     var packages = [
         "QuantumPropagators.jl",
         "QuantumControlBase.jl",
@@ -19,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "QuantumControl.jl",
     ];
     var dropdownItems = packages.map(function(packageName) {
-        return `<a class="nav-link nav-item ${name === packageName ? 'current' : ''}" href="https://juliaquantumcontrol.github.io/${packageName}/">${packageName}</a>`;
+        return `<a class="nav-link nav-item ${name === packageName ? 'current' : ''}" href="https://juliaquantumcontrol.github.io/${packageName}/${devSuffix}">${packageName}</a>`;
     }).join('');
     var isSecondaryPackage = !(name === "QuantumControl.jl" || name === "QuantumPropagators.jl");
     var navElement = document.createElement('nav');
@@ -35,8 +40,8 @@ document.addEventListener("DOMContentLoaded", function() {
               ${dropdownItems}
             </ul>
           </div>
-          <a class="nav-link nav-item ${name === 'QuantumPropagators.jl' ? 'current' : ''}" href="https://juliaquantumcontrol.github.io/QuantumPropagators.jl/">QuantumPropagators.jl</a>
-          <a class="nav-link nav-item ${name === 'QuantumControl.jl' ? 'current' : ''}" href="https://juliaquantumcontrol.github.io/QuantumControl.jl/">QuantumControl.jl</a>
+          <a class="nav-link nav-item ${name === 'QuantumPropagators.jl' ? 'current' : ''}" href="${name === 'QuantumPropagators.jl' ? '' : 'https://juliaquantumcontrol.github.io/QuantumPropagators.jl/' + devSuffix}">QuantumPropagators.jl</a>
+          <a class="nav-link nav-item ${name === 'QuantumControl.jl' ? 'current' : ''}" href="${name === 'QuantumControl.jl' ? '' : 'https://juliaquantumcontrol.github.io/QuantumControl.jl/' + devSuffix}">QuantumControl.jl</a>
         </div>
         <button id="multidoc-toggler">
             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
