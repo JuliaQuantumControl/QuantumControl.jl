@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <a href="https://github.com/JuliaQuantumControl" class="nav-link">
             <img src="https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/assets/topbar/org_logo.svg" onload="this.style.height = getComputedStyle(document.getElementById('topbar-nav')).height" class="nav-link nav-item" alt="Logo">
         </a>
-        <div class="hidden-on-mobile" id="nav-items">
+        <div id="nav-items">
           <div class="nav-dropdown">
             <button class="nav-item dropdown-label ${isSecondaryPackage ? 'current' : ''}">JuliaQuantumControl</button>
             <ul class="nav-dropdown-container">
@@ -54,11 +54,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function topbarInjector() {
-  document
-    .getElementById("multidoc-toggler")
-    .addEventListener("click", function () {
-      document.getElementById("nav-items").classList.toggle("hidden-on-mobile");
-    });
   document.body.addEventListener("click", function (ev) {
     const thisIsExpanded = ev.target.matches(".nav-expanded > .dropdown-label");
     if (!ev.target.matches(".nav-dropdown-container")) {
