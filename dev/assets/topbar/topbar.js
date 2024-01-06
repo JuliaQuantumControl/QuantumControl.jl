@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
             </ul>
           </div>
           <a class="nav-link nav-item ${name === 'QuantumPropagators.jl' ? 'current' : ''}" href="https://juliaquantumcontrol.github.io/QuantumPropagators.jl/">QuantumPropagators.jl</a>
-          <a class="nav-link nav-item" ${name === 'QuantumControl.jl' ? 'current' : ''} href="https://juliaquantumcontrol.github.io/QuantumControl.jl/">QuantumControl.jl</a>
+          <a class="nav-link nav-item ${name === 'QuantumControl.jl' ? 'current' : ''}" href="https://juliaquantumcontrol.github.io/QuantumControl.jl/">QuantumControl.jl</a>
         </div>
         <button id="multidoc-toggler">
             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
