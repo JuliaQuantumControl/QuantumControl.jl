@@ -509,14 +509,14 @@
        id="g1118"
        transform="translate(187.14741,107.27859)">
       <rect
-         style="opacity:1;fill:#ffffff;stroke-width:1.553"
+         style="opacity:1;fill:none;stroke-width:1.553"
          id="rect930"
          width="258.24261"
          height="244.66115"
          x="-216.54425"
          y="-92.702248" />
       <rect
-         style="opacity:0.260302;fill:#ffffff;stroke-width:1.553;fill-opacity:1"
+         style="opacity:0.260302;fill:none#ffffff;stroke-width:1.553;fill-opacity:1"
          id="rect929"
          width="236.27873"
          height="228.75729"
@@ -584,7 +584,7 @@
            transform="matrix(0.66858185,0,0,0.52016452,341.8458,461.01905)" />
         <path
            id="rect2498"
-           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.866;stroke-miterlimit:4;stroke-dasharray:1.732, 1.732;stroke-dashoffset:0;stroke-opacity:1"
+           style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:0.866;stroke-miterlimit:4;stroke-dasharray:1.732, 1.732;stroke-dashoffset:0;stroke-opacity:1"
            d="M -74.446884,363.33042 V 514.0809 H 83.993075 V 363.33042 Z m 84.96279,28.15178 a 49.177418,49.177418 0 0 1 49.177359,49.17733 49.177418,49.177418 0 0 1 -49.177359,49.17737 49.177418,49.177418 0 0 1 -49.17737,-49.17737 49.177418,49.177418 0 0 1 49.17737,-49.17733 z" />
       </g>
       <g
