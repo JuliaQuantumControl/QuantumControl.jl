@@ -12,6 +12,13 @@ using DocumenterCitations
 using DocumenterInterLinks
 
 DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)
+links = InterLinks(
+    "TimerOutputs" => (
+        "https://github.com/KristofferC/TimerOutputs.jl",
+        joinpath(@__DIR__, "src", "inventories", "TimerOutputs.toml")
+    ),
+    "QuantumPropagators" => "https://juliaquantumcontrol.github.io/QuantumPropagators.jl/dev/"
+)
 
 PROJECT_TOML = Pkg.TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))
 VERSION = PROJECT_TOML["version"]
@@ -29,10 +36,9 @@ warnonly = [:linkcheck,]
 if get(ENV, "DOCUMENTER_WARN_ONLY", "0") == "1"  # cf. test/init.jl
     warnonly = true
 end
-warnonly = true # XXX temporarily switch to warnings
 
 makedocs(;
-    plugins=[bib],
+    plugins=[bib, links],
     authors=AUTHORS,
     sitename="QuantumControl.jl",
     # Link checking is disabled in REPL, see `devrepl.jl`.
