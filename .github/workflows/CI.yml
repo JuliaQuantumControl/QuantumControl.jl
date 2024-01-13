@@ -25,6 +25,7 @@ jobs:
             version: '1'
     steps:
       - uses: actions/checkout@v4
+      - uses: julia-actions/cache@v1
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
@@ -63,6 +64,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+      - uses: julia-actions/cache@v1
       - uses: julia-actions/setup-julia@v1
         with:
           version: '1'
