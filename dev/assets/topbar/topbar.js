@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var dropdownItems = packages.map(function(packageName) {
         return `<a class="nav-link nav-item ${name === packageName ? 'current' : ''}" href="https://juliaquantumcontrol.github.io/${packageName}/${suffix}">${packageName}</a>`;
     }).join('');
-    var isSecondaryPackage = !(name === "QuantumControl.jl" || name === "QuantumPropagators.jl");
+    var isSecondaryPackage = !(name === "QuantumControl.jl" || name === "QuantumPropagators.jl" || name.includes('Examples'));
     var navElement = document.createElement('nav');
     navElement.id = "topbar-nav";
     navElement.innerHTML = `
