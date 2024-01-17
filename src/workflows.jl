@@ -231,11 +231,18 @@ function optimize_or_load(
         verbose,
         _else=_print_loaded_output
     ) do
+        color = get(stdout, :color, false)
+        if haskey(ENV, "JULIA_CAPTURE_COLOR")
+            # Undocumented feature. Literate.jl doesn't work well with captured
+            # color. When doing an optimization in a Literate example, it's
+            # best to evaluate it with JULIA_CAPTURE_COLOR=0
+            color = (ENV["JULIA_CAPTURE_COLOR"] != "0")
+        end
         if isnothing(logfile)
             c = IOCapture.capture(
                 passthrough=true,
                 capture_buffer=FirstLastBuffer(),
-                color=get(stdout, :color, false)
+                color=color,
             ) do
                 optimize(problem; method, verbose, atexit_filename, kwargs...)
             end
