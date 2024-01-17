@@ -5,6 +5,7 @@ export run_or_load, @optimize_or_load, save_optimization, load_optimization
 
 using FileIO: FileIO, File, DataFormat
 using JLD2: JLD2
+using IOCapture
 
 _is_jld2_filename(file) = (file isa String && endswith(file, ".jld2"))
 
@@ -57,6 +58,7 @@ function run_or_load(
     load::Function=(_is_jld2_filename(file) ? JLD2.load_object : FileIO.load),
     force=false,
     verbose=true,
+    _else=nothing,   # undocumented function to run on data if loaded
     kwargs...
 )
     # Using `JLD2.save_object` instead of `FileIO.save` is more flexible:
@@ -108,12 +110,93 @@ function run_or_load(
                 data = load_object($(repr(tmp)))
             """)
         end
-    elseif isfile(filename) && verbose
-        @info "Loading data from $filename"
+        return load(file)
+    else
+        data = load(file)
+        verbose && @info "Loading data from $filename"
+        if !isnothing(_else)
+            _else(data)
+        end
+        return data
     end
-    return load(file)
 end
 
+
+mutable struct FirstLastBuffer
+    first::Vector{UInt8}
+    last::Vector{UInt8}
+    N::Int64
+    written::Int64
+end
+
+
+function FirstLastBuffer(N=1024)
+    first = Vector{UInt8}(undef, N)
+    last = Vector{UInt8}(undef, N)
+    FirstLastBuffer(first, last, N, 0)
+end
+
+
+function Base.write(buffer::FirstLastBuffer, data)
+    for byte in data
+        if buffer.written < buffer.N
+            i = buffer.written + 1
+            buffer.first[i] = byte
+        else
+            i = mod((buffer.written - buffer.N), buffer.N) + 1
+            buffer.last[i] = byte
+        end
+        buffer.written += 1
+    end
+end
+
+
+function Base.take!(buffer::FirstLastBuffer)
+    N = buffer.N
+    if buffer.written <= N
+        result = buffer.first[1:buffer.written]
+    else
+        written_last = buffer.written - N
+        last = view(buffer.last, 1:min(written_last, N))
+        if written_last <= N
+            sep = Vector{UInt8}[]
+            length_result = buffer.written
+            shift = 0
+        else
+            sep = Vector{UInt8}("…\n…")
+            length_result = 2 * N + length(sep)
+            shift = -mod(buffer.written - buffer.N, buffer.N)
+        end
+        result = Vector{UInt8}(undef, length_result)
+        result[1:N] .= buffer.first
+        result[N+1:N+length(sep)] .= sep
+        result[N+length(sep)+1:end] .= circshift(last, shift)
+    end
+    buffer.written = 0
+    return result
+end
+
+
+function _redirect_to_file(f, logfile)
+    open(logfile, "w") do io
+        redirect_stdout(io) do
+            redirect_stderr(io) do
+                return f()
+            end
+        end
+    end
+end
+
+
+function _print_loaded_output(data)
+    if haskey(data, "output")
+        for line in split(data["output"], "\n")
+            if !startswith(line, "…")
+                println(line)
+            end
+        end
+    end
+end
 
 
 # See @optimize_or_load for documentation –
@@ -126,6 +209,7 @@ function optimize_or_load(
     force=false,
     verbose=get(problem.kwargs, :verbose, false),
     metadata::Union{Nothing,Dict}=nothing,
+    logfile=nothing,
     kwargs...
 )
 
@@ -139,9 +223,31 @@ function optimize_or_load(
     else
         atexit_filename = FileIO.filename(file)
     end
-    data = run_or_load(File{JLD2_fmt}(file); save, load, force, verbose) do
-        result = optimize(problem; method=method, verbose=verbose, atexit_filename, kwargs...)
-        data = Dict{String,Any}("result" => result)
+    data = run_or_load(
+        File{JLD2_fmt}(file);
+        save,
+        load,
+        force,
+        verbose,
+        _else=_print_loaded_output
+    ) do
+        if isnothing(logfile)
+            c = IOCapture.capture(
+                passthrough=true,
+                capture_buffer=FirstLastBuffer(),
+                color=get(stdout, :color, false)
+            ) do
+                optimize(problem; method, verbose, atexit_filename, kwargs...)
+            end
+            result = c.value
+            output = c.output
+        else
+            result = _redirect_to_file(logfile) do
+                optimize(problem; method, verbose, atexit_filename, kwargs...)
+            end
+            output = ""
+        end
+        data = Dict{String,Any}("result" => result, "output" => output)
         if !isnothing(_filter)
             data = _filter(data)
         end
@@ -153,7 +259,6 @@ function optimize_or_load(
         end
         return data
     end
-
     return data["result"]
 
 end
@@ -218,19 +323,27 @@ result = @optimize_or_load(
     force=false,
     verbose=true,
     metadata=nothing,
+    logfile=nothing,
     kwargs...
 )
 ```
 
 runs `result = optimize(problem; method, kwargs...)` and stores
 `result` in `file` in the JLD2 format. Note that the `method` keyword argument
-is mandatory. In addition to the `result`, the data in the output `file`
+is mandatory.
+
+In addition to the `result`, the data in the output `file`
 can also contain metadata. By default, this is "script" with the file
 name and line number of where `@optimize_or_load` was called, as well as data
 from the dict `metadata` mapping arbitrary (string) keys to values.
+Lastly, the data contains truncated captured output (up to 1kB of both the
+beginning and end of the output) from the optmization.
+
+If `logfile` is given as the path to a file, both `stdout` and `stderr` from
+`optimize` are redirected into the given file.
 
 If `file` already exists (and `force=false`), load the `result` from that file
-instead of running the optimization.
+instead of running the optimization, and print any (truncated) captured output.
 
 All other `kwargs` are passed directly to [`optimize`](@ref).
 
@@ -309,7 +422,7 @@ end
 """Load a previously stored optimization.
 
 ```julia
-result = load_optimization(file; verbose=true, kwargs...)
+result = load_optimization(file; verbose=false, kwargs...)
 ```
 
 recovers a `result` previously stored by [`@optimize_or_load`](@ref) or
@@ -322,10 +435,10 @@ result, metadata = load_optimization(file; return_metadata=true, kwargs...)
 also obtains a metadata dict, see [`@optimize_or_load`](@ref). This dict maps
 string keys to values.
 
-Calling `load_optimization` with `verbose=true` (default) will `@info` the
+Calling `load_optimization` with `verbose=true` will `@info` the
 metadata after loading the file
 """
-function load_optimization(file; return_metadata=false, verbose=true, kwargs...)
+function load_optimization(file; return_metadata=false, verbose=false, kwargs...)
     data = FileIO.load(file)
     result = data["result"]
     metadata = filter(kv -> (kv[1] != "result"), data)

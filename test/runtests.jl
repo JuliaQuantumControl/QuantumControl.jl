@@ -5,10 +5,9 @@ using Test
 using SafeTestsets
 
 @testset "QuantumControl versions" begin
-    captured = IOCapture.capture() do
+    captured = IOCapture.capture(passthrough=true) do
         QuantumControl.print_versions()
     end
-    println(captured.output)
     @test occursin("QuantumControlBase", captured.output)
     @test occursin("Krotov", captured.output)
     qp_exports = QuantumControl._exported_names(QuantumPropagators)
@@ -20,22 +19,22 @@ end
 @time @testset verbose = true "QuantumControl" begin
 
 
-    print("\n* Functionals (test_functionals.jl):")
+    println("\n* Functionals (test_functionals.jl):")
     @time @safetestset "Functionals" begin
         include("test_functionals.jl")
     end
 
-    print("\n* Run-or-load (test_run_or_load.jl):")
+    println("\n* Run-or-load (test_run_or_load.jl):")
     @time @safetestset "Run-or-load" begin
         include("test_run_or_load.jl")
     end
 
-    print("\n* Optimize-or-load (test_optimize_or_load.jl):")
+    println("\n* Optimize-or-load (test_optimize_or_load.jl):")
     @time @safetestset "Optimize-or-load" begin
         include("test_optimize_or_load.jl")
     end
 
-    print("\n* Pulse Parametrizations (test_pulse_parametrizations.jl):")
+    println("\n* Pulse Parametrizations (test_pulse_parametrizations.jl):")
     @time @safetestset "Pulse Parametrizations" begin
         include("test_pulse_parametrizations.jl")
     end
@@ -43,3 +42,4 @@ end
     print("\n")
 
 end;
+nothing
