@@ -102,6 +102,15 @@ open(outfile, "w") do out
         println(out, "* [`$name`](@ref $ref)")
     end
 
+    write(out, """
+
+    It also defines the following unexported functions:
+
+    * [`QuantumControl.set_default_ad_framework`](@ref)
+    * [`QuantumControl.print_versions`](@ref)
+
+    """)
+
     for submod in quantum_control_sub_modules
         write(out, "\n\n### [`QuantumControl.$submod`](@id QuantumControl$(submod)API)\n\n")
         for name in names(getfield(QuantumControl, submod))
@@ -240,10 +249,32 @@ open(outfile, "w") do out
     for name in local_submodules
         write(out, "* [`QuantumControl.$name`](#$(local_module_api_id(getfield(QuantumControl, name))))\n")
     end
-    write(out, "\n\n")
+    write(out, raw"""
+
+    `QuantumControl` also locally defines some unexported functions:
+
+    * [`QuantumControl` local unexported functions](#quantumcontrol-local-functions)
+
+
+    """)
     for name in local_submodules
         write_module_api(out, getfield(QuantumControl, name))
     end
+    write(out, raw"""
+
+    ## [`QuantumControl` local unexported functions](@id quantumcontrol-local-functions)
+
+    ```@docs
+    QuantumControl.set_default_ad_framework
+    QuantumControl.print_versions
+    ```
+
+    ```@example
+    import QuantumControl
+    QuantumControl.print_versions()
+    ```
+
+    """)
 end
 
 

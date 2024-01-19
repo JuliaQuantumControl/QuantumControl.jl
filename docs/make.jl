@@ -11,7 +11,6 @@ using Documenter
 using DocumenterCitations
 using DocumenterInterLinks
 
-DocMeta.setdocmeta!(QuantumControl, :DocTestSetup, :(using QuantumControl); recursive=true)
 links = InterLinks(
     "TimerOutputs" => (
         "https://github.com/KristofferC/TimerOutputs.jl",

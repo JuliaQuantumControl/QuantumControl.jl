@@ -6,12 +6,10 @@ export make_grad_J_a
 export gate_functional
 export make_gate_chi
 
-using QuantumControlBase: make_grad_J_a, make_chi
+using QuantumControlBase: QuantumControlBase, make_grad_J_a, make_chi
 export make_grad_J_a, make_chi
 
 using LinearAlgebra
-using Zygote: Zygote
-using FiniteDifferences: FiniteDifferences
 
 import QuantumControlBase: make_analytic_grad_J_a, make_analytic_chi
 
@@ -20,7 +18,7 @@ import QuantumControlBase: make_analytic_grad_J_a, make_analytic_chi
 Average complex overlap of the target states with forward-propagated states.
 
 ```julia
-f_tau(ϕ, objectives; τ=nothing)
+f_tau(ϕ, objectives; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -57,8 +55,7 @@ weights should sum to ``N``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function f_tau(ϕ, objectives; τ=nothing)
-    # TODO: keyword arguments should not use unicode
+function f_tau(ϕ, objectives; tau=nothing, τ=tau)
     N = length(objectives)
     if τ === nothing
         τ = [dot(objectives[k].target_state, ϕ[k]) for k = 1:N]
@@ -76,7 +73,7 @@ end
 @doc raw"""State-to-state phase-insensitive fidelity.
 
 ```julia
-F_ss(ϕ, objectives; τ=nothing)
+F_ss(ϕ, objectives; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -91,7 +88,7 @@ with ``N``, ``w_k`` and ``τ_k`` as in [`f_tau`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_ss(ϕ, objectives; τ=nothing)
+function F_ss(ϕ, objectives; tau=nothing, τ=tau)
     N = length(objectives)
     if τ === nothing
         τ = [dot(objectives[k].target_state, ϕ[k]) for k = 1:N]
@@ -108,7 +105,7 @@ end
 @doc raw"""State-to-state phase-insensitive functional.
 
 ```julia
-J_T_ss(ϕ, objectives; τ=nothing)
+J_T_ss(ϕ, objectives; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -123,7 +120,7 @@ All arguments are passed to [`F_ss`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_ss(ϕ, objectives; τ=nothing)
+function J_T_ss(ϕ, objectives; tau=nothing, τ=tau)
     return 1.0 - F_ss(ϕ, objectives; τ=τ)
 end
 
@@ -131,7 +128,7 @@ end
 @doc raw"""Backward boundary states ``|χ⟩`` for functional [`J_T_ss`](@ref).
 
 ```julia
-chi_ss!(χ, ϕ, objectives; τ=nothing)
+chi_ss!(χ, ϕ, objectives; τ=nothing)  # or `tau=nothing`
 ```
 
 sets the elements of `χ` according to
@@ -146,7 +143,7 @@ with ``|ϕ^{\tgt}_k⟩``, ``τ_k`` and ``w_k`` as defined in [`f_tau`](@ref).
 
 Note: this function can be obtained with `make_chi(J_T_ss, objectives)`.
 """
-function chi_ss!(χ, ϕ, objectives; τ=nothing)
+function chi_ss!(χ, ϕ, objectives; tau=nothing, τ=tau)
     N = length(objectives)
     if τ === nothing
         τ = [dot(objectives[k].target_state, ϕ[k]) for k = 1:N]
@@ -166,7 +163,7 @@ make_analytic_chi(::typeof(J_T_ss), objectives) = chi_ss!
 @doc raw"""Square-modulus fidelity.
 
 ```julia
-F_sm(ϕ, objectives; τ=nothing)
+F_sm(ϕ, objectives; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -189,7 +186,7 @@ All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_sm(ϕ, objectives; τ=nothing)
+function F_sm(ϕ, objectives; tau=nothing, τ=tau)
     return abs2(f_tau(ϕ, objectives; τ=τ))
 end
 
@@ -197,7 +194,7 @@ end
 @doc raw"""Square-modulus functional.
 
 ```julia
-J_T_sm(ϕ, objectives; τ=nothing)
+J_T_sm(ϕ, objectives; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -213,7 +210,7 @@ in [`F_sm`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_sm(ϕ, objectives; τ=nothing)
+function J_T_sm(ϕ, objectives; tau=nothing, τ=tau)
     return 1.0 - F_sm(ϕ, objectives; τ=τ)
 end
 
@@ -221,7 +218,7 @@ end
 @doc raw"""Backward boundary states ``|χ⟩`` for functional [`J_T_sm`](@ref).
 
 ```julia
-chi_sm!(χ, ϕ, objectives; τ=nothing)
+chi_sm!(χ, ϕ, objectives; τ=nothing)  # or `tau=nothing`
 ```
 
 sets the elements of `χ` according to
@@ -236,7 +233,7 @@ with ``|ϕ^{\tgt}_k⟩``, ``τ_j`` and ``w_k`` as defined in [`f_tau`](@ref).
 
 Note: this function can be obtained with `make_chi(J_T_sm, objectives)`.
 """
-function chi_sm!(χ, ϕ, objectives; τ=nothing)
+function chi_sm!(χ, ϕ, objectives; tau=nothing, τ=tau)
 
     N = length(objectives)
     if τ === nothing
@@ -264,7 +261,7 @@ make_analytic_chi(::typeof(J_T_sm), objectives) = chi_sm!
 @doc raw"""Real-part fidelity.
 
 ```julia
-F_re(ϕ, objectives; τ=nothing)
+F_re(ϕ, objectives; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -291,7 +288,7 @@ All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_re(ϕ, objectives; τ=nothing)
+function F_re(ϕ, objectives; tau=nothing, τ=tau)
     return real(f_tau(ϕ, objectives; τ=τ))
 end
 
@@ -299,7 +296,7 @@ end
 @doc raw"""Real-part functional.
 
 ```julia
-J_T_re(ϕ, objectives; τ=nothing)
+J_T_re(ϕ, objectives; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -318,7 +315,7 @@ in [`F_re`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_re(ϕ, objectives; τ=nothing)
+function J_T_re(ϕ, objectives; tau=nothing, τ=tau)
     return 1.0 - F_re(ϕ, objectives; τ=τ)
 end
 
@@ -326,7 +323,7 @@ end
 @doc raw"""Backward boundary states ``|χ⟩`` for functional [`J_T_re`](@ref).
 
 ```julia
-chi_re!(χ, ϕ, objectives; τ=nothing)
+chi_re!(χ, ϕ, objectives; τ=nothing)  # or `tau=nothing`
 ```
 
 sets the elements of `χ` according to
@@ -342,7 +339,7 @@ with ``|ϕ^{\tgt}_k⟩`` and ``w_k`` as defined in [`f_tau`](@ref).
 
 Note: this function can be obtained with `make_chi(J_T_re, objectives)`.
 """
-function chi_re!(χ, ϕ, objectives; τ=nothing)
+function chi_re!(χ, ϕ, objectives; tau=nothing, τ=tau)
     N = length(objectives)
     if τ === nothing
         τ = [dot(objectives[k].target_state, ϕ[k]) for k = 1:N]
@@ -382,7 +379,7 @@ defined by the basis in the `initial_states` of the  `objectives`.
 """
 function gate_functional(J_T_U; kwargs...)
 
-    function J_T(ϕ, objectives; τ=nothing)
+    function J_T(ϕ, objectives; tau=nothing, τ=tau)
         N = length(objectives)
         U = [(objectives[i].initial_state ⋅ ϕ[j]) for i = 1:N, j = 1:N]
         return J_T_U(U; kwargs...)
@@ -397,13 +394,18 @@ end
 Return a function to evaluate ``|χ_k⟩ = -∂J_T(Û)/∂⟨ϕ_k|`` via the chain rule.
 
 ```julia
-chi! = make_gate_chi(J_T_U, objectives; use_finite_differences=false, kwargs...)
+chi! = make_gate_chi(J_T_U, objectives; automatic=:default, kwargs...)
 ```
 
 returns a function equivalent to
 
 ```julia
-chi! = make_chi(gate_functional(J_T_U; kwargs...), objectives)
+chi! = make_chi(
+    gate_functional(J_T_U; kwargs...),
+    objectives;
+    mode=:automatic,
+    automatic,
+)
 ```
 
 ```math
@@ -418,39 +420,38 @@ chi! = make_chi(gate_functional(J_T_U; kwargs...), objectives)
 where ``|Ψ_i⟩`` is the basis state stored as the `initial_state` of the i'th
 `objective`, see [`gate_functional`](@ref).
 
-The gradient ``∇_U J_T`` is obtained via automatic differentiation, or via
-finite differences if `use_finite_differences=true`.
+The gradient ``∇_U J_T`` is obtained via automatic differentiation (AD). This
+requires that an AD package has been loaded (e.g., `using Zygote`). This
+package must either be passed as the `automatic` keyword argument, or the
+package must be set as the default AD provider using
+`QuantumControl.set_default_ad_framework`.
 
-Compared to the more general [`make_chi`](@ref), `make_gate_chi` will generally
-have a slightly smaller numerical overhead, as it pushes the use of automatic
-differentiation down by one level.
-
-With `use_finite_differences=true`, this routine serves to test and debug
-gradients for gate functionals obtained by automatic differentiation.
+Compared to the more general [`make_chi`](@ref) with `mode=:automatic`,
+`make_gate_chi` will generally have a slightly smaller numerical overhead, as
+it pushes the use of automatic differentiation down by one level.
 """
-function make_gate_chi(J_T_U, objectives; use_finite_differences=false, kwargs...)
-
-    N = length(objectives)
-    basis = [obj.initial_state for obj in objectives]
-
-    function zygote_gate_chi!(χ, ϕ, objectives; τ=nothing)
-        function _J_T(U)
-            -J_T_U(U; kwargs...)
-        end
-        U = [basis[i] ⋅ ϕ[j] for i = 1:N, j = 1:N]
-        if use_finite_differences
-            fdm = FiniteDifferences.central_fdm(5, 1)
-            ∇J = FiniteDifferences.grad(fdm, gate -> _J_T(gate), U)[1]
+function make_gate_chi(J_T_U, objectives; automatic=:default, kwargs...)
+    if automatic == :default
+        if QuantumControlBase.DEFAULT_AD_FRAMEWORK == :nothing
+            msg = "make_gate_chi: no default `automatic`. You must run `set_default_ad_framework` first, e.g. `import Zygote; QuantumControl.set_default_ad_framework(Zygote)`."
+            error(msg)
         else
-            ∇J = Zygote.gradient(gate -> _J_T(gate), U)[1]
+            automatic = QuantumControlBase.DEFAULT_AD_FRAMEWORK
+            chi = make_gate_chi(J_T_U, objectives, automatic; kwargs...)
+            @info "make_gate_chi for J_T_U=$(J_T_U): automatic with $automatic"
+            return chi
         end
-        for k = 1:N
-            χ[k] .= 0.5 * sum([∇J[i, k] * basis[i] for i = 1:N])
-        end
+    else
+        return make_gate_chi(J_T_U, objectives, automatic; kwargs...)
     end
+end
 
-    return zygote_gate_chi!
+function make_gate_chi(J_T_U, objectives, automatic::Module; kwargs...)
+    return make_gate_chi(J_T_U, objectives, Val(nameof(automatic)); kwargs...)
+end
 
+function make_gate_chi(J_T_U, objectives, automatic::Symbol; kwargs...)
+    return make_gate_chi(J_T_U, objectives, Val(automatic); kwargs...)
 end
 
 
