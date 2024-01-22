@@ -87,7 +87,11 @@ open(outfile, "w") do out
     write(out, "EditURL = \"../../generate_api.jl\"\n")
     write(out, "```\n\n")
     write(out, "# [QuantumControl](@id QuantumControlAPI)\n\n")
-    if length(quantum_control_local_members) > 0
+    _quantum_control_local_members  = filter(
+        member -> !(member in QuantumControl.DEPRECATED),
+        quantum_control_local_members
+    )
+    if length(_quantum_control_local_members) > 0
         error("QuantumControl has local members. We don't want this")
     end
     write(out, """

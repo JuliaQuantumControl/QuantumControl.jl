@@ -18,7 +18,7 @@ import QuantumControlBase: make_analytic_grad_J_a, make_analytic_chi
 Average complex overlap of the target states with forward-propagated states.
 
 ```julia
-f_tau(ϕ, objectives; τ=nothing)  # or `tau=nothing`
+f_tau(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -41,12 +41,12 @@ in Hilbert space, or
 
 in Liouville space, where ``|ϕ_k⟩`` or ``ρ̂_k`` are the elements
 of `ϕ`, and ``|ϕ_k^\tgt⟩`` or ``ρ̂_k^\tgt`` are the
-target states from the `target_state` field of the `objectives`. If `τ` is
+target states from the `target_state` field of the `trajectories`. If `τ` is
 given as a keyword argument, it must contain the values `τ_k` according to the
 above definition. Otherwise, the ``τ_k`` values will be calculated internally.
 
-``N`` is the number of objectives, and ``w_k`` is the `weight` attribute for
-each objective. The weights are not automatically
+``N`` is the number of trajectories, and ``w_k`` is the `weight` attribute for
+each trajectory. The weights are not automatically
 normalized, they are assumed to have values such that the resulting ``f_τ``
 lies in the unit circle of the complex plane. Usually, this means that the
 weights should sum to ``N``.
@@ -55,15 +55,15 @@ weights should sum to ``N``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function f_tau(ϕ, objectives; tau=nothing, τ=tau)
-    N = length(objectives)
+function f_tau(ϕ, trajectories; tau=nothing, τ=tau)
+    N = length(trajectories)
     if τ === nothing
-        τ = [dot(objectives[k].target_state, ϕ[k]) for k = 1:N]
+        τ = [dot(trajectories[k].target_state, ϕ[k]) for k = 1:N]
     end
     f::ComplexF64 = 0
     for k = 1:N
-        obj = objectives[k]
-        w = obj.weight
+        traj = trajectories[k]
+        w = traj.weight
         f += w * τ[k]
     end
     return f / N
@@ -73,7 +73,7 @@ end
 @doc raw"""State-to-state phase-insensitive fidelity.
 
 ```julia
-F_ss(ϕ, objectives; τ=nothing)  # or `tau=nothing`
+F_ss(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -88,15 +88,15 @@ with ``N``, ``w_k`` and ``τ_k`` as in [`f_tau`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_ss(ϕ, objectives; tau=nothing, τ=tau)
-    N = length(objectives)
+function F_ss(ϕ, trajectories; tau=nothing, τ=tau)
+    N = length(trajectories)
     if τ === nothing
-        τ = [dot(objectives[k].target_state, ϕ[k]) for k = 1:N]
+        τ = [dot(trajectories[k].target_state, ϕ[k]) for k = 1:N]
     end
     f::Float64 = 0
     for k = 1:N
-        obj = objectives[k]
-        w = obj.weight
+        traj = trajectories[k]
+        w = traj.weight
         f += w * abs2(τ[k])
     end
     return f / N
@@ -105,7 +105,7 @@ end
 @doc raw"""State-to-state phase-insensitive functional.
 
 ```julia
-J_T_ss(ϕ, objectives; τ=nothing)  # or `tau=nothing`
+J_T_ss(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -120,15 +120,15 @@ All arguments are passed to [`F_ss`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_ss(ϕ, objectives; tau=nothing, τ=tau)
-    return 1.0 - F_ss(ϕ, objectives; τ=τ)
+function J_T_ss(ϕ, trajectories; tau=nothing, τ=tau)
+    return 1.0 - F_ss(ϕ, trajectories; τ=τ)
 end
 
 
 @doc raw"""Backward boundary states ``|χ⟩`` for functional [`J_T_ss`](@ref).
 
 ```julia
-chi_ss!(χ, ϕ, objectives; τ=nothing)  # or `tau=nothing`
+chi_ss!(χ, ϕ, trajectories; τ=nothing)  # or `tau=nothing`
 ```
 
 sets the elements of `χ` according to
@@ -141,29 +141,29 @@ sets the elements of `χ` according to
 
 with ``|ϕ^{\tgt}_k⟩``, ``τ_k`` and ``w_k`` as defined in [`f_tau`](@ref).
 
-Note: this function can be obtained with `make_chi(J_T_ss, objectives)`.
+Note: this function can be obtained with `make_chi(J_T_ss, trajectories)`.
 """
-function chi_ss!(χ, ϕ, objectives; tau=nothing, τ=tau)
-    N = length(objectives)
+function chi_ss!(χ, ϕ, trajectories; tau=nothing, τ=tau)
+    N = length(trajectories)
     if τ === nothing
-        τ = [dot(objectives[k].target_state, ϕ[k]) for k = 1:N]
+        τ = [dot(trajectories[k].target_state, ϕ[k]) for k = 1:N]
     end
     for k = 1:N
-        obj = objectives[k]
-        ϕₖ_tgt = obj.target_state
+        traj = trajectories[k]
+        ϕₖ_tgt = traj.target_state
         copyto!(χ[k], ϕₖ_tgt)
-        w = obj.weight
+        w = traj.weight
         lmul!((τ[k] * w) / N, χ[k])
     end
 end
 
-make_analytic_chi(::typeof(J_T_ss), objectives) = chi_ss!
+make_analytic_chi(::typeof(J_T_ss), trajectories) = chi_ss!
 
 
 @doc raw"""Square-modulus fidelity.
 
 ```julia
-F_sm(ϕ, objectives; τ=nothing)  # or `tau=nothing`
+F_sm(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -176,9 +176,9 @@ F_{\text{sm}}
     \quad\in [0, 1]\,,
 ```
 
-with ``w_k`` the weight for the k'th objective and ``τ_k`` the overlap of the
+with ``w_k`` the weight for the k'th trajectory and ``τ_k`` the overlap of the
 k'th propagated state with the k'th target state, ``τ̄_k`` the complex conjugate
-of ``τ_k``, and ``N`` the number of objectives.
+of ``τ_k``, and ``N`` the number of trajectories.
 
 All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
 
@@ -186,15 +186,15 @@ All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_sm(ϕ, objectives; tau=nothing, τ=tau)
-    return abs2(f_tau(ϕ, objectives; τ=τ))
+function F_sm(ϕ, trajectories; tau=nothing, τ=tau)
+    return abs2(f_tau(ϕ, trajectories; τ=τ))
 end
 
 
 @doc raw"""Square-modulus functional.
 
 ```julia
-J_T_sm(ϕ, objectives; τ=nothing)  # or `tau=nothing`
+J_T_sm(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -210,15 +210,15 @@ in [`F_sm`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_sm(ϕ, objectives; tau=nothing, τ=tau)
-    return 1.0 - F_sm(ϕ, objectives; τ=τ)
+function J_T_sm(ϕ, trajectories; tau=nothing, τ=tau)
+    return 1.0 - F_sm(ϕ, trajectories; τ=τ)
 end
 
 
 @doc raw"""Backward boundary states ``|χ⟩`` for functional [`J_T_sm`](@ref).
 
 ```julia
-chi_sm!(χ, ϕ, objectives; τ=nothing)  # or `tau=nothing`
+chi_sm!(χ, ϕ, trajectories; τ=nothing)  # or `tau=nothing`
 ```
 
 sets the elements of `χ` according to
@@ -231,37 +231,37 @@ sets the elements of `χ` according to
 
 with ``|ϕ^{\tgt}_k⟩``, ``τ_j`` and ``w_k`` as defined in [`f_tau`](@ref).
 
-Note: this function can be obtained with `make_chi(J_T_sm, objectives)`.
+Note: this function can be obtained with `make_chi(J_T_sm, trajectories)`.
 """
-function chi_sm!(χ, ϕ, objectives; tau=nothing, τ=tau)
+function chi_sm!(χ, ϕ, trajectories; tau=nothing, τ=tau)
 
-    N = length(objectives)
+    N = length(trajectories)
     if τ === nothing
-        τ = [dot(objectives[k].target_state, ϕ[k]) for k = 1:N]
+        τ = [dot(trajectories[k].target_state, ϕ[k]) for k = 1:N]
     end
 
     w = ones(N)
     for k = 1:N
-        obj = objectives[k]
-        w[k] = obj.weight
+        traj = trajectories[k]
+        w[k] = traj.weight
     end
 
     for k = 1:N
-        obj = objectives[k]
-        ϕₖ_tgt = obj.target_state
+        traj = trajectories[k]
+        ϕₖ_tgt = traj.target_state
         copyto!(χ[k], ϕₖ_tgt)
         lmul!(w[k] * sum(w .* τ) / N^2, χ[k])
     end
 
 end
 
-make_analytic_chi(::typeof(J_T_sm), objectives) = chi_sm!
+make_analytic_chi(::typeof(J_T_sm), trajectories) = chi_sm!
 
 
 @doc raw"""Real-part fidelity.
 
 ```julia
-F_re(ϕ, objectives; τ=nothing)  # or `tau=nothing`
+F_re(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -278,9 +278,9 @@ F_{\text{re}}
 \end{cases}
 ```
 
-with ``w_k`` the weight for the k'th objective and ``τ_k`` the overlap of the
+with ``w_k`` the weight for the k'th trajectory and ``τ_k`` the overlap of the
 k'th propagated state with the k'th target state, and ``N`` the number of
-objectives.
+trajectories.
 
 All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
 
@@ -288,15 +288,15 @@ All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_re(ϕ, objectives; tau=nothing, τ=tau)
-    return real(f_tau(ϕ, objectives; τ=τ))
+function F_re(ϕ, trajectories; tau=nothing, τ=tau)
+    return real(f_tau(ϕ, trajectories; τ=τ))
 end
 
 
 @doc raw"""Real-part functional.
 
 ```julia
-J_T_re(ϕ, objectives; τ=nothing)  # or `tau=nothing`
+J_T_re(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
 ```
 
 calculates
@@ -315,15 +315,15 @@ in [`F_re`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_re(ϕ, objectives; tau=nothing, τ=tau)
-    return 1.0 - F_re(ϕ, objectives; τ=τ)
+function J_T_re(ϕ, trajectories; tau=nothing, τ=tau)
+    return 1.0 - F_re(ϕ, trajectories; τ=τ)
 end
 
 
 @doc raw"""Backward boundary states ``|χ⟩`` for functional [`J_T_re`](@ref).
 
 ```julia
-chi_re!(χ, ϕ, objectives; τ=nothing)  # or `tau=nothing`
+chi_re!(χ, ϕ, trajectories; τ=nothing)  # or `tau=nothing`
 ```
 
 sets the elements of `χ` according to
@@ -337,23 +337,23 @@ sets the elements of `χ` according to
 
 with ``|ϕ^{\tgt}_k⟩`` and ``w_k`` as defined in [`f_tau`](@ref).
 
-Note: this function can be obtained with `make_chi(J_T_re, objectives)`.
+Note: this function can be obtained with `make_chi(J_T_re, trajectories)`.
 """
-function chi_re!(χ, ϕ, objectives; tau=nothing, τ=tau)
-    N = length(objectives)
+function chi_re!(χ, ϕ, trajectories; tau=nothing, τ=tau)
+    N = length(trajectories)
     if τ === nothing
-        τ = [dot(objectives[k].target_state, ϕ[k]) for k = 1:N]
+        τ = [dot(trajectories[k].target_state, ϕ[k]) for k = 1:N]
     end
     for k = 1:N
-        obj = objectives[k]
-        ϕₖ_tgt = obj.target_state
+        traj = trajectories[k]
+        ϕₖ_tgt = traj.target_state
         copyto!(χ[k], ϕₖ_tgt)
-        w = obj.weight
+        w = traj.weight
         lmul!(w / (2N), χ[k])
     end
 end
 
-make_analytic_chi(::typeof(J_T_re), objectives) = chi_re!
+make_analytic_chi(::typeof(J_T_re), trajectories) = chi_re!
 
 
 """Convert a functional from acting on a gate to acting on propagated states.
@@ -364,13 +364,13 @@ J_T = gate_functional(J_T_U; kwargs...)
 
 constructs a functional `J_T` that meets the requirements for
 for Krotov/GRAPE and [`make_chi`](@ref). That is, the output `J_T` takes
-positional positional arguments `ϕ` and `objectives`. The input functional
+positional positional arguments `ϕ` and `trajectories`. The input functional
 `J_T_U` is assumed to have the signature `J_T_U(U; kwargs...)` where `U` is a
 matrix with elements ``U_{ij} = ⟨Ψ_i|ϕ_j⟩``, where ``|Ψ_i⟩`` is the
-`initial_state` of the i'th `objectives` (assumed to be the i'th canonical
+`initial_state` of the i'th `trajectories` (assumed to be the i'th canonical
 basis state) and ``|ϕ_j⟩`` is the result of forward-propagating ``|Ψ_j⟩``. That
 is, `U` is the projection of the time evolution operator into the subspace
-defined by the basis in the `initial_states` of the  `objectives`.
+defined by the basis in the `initial_states` of the  `trajectories`.
 
 # See also
 
@@ -379,9 +379,9 @@ defined by the basis in the `initial_states` of the  `objectives`.
 """
 function gate_functional(J_T_U; kwargs...)
 
-    function J_T(ϕ, objectives; tau=nothing, τ=tau)
-        N = length(objectives)
-        U = [(objectives[i].initial_state ⋅ ϕ[j]) for i = 1:N, j = 1:N]
+    function J_T(ϕ, trajectories; tau=nothing, τ=tau)
+        N = length(trajectories)
+        U = [(trajectories[i].initial_state ⋅ ϕ[j]) for i = 1:N, j = 1:N]
         return J_T_U(U; kwargs...)
     end
 
@@ -394,7 +394,7 @@ end
 Return a function to evaluate ``|χ_k⟩ = -∂J_T(Û)/∂⟨ϕ_k|`` via the chain rule.
 
 ```julia
-chi! = make_gate_chi(J_T_U, objectives; automatic=:default, kwargs...)
+chi! = make_gate_chi(J_T_U, trajectories; automatic=:default, kwargs...)
 ```
 
 returns a function equivalent to
@@ -402,7 +402,7 @@ returns a function equivalent to
 ```julia
 chi! = make_chi(
     gate_functional(J_T_U; kwargs...),
-    objectives;
+    trajectories;
     mode=:automatic,
     automatic,
 )
@@ -418,7 +418,7 @@ chi! = make_chi(
 ```
 
 where ``|Ψ_i⟩`` is the basis state stored as the `initial_state` of the i'th
-`objective`, see [`gate_functional`](@ref).
+trajectory, see [`gate_functional`](@ref).
 
 The gradient ``∇_U J_T`` is obtained via automatic differentiation (AD). This
 requires that an AD package has been loaded (e.g., `using Zygote`). This
@@ -430,28 +430,28 @@ Compared to the more general [`make_chi`](@ref) with `mode=:automatic`,
 `make_gate_chi` will generally have a slightly smaller numerical overhead, as
 it pushes the use of automatic differentiation down by one level.
 """
-function make_gate_chi(J_T_U, objectives; automatic=:default, kwargs...)
+function make_gate_chi(J_T_U, trajectories; automatic=:default, kwargs...)
     if automatic == :default
         if QuantumControlBase.DEFAULT_AD_FRAMEWORK == :nothing
             msg = "make_gate_chi: no default `automatic`. You must run `set_default_ad_framework` first, e.g. `import Zygote; QuantumControl.set_default_ad_framework(Zygote)`."
             error(msg)
         else
             automatic = QuantumControlBase.DEFAULT_AD_FRAMEWORK
-            chi = make_gate_chi(J_T_U, objectives, automatic; kwargs...)
+            chi = make_gate_chi(J_T_U, trajectories, automatic; kwargs...)
             @info "make_gate_chi for J_T_U=$(J_T_U): automatic with $automatic"
             return chi
         end
     else
-        return make_gate_chi(J_T_U, objectives, automatic; kwargs...)
+        return make_gate_chi(J_T_U, trajectories, automatic; kwargs...)
     end
 end
 
-function make_gate_chi(J_T_U, objectives, automatic::Module; kwargs...)
-    return make_gate_chi(J_T_U, objectives, Val(nameof(automatic)); kwargs...)
+function make_gate_chi(J_T_U, trajectories, automatic::Module; kwargs...)
+    return make_gate_chi(J_T_U, trajectories, Val(nameof(automatic)); kwargs...)
 end
 
-function make_gate_chi(J_T_U, objectives, automatic::Symbol; kwargs...)
-    return make_gate_chi(J_T_U, objectives, Val(automatic); kwargs...)
+function make_gate_chi(J_T_U, trajectories, automatic::Symbol; kwargs...)
+    return make_gate_chi(J_T_U, trajectories, Val(automatic); kwargs...)
 end
 
 

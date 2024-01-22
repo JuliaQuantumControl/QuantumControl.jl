@@ -6,12 +6,12 @@ import FiniteDifferences
 import QuantumControl.Functionals: make_gate_chi
 
 
-function make_gate_chi(J_T_U, objectives, ::Val{:FiniteDifferences}; kwargs...)
+function make_gate_chi(J_T_U, trajectories, ::Val{:FiniteDifferences}; kwargs...)
 
-    N = length(objectives)
-    basis = [obj.initial_state for obj in objectives]
+    N = length(trajectories)
+    basis = [traj.initial_state for traj in trajectories]
 
-    function fdm_gate_chi!(χ, ϕ, objectives; τ=nothing)
+    function fdm_gate_chi!(χ, ϕ, trajectories; τ=nothing)
         function _J_T(U)
             -J_T_U(U; kwargs...)
         end

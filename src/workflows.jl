@@ -344,7 +344,7 @@ can also contain metadata. By default, this is "script" with the file
 name and line number of where `@optimize_or_load` was called, as well as data
 from the dict `metadata` mapping arbitrary (string) keys to values.
 Lastly, the data contains truncated captured output (up to 1kB of both the
-beginning and end of the output) from the optmization.
+beginning and end of the output) from the optimization.
 
 If `logfile` is given as the path to a file, both `stdout` and `stderr` from
 `optimize` are redirected into the given file.

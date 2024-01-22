@@ -6,24 +6,30 @@ using QuantumControl
 using QuantumControl.Shapes
 using QuantumControl.Functionals
 using QuantumControl.Generators
-using Pkg
 using Documenter
 using DocumenterCitations
 using DocumenterInterLinks
-
-links = InterLinks(
-    "TimerOutputs" => (
-        "https://github.com/KristofferC/TimerOutputs.jl",
-        joinpath(@__DIR__, "src", "inventories", "TimerOutputs.toml")
-    ),
-    "QuantumPropagators" => "https://juliaquantumcontrol.github.io/QuantumPropagators.jl/dev/"
-)
+using Pkg
 
 PROJECT_TOML = Pkg.TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))
 VERSION = PROJECT_TOML["version"]
 NAME = PROJECT_TOML["name"]
 AUTHORS = join(PROJECT_TOML["authors"], ", ") * " and contributors"
 GITHUB = "https://github.com/JuliaQuantumControl/QuantumControl.jl"
+
+DEV_OR_STABLE = "stable/"
+if endswith(VERSION, "dev")
+    DEV_OR_STABLE = "dev/"
+end
+
+links = InterLinks(
+    "TimerOutputs" => (
+        "https://github.com/KristofferC/TimerOutputs.jl",
+        joinpath(@__DIR__, "src", "inventories", "TimerOutputs.toml")
+    ),
+    "QuantumPropagators" => "https://juliaquantumcontrol.github.io/QuantumPropagators.jl/$DEV_OR_STABLE",
+    "QuantumGradientGenerators" => "https://juliaquantumcontrol.github.io/QuantumGradientGenerators.jl/$DEV_OR_STABLE",
+)
 
 println("Starting makedocs")
 

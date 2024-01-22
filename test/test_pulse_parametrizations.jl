@@ -1,6 +1,6 @@
 using Test
 using LinearAlgebra
-using QuantumControl: QuantumControl, ControlProblem, hamiltonian, optimize, Objective
+using QuantumControl: QuantumControl, ControlProblem, hamiltonian, optimize, Trajectory
 using QuantumControlTestUtils.RandomObjects: random_matrix
 using QuantumControl.Controls: substitute
 using QuantumControl.Shapes: flattop
@@ -168,7 +168,7 @@ end
 
     H = tls_hamiltonian()
     tlist = collect(range(0, 5, length=500))
-    objectives = [Objective(initial_state=ket(0), generator=H, target_state=ket(1))]
+    trajectories = [Trajectory(ket(0), H; target_state=ket(1))]
 
     a = ParametrizedAmplitude(
         ϵ,
@@ -178,7 +178,7 @@ end
     )
 
     problem_tanh = ControlProblem(
-        objectives=substitute(objectives, IdDict(ϵ => a)),
+        trajectories=substitute(trajectories, IdDict(ϵ => a)),
         prop_method=ExpProp,
         lambda_a=1,
         update_shape=(t -> flattop(t, T=5, t_rise=0.3, func=:blackman)),
