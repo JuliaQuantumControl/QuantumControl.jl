@@ -13,6 +13,7 @@ using QuantumControl.PulseParametrizations:
     LogisticParametrization,
     LogisticSqParametrization
 using QuantumControl.Controls: get_controls, evaluate, discretize
+using Krotov
 using IOCapture
 
 
@@ -188,7 +189,7 @@ end
     )
 
     captured = IOCapture.capture(passthrough=false) do
-        optimize(problem_tanh; method=:krotov)
+        optimize(problem_tanh; method=Krotov)
     end
     opt_result_tanh = captured.value
     @test opt_result_tanh.iter == 30

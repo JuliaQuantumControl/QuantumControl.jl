@@ -75,8 +75,6 @@ quantum_control_sub_modules = get_submodules(QuantumControl)
 subpackages = [
     (:QuantumPropagators, "quantum_propagators.md"),
     (:QuantumControlBase, "quantum_control_base.md"),
-    (:Krotov, "krotov.md"),
-    (:GRAPE, "grape.md"),
 ]
 
 
@@ -139,17 +137,6 @@ open(outfile, "w") do out
         local outfile = joinpath(@__DIR__, "src", "api", outfilename)
         write(out, "* [`$pkgname`](@ref $(pkgname)Package)\n")
     end
-    write(out, """
-
-    These (and their submodules) can be accessed directly, e.g.
-
-    ```jldoctest;  filter = r"(generic function with \\d+ methods)"
-    julia> using QuantumControl
-
-    julia> QuantumControl.QuantumPropagators.SpectralRange.specrange
-    specrange (generic function with 5 methods)
-    ```
-    """)
 end
 
 

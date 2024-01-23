@@ -17,14 +17,14 @@ Markdown.parse("$github_badge $version_badge")
 
 Quantum optimal control [BrumerShapiro2003,BrifNJP2010,Shapiro2012,KochJPCM2016,SolaAAMOP2018,MorzhinRMS2019,Wilhelm2003.10132,KochEPJQT2022](@cite) attempts to steer a quantum system in some desired way by finding optimal control parameters or control fields inside the system Hamiltonian or Liouvillian. Typical control tasks are the preparation of a specific quantum state or the realization of a logical gate in a quantum computer (["pulse level control"](https://arxiv.org/abs/2004.06755)). Thus, quantum control theory is a critical part of realizing quantum technologies at the lowest level. Numerical methods of *open-loop* quantum control (methods that do not involve measurement feedback from a physical quantum device) such as [Krotov's method](https://github.com/JuliaQuantumControl/Krotov.jl) [Krotov1996,SomloiCP1993,BartanaJCP1997,PalaoPRA2003,ReichJCP2012,GoerzSPP2019](@cite) and [GRAPE](https://github.com/JuliaQuantumControl/GRAPE.jl) [KhanejaJMR2005,FouquieresJMR2011](@cite) address the control problem by [simulating the dynamics of the system](https://github.com/JuliaQuantumControl/QuantumPropagators.jl) and then iteratively improving the value of a functional that encodes the desired outcome.
 
-The `QuantumControl.jl` package collects the [packages](https://github.com/JuliaQuantumControl#packages) in the [JuliaQuantumControl](https://github.com/JuliaQuantumControl) organization and provides a single coherent [API](@ref QuantumControlAPI) for solving the quantum control problem.
+The `QuantumControl.jl` package provides a single coherent [API](@ref QuantumControlAPI) for solving the quantum control problem with the [packages](https://github.com/JuliaQuantumControl#packages) in the [JuliaQuantumControl](https://github.com/JuliaQuantumControl) organization.
 
 
 ## Getting Started
 
 * See the [installation instructions](https://github.com/JuliaQuantumControl/QuantumControl.jl#installation) on Github.
 
-* Look at a [simple example for a state-to-state transition with Krotov's method](https://juliaquantumcontrol.github.io/Krotov.jl/stable/examples/simple_state_to_state/) to get a feeling for how the `QuantumControl` package is intended to be used, or look at the larger list of [Examples](@ref examples-list).
+* Look at a [simple example for a state-to-state transition with GRAPE](@extref Examples :doc:`examples/simple_state_to_state/index`) to get a feeling for how the `QuantumControl` package is intended to be used, or look at the larger list of [Examples](@extref Examples :doc:`index`).
 
 * Read the [Glossary](@ref) and [User Manual](@ref) to understand the philosophy of the framework.
 
@@ -34,6 +34,7 @@ The `QuantumControl.jl` package collects the [packages](https://github.com/Julia
 Pages = [
     "glossary.md",
     "manual.md",
+    "methods.md",
     "howto.md",
 ]
 Depth = 2

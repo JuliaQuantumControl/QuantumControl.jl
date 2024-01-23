@@ -8,9 +8,7 @@
 
 A Julia Framework for Quantum Dynamics and Control.
 
-The [`QuantumControl`][QuantumControl] package collects the [packages][] in the [JuliaQuantumControl][] organization and provides a single coherent [API](https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/api/quantum_control/#QuantumControlAPI) for solving quantum control problems. See the [organization README](https://github.com/JuliaQuantumControl#readme) for details.
-
-The [`QuantumControl`][QuantumControl] package provides a framework for solving quantum control problems. It exposes the [packages][] in the [JuliaQuantumControl][] organization in a single coherent [API](https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/api/quantum_control/#QuantumControlAPI). Specifically, it subsumes the [`QuantumPropagators`][QuantumPropagators] package to simulate quantum dynamics.
+The [`QuantumControl`][QuantumControl] package is a high-level interface for the [packages][] in the [JuliaQuantumControl][] organization and provides a coherent [API](https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/api/quantum_control/#QuantumControlAPI) for solving quantum control problems. See the [organization README](https://github.com/JuliaQuantumControl#readme) for details.
 
 
 ## Documentation
@@ -18,6 +16,7 @@ The [`QuantumControl`][QuantumControl] package provides a framework for solving 
 The [full documentation](https://juliaquantumcontrol.github.io/QuantumControl.jl/) is available at <https://juliaquantumcontrol.github.io/QuantumControl.jl/>.
 
 Support is also available in the `#quantumcontrol` channel in the [Julia Slack](https://julialang.org/slack/).
+
 
 ## Installation
 
@@ -27,7 +26,20 @@ The [`QuantumControl.jl`][QuantumControl] package can be installed via the [stan
 pkg> add QuantumControl
 ~~~
 
-This will also install [all the packages][packages] of the [JuliaQuantumControl][] organization as dependencies.
+You will also want to install the [`QuantumPropagators` package][QuantumPropagators]
+
+~~~
+pkg> add QuantumPropagator
+~~~
+
+to access a suitable dynamic solver for your problem (e.g. `using QuantumPropagators: Cheby`); as well as at least one package for a specific optimization method you are planning to use:
+
+~~~
+pkg> add Krotov
+pkg> add GRAPE
+~~~
+
+See the [list of packages][packages] of the [JuliaQuantumControl][] organization.
 
 
 [JuliaQuantumControl]: https://github.com/JuliaQuantumControl
