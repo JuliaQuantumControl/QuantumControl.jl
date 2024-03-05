@@ -72,9 +72,9 @@ function run_or_load(
     if force || !isfile(filename)
         if verbose
             if force && isfile(filename)
-                @info "Overwriting $filename (force=true)"
+                @info "Overwriting $(relpath(filename)) (force=true)"
             else  # if !isfile(filename)
-                @info "File $filename does not exist. Creating it now."
+                @info "File $(relpath(filename)) does not exist. Creating it now."
             end
         end
         dir, _ = splitdir(filename)
@@ -113,7 +113,7 @@ function run_or_load(
         return load(file)
     else
         data = load(file)
-        verbose && @info "Loading data from $filename"
+        verbose && @info "Loading data from $(relpath(filename))"
         if !isnothing(_else)
             _else(data)
         end
@@ -450,8 +450,8 @@ function load_optimization(file; return_metadata=false, verbose=false, kwargs...
     result = data["result"]
     metadata = filter(kv -> (kv[1] != "result"), data)
     if verbose
-        metadata_str = join(["  $key: $val" for (key, val) ∈ metadata], "\n")
-        @info ("Loaded optimization result from $file\n" * metadata_str)
+        msg = "Loaded optimization result from $(relpath(file))"
+        @info msg metadata
     end
     if return_metadata
         return result, metadata
