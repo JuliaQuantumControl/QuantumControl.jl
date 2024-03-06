@@ -424,7 +424,7 @@ The gradient ``∇_U J_T`` is obtained via automatic differentiation (AD). This
 requires that an AD package has been loaded (e.g., `using Zygote`). This
 package must either be passed as the `automatic` keyword argument, or the
 package must be set as the default AD provider using
-`QuantumControl.set_default_ad_framework`.
+[`QuantumControl.set_default_ad_framework`](@ref).
 
 Compared to the more general [`make_chi`](@ref) with `mode=:automatic`,
 `make_gate_chi` will generally have a slightly smaller numerical overhead, as

@@ -11,6 +11,9 @@ using DocumenterCitations
 using DocumenterInterLinks
 using Pkg
 
+Pkg.add(url="https://github.com/goerz/DocumenterResolveXRefInMainPrototype.jl.git")
+using DocumenterResolveXRefInMainPrototype
+
 PROJECT_TOML = Pkg.TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))
 VERSION = PROJECT_TOML["version"]
 NAME = PROJECT_TOML["name"]
