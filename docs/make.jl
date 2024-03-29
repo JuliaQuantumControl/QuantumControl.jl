@@ -11,8 +11,6 @@ using DocumenterCitations
 using DocumenterInterLinks
 using Pkg
 
-Pkg.add(url="https://github.com/goerz/DocumenterResolveXRefInMainPrototype.jl.git")
-using DocumenterResolveXRefInMainPrototype
 
 PROJECT_TOML = Pkg.TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))
 VERSION = PROJECT_TOML["version"]
@@ -26,6 +24,11 @@ if endswith(VERSION, "dev")
 end
 
 links = InterLinks(
+    "Julia" => (
+        "https://docs.julialang.org/en/v1/",
+        "https://docs.julialang.org/en/v1/objects.inv",
+        joinpath(@__DIR__, "src", "inventories", "Julia.toml"),
+    ),
     "TimerOutputs" => (
         "https://github.com/KristofferC/TimerOutputs.jl",
         joinpath(@__DIR__, "src", "inventories", "TimerOutputs.toml")
@@ -35,6 +38,16 @@ links = InterLinks(
     "GRAPE" => "https://juliaquantumcontrol.github.io/GRAPE.jl/$DEV_OR_STABLE",
     "QuantumPropagators" => "https://juliaquantumcontrol.github.io/QuantumPropagators.jl/$DEV_OR_STABLE",
     "QuantumGradientGenerators" => "https://juliaquantumcontrol.github.io/QuantumGradientGenerators.jl/$DEV_OR_STABLE",
+    "ComponentArrays" => (
+        "https://jonniedie.github.io/ComponentArrays.jl/stable/",
+        "https://jonniedie.github.io/ComponentArrays.jl/stable/objects.inv",
+        joinpath(@__DIR__, "src", "inventories", "ComponentArrays.toml")
+    ),
+    "RecursiveArrayTools" => (
+        "https://docs.sciml.ai/RecursiveArrayTools/stable/",
+        "https://docs.sciml.ai/RecursiveArrayTools/stable/objects.inv",
+        joinpath(@__DIR__, "src", "inventories", "RecursiveArrayTools.toml")
+    ),
 )
 
 println("Starting makedocs")
