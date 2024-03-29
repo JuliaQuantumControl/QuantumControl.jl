@@ -464,10 +464,10 @@ J_a = J_a_fluence(pulsevals, tlist)
 calculates
 
 ```math
-J_a = \sum_l \int_0^T |ϵ_l(t)|^2 dt = \left(\sum_{ln} |ϵ_{ln}|^2 \right) dt
+J_a = \sum_l \int_0^T |ϵ_l(t)|^2 dt = \left(\sum_{nl} |ϵ_{nl}|^2 \right) dt
 ```
 
-where ``ϵ_{ln}`` are the values in the (vectorized) `pulsevals`, `n` is the
+where ``ϵ_{nl}`` are the values in the (vectorized) `pulsevals`, `n` is the
 index of the intervals of the time grid, and ``dt`` is the time step, taken
 from the first time interval of `tlist` and assumed to be uniform.
 """
@@ -483,8 +483,8 @@ end
 grad_J_a_fluence!(∇J_a, pulsevals, tlist)
 ```
 
-sets the (vectorized) elements of `∇J_a` to ``2 ϵ_{ln} dt``, where
-``ϵ_{ln}`` are the (vectorized) elements of `pulsevals` and ``dt`` is the time
+sets the (vectorized) elements of `∇J_a` to ``2 ϵ_{nl} dt``, where
+``ϵ_{nl}`` are the (vectorized) elements of `pulsevals` and ``dt`` is the time
 step, taken from the first time interval of `tlist` and assumed to be uniform.
 """
 function grad_J_a_fluence!(∇J_a, pulsevals, tlist)
