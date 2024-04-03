@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "QuantumPropagators.jl",
         "QuantumControlBase.jl",
         "QuantumGradientGenerators.jl",
+        "ParameterizedQuantumControl.jl",
         "Krotov.jl",
         "GRAPE.jl",
         "TwoQubitWeylChamber.jl",
