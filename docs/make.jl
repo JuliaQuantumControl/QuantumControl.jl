@@ -1,15 +1,23 @@
+using Pkg
+
+DOCUMENTER_VERSION =
+    [p for (uuid, p) in Pkg.dependencies() if p.name == "Documenter"][1].version
+if DOCUMENTER_VERSION <= v"1.3.0"
+    Pkg.develop("Documenter")
+end
+
+using Documenter
 using QuantumPropagators
 using QuantumControlBase
 using QuantumControl
 using QuantumControl.Shapes
 using QuantumControl.Functionals
 using QuantumControl.Generators
-using Documenter
 using Krotov
 using GRAPE
+import OrdinaryDiffEq  # ensure ODE extension is loaded
 using DocumenterCitations
 using DocumenterInterLinks
-using Pkg
 
 
 PROJECT_TOML = Pkg.TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))
@@ -68,6 +76,7 @@ makedocs(;
     # Link checking is disabled in REPL, see `devrepl.jl`.
     linkcheck=(get(ENV, "DOCUMENTER_CHECK_LINKS", "1") != "0"),
     warnonly,
+    doctest=false,  # doctests run as part of test suite
     format=Documenter.HTML(;
         prettyurls=true,
         canonical="https://juliaquantumcontrol.github.io/QuantumControl.jl",
