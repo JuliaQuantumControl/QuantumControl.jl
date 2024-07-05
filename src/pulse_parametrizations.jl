@@ -239,7 +239,7 @@ function ParametrizedAmplitude(
         end
     else
         if (control isa Vector{Float64}) && (shape isa Vector{Float64})
-            return ShapedParametrizedPulseAmplitude(control, shape)
+            return ShapedParametrizedPulseAmplitude(control, shape, parametrization)
         else
             try
                 ϵ_t = control(0.0)
@@ -255,7 +255,7 @@ function ParametrizedAmplitude(
                     "A ParametrizedAmplitude shape must either be a vector of values or a callable"
                 )
             end
-            return ShapedParametrizedContinuousAmplitude(control, shape)
+            return ShapedParametrizedContinuousAmplitude(control, shape, parametrization)
         end
     end
 end
