@@ -5,19 +5,19 @@ using QuantumControlTestUtils.RandomObjects: random_matrix
 using QuantumControl.Controls: substitute
 using QuantumControl.Shapes: flattop
 using QuantumPropagators: ExpProp
-using QuantumControl.PulseParametrizations:
-    ParametrizedAmplitude,
-    SquareParametrization,
-    TanhParametrization,
-    TanhSqParametrization,
-    LogisticParametrization,
-    LogisticSqParametrization
+using QuantumControl.PulseParameterizations:
+    ParameterizedAmplitude,
+    SquareParameterization,
+    TanhParameterization,
+    TanhSqParameterization,
+    LogisticParameterization,
+    LogisticSqParameterization
 using QuantumControl.Controls: get_controls, evaluate, discretize
 using Krotov
 using IOCapture
 
 
-@testset "Instantiate ParametrizedAmplitude" begin
+@testset "Instantiate ParameterizedAmplitude" begin
 
     # See https://github.com/orgs/JuliaQuantumControl/discussions/42
     # https://github.com/JuliaQuantumControl/QuantumControl.jl/issues/43
@@ -29,7 +29,7 @@ using IOCapture
     H2 = random_matrix(N; hermitian=true)
 
     ϵ(t) = 0.5
-    a = ParametrizedAmplitude(ϵ; parametrization=SquareParametrization())
+    a = ParameterizedAmplitude(ϵ; parameterization=SquareParameterization())
     @test get_controls(a) == (ϵ,)
 
     H = hamiltonian(H0, (H1, ϵ), (H2, a); check=false)
@@ -39,112 +39,112 @@ using IOCapture
 
 end
 
-@testset "Positive parametrizations" begin
+@testset "Positive parameterizations" begin
 
     # See figure at
-    # https://juliaquantumcontrol.github.io/QuantumControlExamples.jl/stable/tutorials/krotov_pulse_parametrization/#Positive-(Bounded)-Controls
+    # https://juliaquantumcontrol.github.io/QuantumControlExamples.jl/stable/tutorials/krotov_pulse_parameterization/#Positive-(Bounded)-Controls
 
     u_vals = collect(range(-3, 3, length=101))
     ϵ_vals = collect(range(0, 1, length=101))
     ϵ_max = 1.0
 
-    ϵ_tanhsq = TanhSqParametrization(ϵ_max).a_of_epsilon.(u_vals)
+    ϵ_tanhsq = TanhSqParameterization(ϵ_max).a_of_epsilon.(u_vals)
     @test minimum(ϵ_tanhsq) ≈ 0.0
     @test 0.95 < maximum(ϵ_tanhsq) <= 1.0
 
-    ϵ_logsq1 = LogisticSqParametrization(ϵ_max).a_of_epsilon.(u_vals)
+    ϵ_logsq1 = LogisticSqParameterization(ϵ_max).a_of_epsilon.(u_vals)
     @test minimum(ϵ_logsq1) ≈ 0.0
     @test 0.81 < maximum(ϵ_logsq1) <= 0.83
 
-    ϵ_logsq4 = LogisticSqParametrization(ϵ_max, k=4.0).a_of_epsilon.(u_vals)
+    ϵ_logsq4 = LogisticSqParameterization(ϵ_max, k=4.0).a_of_epsilon.(u_vals)
     @test minimum(ϵ_logsq4) ≈ 0.0
     @test 0.95 < maximum(ϵ_logsq4) <= 1.0
 
-    ϵ_sq = SquareParametrization().a_of_epsilon.(u_vals)
+    ϵ_sq = SquareParameterization().a_of_epsilon.(u_vals)
     @test minimum(ϵ_sq) ≈ 0.0
     @test maximum(ϵ_sq) ≈ 9.0
 
-    u_tanhsq = TanhSqParametrization(ϵ_max).epsilon_of_a.(ϵ_vals)
+    u_tanhsq = TanhSqParameterization(ϵ_max).epsilon_of_a.(ϵ_vals)
     @test u_tanhsq[begin] ≈ 0.0
     @test maximum(u_tanhsq) ≈ u_tanhsq[end]
     @test 18.0 < maximum(u_tanhsq) <= 19.0
 
-    u_logsq1 = LogisticSqParametrization(ϵ_max).epsilon_of_a.(ϵ_vals)
+    u_logsq1 = LogisticSqParameterization(ϵ_max).epsilon_of_a.(ϵ_vals)
     @test u_logsq1[begin] ≈ 0.0
     @test maximum(u_logsq1) ≈ u_logsq1[end]
     @test 740.0 < maximum(u_logsq1) <= 750.0
 
-    u_logsq4 = LogisticSqParametrization(ϵ_max, k=4.0).epsilon_of_a.(ϵ_vals)
+    u_logsq4 = LogisticSqParameterization(ϵ_max, k=4.0).epsilon_of_a.(ϵ_vals)
     @test u_logsq4[begin] ≈ 0.0
     @test maximum(u_logsq4) ≈ u_logsq4[end]
     @test 180.0 < maximum(u_logsq4) <= 190.0
 
-    u_sq = SquareParametrization().epsilon_of_a.(ϵ_vals)
+    u_sq = SquareParameterization().epsilon_of_a.(ϵ_vals)
     @test u_sq[begin] ≈ 0.0
     @test maximum(u_sq) ≈ u_sq[end]
     @test maximum(u_sq) ≈ 1.0
 
-    d_tanhsq = TanhSqParametrization(ϵ_max).da_deps_derivative.(u_vals)
+    d_tanhsq = TanhSqParameterization(ϵ_max).da_deps_derivative.(u_vals)
     @test maximum(d_tanhsq) ≈ -minimum(d_tanhsq)
     @test 0.7 < maximum(d_tanhsq) < 0.8
 
-    d_logsq1 = LogisticSqParametrization(ϵ_max).da_deps_derivative.(u_vals)
+    d_logsq1 = LogisticSqParameterization(ϵ_max).da_deps_derivative.(u_vals)
     @test maximum(d_logsq1) ≈ -minimum(d_logsq1)
     @test 0.35 < maximum(d_logsq1) < 0.40
 
-    d_logsq4 = LogisticSqParametrization(ϵ_max, k=4.0).da_deps_derivative.(u_vals)
+    d_logsq4 = LogisticSqParameterization(ϵ_max, k=4.0).da_deps_derivative.(u_vals)
     @test maximum(d_logsq4) ≈ -minimum(d_logsq4)
     @test 1.5 < maximum(d_logsq4) < 1.6
 
 end
 
 
-@testset "Symmetric parametrizations" begin
+@testset "Symmetric parameterizations" begin
 
     # See figure at
-    # https://juliaquantumcontrol.github.io/QuantumControlExamples.jl/stable/tutorials/krotov_pulse_parametrization/#Symmetric-Bounded-Controls
+    # https://juliaquantumcontrol.github.io/QuantumControlExamples.jl/stable/tutorials/krotov_pulse_parameterization/#Symmetric-Bounded-Controls
 
     u_vals = collect(range(-3, 3, length=101))
     ϵ_vals = collect(range(-1, 1, length=101))
     ϵ_min = -1.0
     ϵ_max = 1.0
 
-    ϵ_tanh = TanhParametrization(ϵ_min, ϵ_max).a_of_epsilon.(u_vals)
+    ϵ_tanh = TanhParameterization(ϵ_min, ϵ_max).a_of_epsilon.(u_vals)
     @test minimum(ϵ_tanh) ≈ -maximum(ϵ_tanh)
     @test 0.99 <= maximum(ϵ_tanh) <= 1.0
 
-    ϵ_log1 = LogisticParametrization(ϵ_min, ϵ_max).a_of_epsilon.(u_vals)
+    ϵ_log1 = LogisticParameterization(ϵ_min, ϵ_max).a_of_epsilon.(u_vals)
     @test minimum(ϵ_log1) ≈ -maximum(ϵ_log1)
     @test 0.90 <= maximum(ϵ_log1) <= 0.91
 
-    ϵ_log4 = LogisticParametrization(ϵ_min, ϵ_max, k=4.0).a_of_epsilon.(u_vals)
+    ϵ_log4 = LogisticParameterization(ϵ_min, ϵ_max, k=4.0).a_of_epsilon.(u_vals)
     @test minimum(ϵ_log4) ≈ -maximum(ϵ_log4)
     @test 0.999 <= maximum(ϵ_log4) <= 1.0
 
-    u_tanh = TanhParametrization(ϵ_min, ϵ_max).epsilon_of_a.(ϵ_vals)
+    u_tanh = TanhParameterization(ϵ_min, ϵ_max).epsilon_of_a.(ϵ_vals)
     @test minimum(u_tanh) ≈ -maximum(u_tanh)
     @test 18.0 <= maximum(u_tanh) <= 19.0
 
     # These diverge to Inf for the maximum:
-    u_log1 = LogisticParametrization(ϵ_min, ϵ_max).epsilon_of_a.(ϵ_vals)
-    u_log4 = LogisticParametrization(ϵ_min, ϵ_max, k=4.0).epsilon_of_a.(ϵ_vals)
+    u_log1 = LogisticParameterization(ϵ_min, ϵ_max).epsilon_of_a.(ϵ_vals)
+    u_log4 = LogisticParameterization(ϵ_min, ϵ_max, k=4.0).epsilon_of_a.(ϵ_vals)
 
-    d_tanh = TanhParametrization(ϵ_min, ϵ_max).da_deps_derivative.(u_vals)
+    d_tanh = TanhParameterization(ϵ_min, ϵ_max).da_deps_derivative.(u_vals)
     @test 0.009 < minimum(d_tanh) < 0.010
     @test maximum(d_tanh) ≈ 1.0
 
-    d_log1 = LogisticParametrization(ϵ_min, ϵ_max).da_deps_derivative.(u_vals)
+    d_log1 = LogisticParameterization(ϵ_min, ϵ_max).da_deps_derivative.(u_vals)
     @test 0.08 < minimum(d_log1) < 0.10
     @test maximum(d_log1) ≈ 0.5
 
-    d_log4 = LogisticParametrization(ϵ_min, ϵ_max, k=4.0).da_deps_derivative.(u_vals)
+    d_log4 = LogisticParameterization(ϵ_min, ϵ_max, k=4.0).da_deps_derivative.(u_vals)
     @test 4e-5 < minimum(d_log4) < 6e-5
     @test maximum(d_log4) ≈ 2.0
 
 end
 
 
-@testset "Parametrized optimization" begin
+@testset "Parameterized optimization" begin
 
     ϵ(t) = 0.2 * flattop(t, T=5, t_rise=0.3, func=:blackman)
 
@@ -171,10 +171,10 @@ end
     tlist = collect(range(0, 5, length=500))
     trajectories = [Trajectory(ket(0), H; target_state=ket(1))]
 
-    a = ParametrizedAmplitude(
+    a = ParameterizedAmplitude(
         ϵ,
         tlist;
-        parametrization=TanhParametrization(-0.5, 0.5),
+        parameterization=TanhParameterization(-0.5, 0.5),
         parameterize=true
     )
 

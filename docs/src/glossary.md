@@ -69,7 +69,7 @@ A function that corresponds directly to some kind of *physical* drive (laser amp
 The time-dependent coefficient ``a_l(t)`` for the [Control Operator](@ref) in Eq. (G2). A control amplitude may depend on on or more control functions, as well as have an explicit time dependency. Some conceptual examples for control amplitudes and how they may depend on a [Control Function](@ref) are the following:
 
 * Non-linear coupling of a control field to the operator, e.g., the quadratic coupling of the laser field to a Stark shift operator
-* [Pulse Parametrization](@ref) as a way to enforce bounds on a [Control Field](@ref)
+* [Pulse Parameterization](@ref) as a way to enforce bounds on a [Control Field](@ref)
 * Transfer functions, e.g., to model the response of an electronic device to the optimal control field ``ϵ(t)``.
 * Noise in the amplitude of the control function
 * Non-controllable aspects of the control amplitude, e.g. a "guided" control amplitude ``a_l(t) = R(t) + ϵ_l(t)`` or a non-controllable envelope ``S(t)`` in ``a_l(t) = S(t) ϵ(t)`` that ensures switch-on- and switch-off in a CRAB pulse `ϵ(t)`.
@@ -81,7 +81,7 @@ In [Qiskit Dynamics](https://qiskit.org/documentation/dynamics/index.html), the 
 
 ##### Control Parameters
 
-Non-time-dependent parameters that a [Control Function](@ref) depends on, ``ϵ(t) = ϵ(\{u_n\}, t)``. One common parametrization of a control field is as a [Pulse](@ref), where the control parameters are the amplitude of the field at discrete points of a time grid. Parametrization as a "pulse" is implicit in Krotov's method and standard GRAPE.
+Non-time-dependent parameters that a [Control Function](@ref) depends on, ``ϵ(t) = ϵ(\{u_n\}, t)``. One common parameterization of a control field is as a [Pulse](@ref), where the control parameters are the amplitude of the field at discrete points of a time grid. Parameterization as a "pulse" is implicit in Krotov's method and standard GRAPE.
 
 More generally, the control parameters could also be spectral coefficients (CRAB) or simple parameters for an analytic pulse shape (e.g., position, width, and amplitude of a Gaussian shape). All optimal control methods find optimized control fields by varying the control parameters.
 
@@ -89,14 +89,14 @@ More generally, the control parameters could also be spectral coefficients (CRAB
 
 ##### Pulse
 
-(aka "control pulse") A control field discretized to a time grid, usually on the midpoints of the time grid, in a piecewise-constant approximation. Stored as a vector of floating point values. The parametrization of a control field as a "pulse" is implicit for Krotov's method and standard GRAPE. One might think of these methods to optimize the control fields *directly*, but a conceptually cleaner understanding is to think of the discretized "pulse" as a vector of control parameters for the time-continuous control field.
+(aka "control pulse") A control field discretized to a time grid, usually on the midpoints of the time grid, in a piecewise-constant approximation. Stored as a vector of floating point values. The parameterization of a control field as a "pulse" is implicit for Krotov's method and standard GRAPE. One might think of these methods to optimize the control fields *directly*, but a conceptually cleaner understanding is to think of the discretized "pulse" as a vector of control parameters for the time-continuous control field.
 
 
 ----
 
-##### Pulse Parametrization
+##### Pulse Parameterization
 
-A special case of a [Control Amplitude)(@ref) where ``a(t) = a(ϵ(t))`` at every point in time. The purpose of this is to constrain the amplitude of the control amplitude ``a(t)``. See e.g. [`QuantumControl.PulseParametrizations.SquareParametrization`](@ref), where ``a(t) = ϵ^2(t)`` to ensure that ``a(t)`` is positive. Since Krotov's method inherently has no constraints on the optimized control fields, pulse parameterization is a method of imposing constraints on the amplitude in this context.
+A special case of a [Control Amplitude](@ref) where ``a(t) = a(ϵ(t))`` at every point in time. The purpose of this is to constrain the amplitude of the control amplitude ``a(t)``. See e.g. [`QuantumControl.PulseParameterizations.SquareParameterization`](@ref), where ``a(t) = ϵ^2(t)`` to ensure that ``a(t)`` is positive. Since Krotov's method inherently has no constraints on the optimized control fields, pulse parameterization is a method of imposing constraints on the amplitude in this context.
 
 ----
 
@@ -121,4 +121,4 @@ The derivative of the optimization functional with respect to *all* [Control Par
 
 !!! note
 
-    The above nomenclature does not consistently extend throughout the quantum control literature: the terms "control"/"control term"/"control Hamiltonian", and "control"/"control field"/"control function"/"control pulse"/"pulse" are generally somewhat ambiguous. In particular, the distinction between "control field" and "pulse" (as a parametrization of the control field in terms of amplitudes on a time grid) here is somewhat artifcial and borrowed from the [Krotov Python package](https://qucontrol.github.io/krotov). However, the terminology defined in this glossary is consistently applied within the `JuliaQuantumControl` organization, both in the documentation and in the names of members and methods.
+    The above nomenclature does not consistently extend throughout the quantum control literature: the terms "control"/"control term"/"control Hamiltonian", and "control"/"control field"/"control function"/"control pulse"/"pulse" are generally somewhat ambiguous. In particular, the distinction between "control field" and "pulse" (as a parameterization of the control field in terms of amplitudes on a time grid) here is somewhat artifcial and borrowed from the [Krotov Python package](https://qucontrol.github.io/krotov). However, the terminology defined in this glossary is consistently applied within the `JuliaQuantumControl` organization, both in the documentation and in the names of members and methods.
