@@ -189,7 +189,7 @@ end
     )
 
     captured = IOCapture.capture(passthrough=false) do
-        optimize(problem_tanh; method=Krotov)
+        optimize(problem_tanh; method=Krotov, rethrow_exceptions=true)
     end
     opt_result_tanh = captured.value
     @test opt_result_tanh.iter == 30

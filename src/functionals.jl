@@ -2,15 +2,13 @@ module Functionals
 
 export J_T_ss, J_T_sm, J_T_re
 export J_a_fluence
-export make_grad_J_a
 export gate_functional
 export make_gate_chi
 
-using QuantumControlBase: QuantumControlBase, make_grad_J_a, make_chi
+using QuantumControlBase: QuantumControlBase, make_grad_J_a, make_chi, taus
 export make_grad_J_a, make_chi
 
-using LinearAlgebra
-
+using LinearAlgebra: axpy!, dot
 import QuantumControlBase: make_analytic_grad_J_a, make_analytic_chi
 
 
@@ -18,7 +16,7 @@ import QuantumControlBase: make_analytic_grad_J_a, make_analytic_chi
 Average complex overlap of the target states with forward-propagated states.
 
 ```julia
-f_tau(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
+f_tau(Ψ, trajectories; tau=taus(Ψ, trajectories), τ=tau)
 ```
 
 calculates
@@ -30,7 +28,7 @@ f_τ = \frac{1}{N} \sum_{k=1}^{N} w_k τ_k
 with
 
 ```math
-τ_k = ⟨ϕ_k^\tgt|ϕ_k(T)⟩
+τ_k = ⟨Ψ_k^\tgt|Ψ_k(T)⟩
 ```
 
 in Hilbert space, or
@@ -39,11 +37,12 @@ in Hilbert space, or
 τ_k = \tr[ρ̂_k^{\tgt\,\dagger} ρ̂_k(T)]
 ```
 
-in Liouville space, where ``|ϕ_k⟩`` or ``ρ̂_k`` are the elements
-of `ϕ`, and ``|ϕ_k^\tgt⟩`` or ``ρ̂_k^\tgt`` are the
-target states from the `target_state` field of the `trajectories`. If `τ` is
-given as a keyword argument, it must contain the values `τ_k` according to the
-above definition. Otherwise, the ``τ_k`` values will be calculated internally.
+in Liouville space, where ``|Ψ_k⟩`` or ``ρ̂_k`` are the elements
+of `Ψ`, and ``|Ψ_k^\tgt⟩`` or ``ρ̂_k^\tgt`` are the
+target states from the `target_state` field of the `trajectories`. If `tau`/`τ`
+is given as a keyword argument, it must contain the values `τ_k` according to
+the above definition. Otherwise, the ``τ_k`` values will be calculated
+internally, see [`QuantumControlBase.taus`](@ref).
 
 ``N`` is the number of trajectories, and ``w_k`` is the `weight` attribute for
 each trajectory. The weights are not automatically
@@ -55,16 +54,17 @@ weights should sum to ``N``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function f_tau(ϕ, trajectories; tau=nothing, τ=tau)
+function f_tau(Ψ, trajectories; tau=nothing, τ=tau)
     N = length(trajectories)
     if τ === nothing
-        τ = [dot(trajectories[k].target_state, ϕ[k]) for k = 1:N]
+        # If we did this in the function header, we'd redundandly call `taus`
+        # if the function was called with the keyword parameter τ
+        τ = taus(Ψ, trajectories)
     end
     f::ComplexF64 = 0
-    for k = 1:N
-        traj = trajectories[k]
+    for (traj, τₖ) in zip(trajectories, τ)
         w = traj.weight
-        f += w * τ[k]
+        f += w * τₖ
     end
     return f / N
 end
@@ -73,7 +73,7 @@ end
 @doc raw"""State-to-state phase-insensitive fidelity.
 
 ```julia
-F_ss(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
+F_ss(Ψ, trajectories; tau=taus(Ψ, trajectories), τ=tau)
 ```
 
 calculates
@@ -88,16 +88,15 @@ with ``N``, ``w_k`` and ``τ_k`` as in [`f_tau`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_ss(ϕ, trajectories; tau=nothing, τ=tau)
+function F_ss(Ψ, trajectories; tau=nothing, τ=tau)
     N = length(trajectories)
     if τ === nothing
-        τ = [dot(trajectories[k].target_state, ϕ[k]) for k = 1:N]
+        τ = taus(Ψ, trajectories)
     end
     f::Float64 = 0
-    for k = 1:N
-        traj = trajectories[k]
+    for (traj, τₖ) in zip(trajectories, τ)
         w = traj.weight
-        f += w * abs2(τ[k])
+        f += w * abs2(τₖ)
     end
     return f / N
 end
@@ -105,7 +104,7 @@ end
 @doc raw"""State-to-state phase-insensitive functional.
 
 ```julia
-J_T_ss(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
+J_T_ss(Ψ, trajectories; tau=taus(Ψ, trajectories); τ=tau)
 ```
 
 calculates
@@ -120,50 +119,51 @@ All arguments are passed to [`F_ss`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_ss(ϕ, trajectories; tau=nothing, τ=tau)
-    return 1.0 - F_ss(ϕ, trajectories; τ=τ)
+function J_T_ss(Ψ, trajectories; tau=nothing, τ=tau)
+    return 1.0 - F_ss(Ψ, trajectories; τ=τ)
 end
 
 
 @doc raw"""Backward boundary states ``|χ⟩`` for functional [`J_T_ss`](@ref).
 
 ```julia
-chi_ss!(χ, ϕ, trajectories; τ=nothing)  # or `tau=nothing`
+χ = chi_ss(Ψ, trajectories; tau=taus(Ψ, trajectories), τ=tau)
 ```
 
-sets the elements of `χ` according to
+calculates the vector of states `χ` according to
 
 ```math
 |χ_k⟩
-= -\frac{∂ J_{T,\text{ss}}}{∂ ⟨ϕ_k(T)|}
-= \frac{1}{N} w_k τ_k |ϕ^{\tgt}_k⟩\,,
+= -\frac{∂ J_{T,\text{ss}}}{∂ ⟨Ψ_k(T)|}
+= \frac{1}{N} w_k τ_k |Ψ^{\tgt}_k⟩\,,
 ```
 
-with ``|ϕ^{\tgt}_k⟩``, ``τ_k`` and ``w_k`` as defined in [`f_tau`](@ref).
+with ``|Ψ^{\tgt}_k⟩``, ``τ_k`` and ``w_k`` as defined in [`f_tau`](@ref).
 
 Note: this function can be obtained with `make_chi(J_T_ss, trajectories)`.
 """
-function chi_ss!(χ, ϕ, trajectories; tau=nothing, τ=tau)
+function chi_ss(Ψ, trajectories; tau=nothing, τ=tau)
     N = length(trajectories)
     if τ === nothing
-        τ = [dot(trajectories[k].target_state, ϕ[k]) for k = 1:N]
+        τ = taus(Ψ, trajectories)
     end
-    for k = 1:N
-        traj = trajectories[k]
-        ϕₖ_tgt = traj.target_state
-        copyto!(χ[k], ϕₖ_tgt)
+    χ = Vector{eltype(Ψ)}(undef, length(Ψ))
+    for (k, traj) in enumerate(trajectories)
         w = traj.weight
-        lmul!((τ[k] * w) / N, χ[k])
+        Ψₖ_tgt = traj.target_state
+        χ[k] = (τ[k] * w) / N * Ψₖ_tgt
     end
+    return χ
 end
 
-make_analytic_chi(::typeof(J_T_ss), trajectories) = chi_ss!
+make_analytic_chi(::typeof(J_T_ss), trajectories) = chi_ss
+# TODO: consider an in-place version of `chi_ss` if the states are mutable
 
 
 @doc raw"""Square-modulus fidelity.
 
 ```julia
-F_sm(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
+F_sm(Ψ, trajectories; tau=taus(Ψ, trajectories), τ=tau)
 ```
 
 calculates
@@ -186,15 +186,15 @@ All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_sm(ϕ, trajectories; tau=nothing, τ=tau)
-    return abs2(f_tau(ϕ, trajectories; τ=τ))
+function F_sm(Ψ, trajectories; tau=nothing, τ=tau)
+    return abs2(f_tau(Ψ, trajectories; τ=τ))
 end
 
 
 @doc raw"""Square-modulus functional.
 
 ```julia
-J_T_sm(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
+J_T_sm(Ψ, trajectories; tau=taus(Ψ, trajectories), τ=tau)
 ```
 
 calculates
@@ -210,58 +210,52 @@ in [`F_sm`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_sm(ϕ, trajectories; tau=nothing, τ=tau)
-    return 1.0 - F_sm(ϕ, trajectories; τ=τ)
+function J_T_sm(Ψ, trajectories; tau=nothing, τ=tau)
+    return 1.0 - F_sm(Ψ, trajectories; τ=τ)
 end
 
 
 @doc raw"""Backward boundary states ``|χ⟩`` for functional [`J_T_sm`](@ref).
 
 ```julia
-chi_sm!(χ, ϕ, trajectories; τ=nothing)  # or `tau=nothing`
+χ = chi_sm(Ψ, trajectories; tau=taus(Ψ, trajectories), τ=tau)
 ```
 
-sets the elements of `χ` according to
+calculates the vector of states `χ` according to
 
 ```math
 |χ_k⟩
-= -\frac{\partial J_{T,\text{sm}}}{\partial ⟨ϕ_k(T)|}
-= \frac{1}{N^2} w_k \sum_{j}^{N} w_j τ_j |ϕ_k^{\tgt}⟩
+= -\frac{\partial J_{T,\text{sm}}}{\partial ⟨Ψ_k(T)|}
+= \frac{1}{N^2} w_k \sum_{j}^{N} w_j τ_j |Ψ_k^{\tgt}⟩
 ```
 
-with ``|ϕ^{\tgt}_k⟩``, ``τ_j`` and ``w_k`` as defined in [`f_tau`](@ref).
+with ``|Ψ^{\tgt}_k⟩``, ``τ_j`` and ``w_k`` as defined in [`f_tau`](@ref).
 
 Note: this function can be obtained with `make_chi(J_T_sm, trajectories)`.
 """
-function chi_sm!(χ, ϕ, trajectories; tau=nothing, τ=tau)
-
+function chi_sm(Ψ, trajectories; tau=nothing, τ=tau)
     N = length(trajectories)
     if τ === nothing
-        τ = [dot(trajectories[k].target_state, ϕ[k]) for k = 1:N]
+        τ = taus(Ψ, trajectories)
     end
-
-    w = ones(N)
-    for k = 1:N
-        traj = trajectories[k]
-        w[k] = traj.weight
+    w = [traj.weight for traj in trajectories]
+    a = sum(w .* τ) / N^2
+    χ = Vector{eltype(Ψ)}(undef, length(Ψ))
+    for (k, traj) in enumerate(trajectories)
+        Ψₖ_tgt = traj.target_state
+        χ[k] = w[k] * a * Ψₖ_tgt
     end
-
-    for k = 1:N
-        traj = trajectories[k]
-        ϕₖ_tgt = traj.target_state
-        copyto!(χ[k], ϕₖ_tgt)
-        lmul!(w[k] * sum(w .* τ) / N^2, χ[k])
-    end
-
+    return χ
 end
 
-make_analytic_chi(::typeof(J_T_sm), trajectories) = chi_sm!
+make_analytic_chi(::typeof(J_T_sm), trajectories) = chi_sm
+# TODO: consider in-place version
 
 
 @doc raw"""Real-part fidelity.
 
 ```julia
-F_re(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
+F_re(Ψ, trajectories; tau=taus(Ψ, trajectories), τ=tau)
 ```
 
 calculates
@@ -288,15 +282,15 @@ All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_re(ϕ, trajectories; tau=nothing, τ=tau)
-    return real(f_tau(ϕ, trajectories; τ=τ))
+function F_re(Ψ, trajectories; tau=nothing, τ=tau)
+    return real(f_tau(Ψ, trajectories; τ=τ))
 end
 
 
 @doc raw"""Real-part functional.
 
 ```julia
-J_T_re(ϕ, trajectories; τ=nothing)  # or `tau=nothing`
+J_T_re(Ψ, trajectories; tau=taus(Ψ, trajectories), τ=tau)
 ```
 
 calculates
@@ -315,45 +309,46 @@ in [`F_re`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_re(ϕ, trajectories; tau=nothing, τ=tau)
-    return 1.0 - F_re(ϕ, trajectories; τ=τ)
+function J_T_re(Ψ, trajectories; tau=nothing, τ=tau)
+    return 1.0 - F_re(Ψ, trajectories; τ=τ)
 end
 
 
 @doc raw"""Backward boundary states ``|χ⟩`` for functional [`J_T_re`](@ref).
 
 ```julia
-chi_re!(χ, ϕ, trajectories; τ=nothing)  # or `tau=nothing`
+χ chi_re(Ψ, trajectories; tau=taus(Ψ, trajectories), τ=tau)
 ```
 
-sets the elements of `χ` according to
+calculates the vector of states `χ` according to
 
 
 ```math
 |χ_k⟩
-= -\frac{∂ J_{T,\text{re}}}{∂ ⟨ϕ_k(T)|}
-= \frac{1}{2N} w_k |ϕ^{\tgt}_k⟩
+= -\frac{∂ J_{T,\text{re}}}{∂ ⟨Ψ_k(T)|}
+= \frac{1}{2N} w_k |Ψ^{\tgt}_k⟩
 ```
 
-with ``|ϕ^{\tgt}_k⟩`` and ``w_k`` as defined in [`f_tau`](@ref).
+with ``|Ψ^{\tgt}_k⟩`` and ``w_k`` as defined in [`f_tau`](@ref).
 
 Note: this function can be obtained with `make_chi(J_T_re, trajectories)`.
 """
-function chi_re!(χ, ϕ, trajectories; tau=nothing, τ=tau)
+function chi_re(Ψ, trajectories; tau=nothing, τ=tau)
     N = length(trajectories)
     if τ === nothing
-        τ = [dot(trajectories[k].target_state, ϕ[k]) for k = 1:N]
+        τ = taus(Ψ, trajectories)
     end
-    for k = 1:N
-        traj = trajectories[k]
-        ϕₖ_tgt = traj.target_state
-        copyto!(χ[k], ϕₖ_tgt)
+    χ = Vector{eltype(Ψ)}(undef, length(Ψ))
+    for (k, traj) in enumerate(trajectories)
+        Ψₖ_tgt = traj.target_state
         w = traj.weight
-        lmul!(w / (2N), χ[k])
+        χ[k] = (w / (2N)) * Ψₖ_tgt
     end
+    return χ
 end
 
-make_analytic_chi(::typeof(J_T_re), trajectories) = chi_re!
+make_analytic_chi(::typeof(J_T_re), trajectories) = chi_re
+# TODO: consider in-place version
 
 
 """Convert a functional from acting on a gate to acting on propagated states.
@@ -364,11 +359,11 @@ J_T = gate_functional(J_T_U; kwargs...)
 
 constructs a functional `J_T` that meets the requirements for
 for Krotov/GRAPE and [`make_chi`](@ref). That is, the output `J_T` takes
-positional positional arguments `ϕ` and `trajectories`. The input functional
+positional positional arguments `Ψ` and `trajectories`. The input functional
 `J_T_U` is assumed to have the signature `J_T_U(U; kwargs...)` where `U` is a
-matrix with elements ``U_{ij} = ⟨Ψ_i|ϕ_j⟩``, where ``|Ψ_i⟩`` is the
+matrix with elements ``U_{ij} = ⟨Ψ_i|Ψ_j⟩``, where ``|Ψ_i⟩`` is the
 `initial_state` of the i'th `trajectories` (assumed to be the i'th canonical
-basis state) and ``|ϕ_j⟩`` is the result of forward-propagating ``|Ψ_j⟩``. That
+basis state) and ``|Ψ_j⟩`` is the result of forward-propagating ``|Ψ_j⟩``. That
 is, `U` is the projection of the time evolution operator into the subspace
 defined by the basis in the `initial_states` of the  `trajectories`.
 
@@ -379,9 +374,9 @@ defined by the basis in the `initial_states` of the  `trajectories`.
 """
 function gate_functional(J_T_U; kwargs...)
 
-    function J_T(ϕ, trajectories; tau=nothing, τ=tau)
+    function J_T(Ψ, trajectories)
         N = length(trajectories)
-        U = [(trajectories[i].initial_state ⋅ ϕ[j]) for i = 1:N, j = 1:N]
+        U = [dot(trajectories[i].initial_state, Ψ[j]) for i = 1:N, j = 1:N]
         return J_T_U(U; kwargs...)
     end
 
@@ -391,16 +386,16 @@ end
 
 
 @doc raw"""
-Return a function to evaluate ``|χ_k⟩ = -∂J_T(Û)/∂⟨ϕ_k|`` via the chain rule.
+Return a function to evaluate ``|χ_k⟩ = -∂J_T(Û)/∂⟨Ψ_k|`` via the chain rule.
 
 ```julia
-chi! = make_gate_chi(J_T_U, trajectories; automatic=:default, kwargs...)
+chi = make_gate_chi(J_T_U, trajectories; automatic=:default, kwargs...)
 ```
 
 returns a function equivalent to
 
 ```julia
-chi! = make_chi(
+chi = make_chi(
     gate_functional(J_T_U; kwargs...),
     trajectories;
     mode=:automatic,
@@ -411,8 +406,8 @@ chi! = make_chi(
 ```math
 \begin{split}
     |χ_k⟩
-    &= -\frac{∂}{∂⟨ϕ_k|} J_T \\
-    &= - \frac{1}{2} \sum_i (∇_U J_T)_{ik} \frac{∂ U_{ik}}{∂⟨ϕ_k|} \\
+    &= -\frac{∂}{∂⟨Ψ_k|} J_T \\
+    &= - \frac{1}{2} \sum_i (∇_U J_T)_{ik} \frac{∂ U_{ik}}{∂⟨Ψ_k|} \\
     &= - \frac{1}{2} \sum_i (∇_U J_T)_{ik} |Ψ_i⟩
 \end{split}
 ```
