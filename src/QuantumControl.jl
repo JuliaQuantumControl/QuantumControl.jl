@@ -55,8 +55,8 @@ end
 
 
 module Interfaces
-    using QuantumPropagators.Interfaces: check_state, check_operator, check_control, check_parameterized_function, check_parameterized
-    export check_state, check_operator, check_control, check_parameterized_function, check_parameterized
+    using QuantumPropagators.Interfaces: check_state, check_operator, check_control, check_parameterized_function, check_parameterized, supports_inplace
+    export check_state, check_operator, check_control, check_parameterized_function, check_parameterized, supports_inplace
     using QuantumControlBase: check_generator, check_amplitude
     export check_generator, check_amplitude
 end

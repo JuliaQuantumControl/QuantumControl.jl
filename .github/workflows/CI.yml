@@ -25,10 +25,10 @@ jobs:
             version: '1'
     steps:
       - uses: actions/checkout@v4
-      - uses: julia-actions/cache@v2
       - uses: julia-actions/setup-julia@v2
         with:
           version: ${{ matrix.version }}
+      - uses: julia-actions/cache@v2
       - name: "Instantiate test environment"
         run: |
           wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
@@ -53,6 +53,8 @@ jobs:
           using QuantumControlTestUtils
           show_coverage()
       - uses: julia-actions/julia-processcoverage@v1
+      - name: "Summarize coverage"
+        run: julia --project=test -e 'using QuantumControlTestUtils; show_coverage();'
       - uses: codecov/codecov-action@v4
         with:
           files: lcov.info
@@ -60,21 +62,18 @@ jobs:
   docs:
     name: Documentation
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: julia-actions/cache@v1
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1'
+      - uses: julia-actions/cache@v2
       - run: |
           # Install Python dependencies
           set -x
           /usr/bin/python3 -m pip install zip-files
       - name: "Instantiate test environment"
         run: |
-          # Instantiate Pkg
           wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
           install -m 600 -D /dev/null ~/.ssh/known_hosts
           ssh-keyscan -H github.com > ~/.ssh/known_hosts
