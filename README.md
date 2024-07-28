@@ -1,6 +1,6 @@
 # QuantumControl.jl
 
-[![Version](https://juliahub.com/docs/QuantumControl/version.svg)](https://juliahub.com/ui/Packages/QuantumControl/no1zM)
+[![Version](https://juliahub.com/docs/General/QuantumControl/stable/version.svg)](https://juliahub.com/ui/Packages/General/QuantumControl)
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaquantumcontrol.github.io/QuantumControl.jl/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaquantumcontrol.github.io/QuantumControl.jl/dev)
 [![Build Status](https://github.com/JuliaQuantumControl/QuantumControl.jl/workflows/CI/badge.svg)](https://github.com/JuliaQuantumControl/QuantumControl.jl/actions)
