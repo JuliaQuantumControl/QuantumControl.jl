@@ -59,14 +59,16 @@ end
 
 quantum_control_members = [
     m for m in names(QuantumControl)
-    if m ≠ :QuantumControl
+    if  (m ≠ :QuantumControl) && (m ∉ QuantumControl.DEPRECATED)
 ]
 
-quantum_control_local_members = get_local_members(QuantumControl, all=false)
+quantum_control_local_members = filter(
+    member -> member ∉ QuantumControl.DEPRECATED,
+    get_local_members(QuantumControl, all=false)
+)
 
 quantum_control_reexported_members = [
-    m for m in quantum_control_members
-    if m ∉ quantum_control_local_members
+    m for m in quantum_control_members if m ∉ quantum_control_local_members
 ]
 
 quantum_control_sub_modules = get_submodules(QuantumControl)
@@ -74,7 +76,6 @@ quantum_control_sub_modules = get_submodules(QuantumControl)
 
 subpackages = [
     (:QuantumPropagators, "quantum_propagators.md"),
-    (:QuantumControlBase, "quantum_control_base.md"),
 ]
 
 
@@ -84,20 +85,27 @@ open(outfile, "w") do out
     write(out, "```@meta\n")
     write(out, "EditURL = \"../../generate_api.jl\"\n")
     write(out, "```\n\n")
-    write(out, "# [QuantumControl](@id QuantumControlAPI)\n\n")
-    _quantum_control_local_members  = filter(
-        member -> !(member in QuantumControl.DEPRECATED),
-        quantum_control_local_members
-    )
-    if length(_quantum_control_local_members) > 0
-        error("QuantumControl has local members. We don't want this")
-    end
+    write(out, "# [QuantumControl Public API](@id QuantumControlAPI)\n\n")
     write(out, """
+    This page summarizes the public API of the `QuantumControl` package. See
+    also the [Index](@ref API-Index) of *all* symbols.
 
-    QuantumControl (re-)exports the following symbols:
-
+    QuantumControl exports the following symbols:
 
     """)
+    for name ∈ quantum_control_local_members
+        obj = getfield(QuantumControl, name)
+        ref = canonical_name(obj)
+        println(out, "* [`$name`](@ref $ref)")
+    end
+
+    write(out, """
+
+    and re-exports the following symbols either from its own
+    [submodules](@ref public_submodules) or from
+    [`QuantumPropagators`](@ref QuantumPropagatorsPackage):
+    """)
+
     for name ∈ quantum_control_reexported_members
         obj = getfield(QuantumControl, name)
         ref = canonical_name(obj)
@@ -106,12 +114,23 @@ open(outfile, "w") do out
 
     write(out, """
 
-    It also defines the following unexported functions:
+    It also defines the following public, but unexported functions:
 
     * [`QuantumControl.set_default_ad_framework`](@ref)
-    * [`QuantumControl.print_versions`](@ref)
 
     """)
+
+    write(out, """
+    ### [Submodules](@id public_submodules)
+
+    Each of the following submodules defines their own public API. Note that
+    some of these submodules are re-exported from or extend submodules of
+    [`QuantumPropagators`](@ref QuantumPropagatorsPackage).
+
+    """)
+    for submod in quantum_control_sub_modules
+        write(out, "* [`QuantumControl.$(submod)`](@ref QuantumControl$(submod)API)\n")
+    end
 
     for submod in quantum_control_sub_modules
         write(out, "\n\n### [`QuantumControl.$submod`](@id QuantumControl$(submod)API)\n\n")
@@ -139,8 +158,6 @@ open(outfile, "w") do out
     end
 end
 
-
-local_submodules = [:Functionals, :PulseParameterizations, :Workflows]
 
 local_module_api_id(mod) = replace("$mod", "." => "") * "LocalAPI"
 
@@ -178,14 +195,14 @@ function write_module_api(out, mod, description="")
         write(out, "\n\n")
     end
     if length(public_members) > 0
-        write(out, "\nPublic Members:\n\n")
+        write(out, "\nPublic Symbols:\n\n")
         for name ∈ public_members
             println(out, "* [`$name`](@ref $mod.$name)")
         end
         write(out, "\n")
     end
     if length(reexported_members) > 0
-        write(out, "\nRe-exported Members:\n\n")
+        write(out, "\nRe-exported Symbols:\n\n")
         for name ∈ reexported_members
             obj = getfield(mod, name)
             ref = canonical_name(obj)
@@ -194,14 +211,14 @@ function write_module_api(out, mod, description="")
         write(out, "\n")
     end
     if length(documented_private_members) > 0
-        write(out, "\nPrivate Members:\n")
+        write(out, "\nPrivate Symbols:\n")
         for name ∈ documented_private_members
             println(out, "* [`$name`](@ref $mod.$name)")
         end
         write(out, "\n")
     end
     if length(public_members) > 0
-        write(out, "\n\n#### Public members\n\n")
+        write(out, "\n\n#### Public Symbols\n\n")
         println(out, "```@docs")
         for name ∈ public_members
             println(out, "$mod.$name")
@@ -209,7 +226,7 @@ function write_module_api(out, mod, description="")
         println(out, "```")
     end
     if length(documented_private_members) > 0
-        write(out, "\n\n#### Private members\n\n")
+        write(out, "\n\n#### Private Symbols\n\n")
         println(out, "```@docs")
         for name ∈ documented_private_members
             println(out, "$mod.$name")
@@ -220,52 +237,67 @@ function write_module_api(out, mod, description="")
 end
 
 
-outfile = joinpath(@__DIR__, "src", "api", "quantum_control_reference.md")
+outfile = joinpath(@__DIR__, "src", "api", "reference.md")
 println("Generating local reference for QuantumControl in $outfile")
 open(outfile, "w") do out
     write(out, "```@meta\n")
     write(out, "EditURL = \"../../generate_api.jl\"\n")
     write(out, "```\n\n")
     write(out, raw"""
-    # Local Submodules
+    # API Reference
 
-    The following submodules of `QuantumControl` are defined *locally* (as
-    opposed to being re-exported from sub-packages).
+    This page provides *all* docstrings locally defined in the `QuantumControl`
+    package for both private and public symbols. See also the summary of the
+    [public API](@ref QuantumControlAPI).
 
+    `QuantumControl` exposes local [exported](#quantumcontrol-local-symbols)
+    and [unexported](#quantumcontrol-local-unexported-symbols) local symbols as
+    well as re-exporting symbols and sub-modules from the
+    [QuantumPropagators](@ref QuantumPropagatorsPackage) subpackage and some
+    of its submodules.
+
+    The [`QuantumControl` submodules](@ref quantumcontrol-submodules) provide
+    additional public functionality. Note that some of the most commonly
+    used symbols from `QuantumControl`'s submodules may also be re-exported at
+    the top-level (such as [`@optimize_or_load`](@ref) from the
+    [`QuantumControl.Workflows`](@ref QuantumControlWorkflowsAPI) submodule).
+
+    """)
+    write(out, raw"""
+
+    ## [Local Exported Symbols](@id #quantumcontrol-local-symbols)
+
+    """)
+    println(out, "```@docs")
+    for name ∈ quantum_control_local_members
+        println(out, "QuantumControl.$name")
+    end
+    println(out, "```")
+    write(out, raw"""
+
+    ## [Local Unexported Symbols](@id quantumcontrol-local-unexported-symbols)
+
+    ```@docs
+    QuantumControl.set_default_ad_framework
+    ```
+    """)
+    write(out, raw"""
     ``\gdef\tgt{\text{tgt}}``
     ``\gdef\tr{\operatorname{tr}}``
     ``\gdef\Re{\operatorname{Re}}``
     ``\gdef\Im{\operatorname{Im}}``
+
+    ## [List of Submodules](@id quantumcontrol-submodules)
+
+    `QuantumControl` has the following sub-modules:
+
     """)
-    for name in local_submodules
+    for name in quantum_control_sub_modules
         write(out, "* [`QuantumControl.$name`](#$(local_module_api_id(getfield(QuantumControl, name))))\n")
     end
-    write(out, raw"""
-
-    `QuantumControl` also locally defines some unexported functions:
-
-    * [`QuantumControl` local unexported functions](#quantumcontrol-local-functions)
-
-
-    """)
-    for name in local_submodules
+    for name in quantum_control_sub_modules
         write_module_api(out, getfield(QuantumControl, name))
     end
-    write(out, raw"""
-
-    ## [`QuantumControl` local unexported functions](@id quantumcontrol-local-functions)
-
-    ```@docs
-    QuantumControl.set_default_ad_framework
-    QuantumControl.print_versions
-    ```
-
-    ```@example
-    import QuantumControl
-    QuantumControl.print_versions()
-    ```
-
-    """)
 end
 
 
@@ -276,7 +308,7 @@ open(outfile, "w") do out
     write(out, "EditURL = \"../../generate_api.jl\"\n")
     write(out, "```\n\n")
     write(out, raw"""
-    # API Index
+    # [API Index](@id API-Index)
 
     ```@index
     ```
@@ -320,13 +352,13 @@ for (pkgname::Symbol, outfilename) in subpackages
         """)
         write(out, "\n\n## [`$pkgname`](@id $(pkgname)API)\n\n")
         if length(public_members) > 0
-            write(out, "\nPublic Members:\n\n")
+            write(out, "\nPublic Symbols:\n\n")
             for name in public_members
                 write(out, "* [`$name`](@ref $pkgname.$name)\n")
             end
         end
         if length(documented_private_members) > 0
-            write(out, "\nPrivate Members:\n\n")
+            write(out, "\nPrivate Symbols:\n\n")
             for name in documented_private_members
                 write(out, "* [`$name`](@ref $pkgname.$name)\n")
             end

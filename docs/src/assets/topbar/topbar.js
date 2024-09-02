@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     var packages = [
         "QuantumPropagators.jl",
-        "QuantumControlBase.jl",
         "QuantumGradientGenerators.jl",
         "ParameterizedQuantumControl.jl",
         "Krotov.jl",

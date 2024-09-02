@@ -1,6 +1,7 @@
 module Workflows
 
-using QuantumControlBase: optimize, set_atexit_save_optimization
+import ..optimize
+import ..set_atexit_save_optimization
 export run_or_load, @optimize_or_load, save_optimization, load_optimization
 
 using FileIO: FileIO, File, DataFormat

@@ -11,7 +11,7 @@ using QuantumPropagators.Controls: discretize_on_midpoints
 using QuantumPropagators.Amplitudes: ControlAmplitude, ShapedAmplitude
 
 import QuantumPropagators.Controls: evaluate, get_controls
-import QuantumControlBase: get_control_deriv
+import ..Controls: get_control_deriv
 
 
 #! format: off

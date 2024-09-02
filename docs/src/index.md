@@ -62,9 +62,6 @@ Depth = 1
 ```@contents
 Pages = [
     "api/quantum_propagators.md",
-    "api/quantum_control_base.md",
-    "api/krotov.md",
-    "api/grape.md",
 ]
 Depth = 1
 ```

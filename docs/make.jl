@@ -2,7 +2,6 @@ using Pkg
 
 using Documenter
 using QuantumPropagators
-using QuantumControlBase
 using QuantumControl
 using QuantumControl.Shapes
 using QuantumControl.Functionals
@@ -25,6 +24,16 @@ if endswith(VERSION, "dev")
     DEV_OR_STABLE = "dev/"
 end
 
+function org_inv(pkgname)
+    objects_inv =
+        joinpath(@__DIR__, "..", "..", "$pkgname.jl", "docs", "build", "objects.inv")
+    if isfile(objects_inv)
+        return ("https://juliaquantumcontrol.github.io/$pkgname.jl/dev/", objects_inv,)
+    else
+        return "https://juliaquantumcontrol.github.io/$pkgname.jl/$DEV_OR_STABLE"
+    end
+end
+
 links = InterLinks(
     "Julia" => (
         "https://docs.julialang.org/en/v1/",
@@ -36,10 +45,10 @@ links = InterLinks(
         joinpath(@__DIR__, "src", "inventories", "TimerOutputs.toml")
     ),
     "Examples" => "https://juliaquantumcontrol.github.io/QuantumControlExamples.jl/$DEV_OR_STABLE",
-    "Krotov" => "https://juliaquantumcontrol.github.io/Krotov.jl/$DEV_OR_STABLE",
-    "GRAPE" => "https://juliaquantumcontrol.github.io/GRAPE.jl/$DEV_OR_STABLE",
-    "QuantumPropagators" => "https://juliaquantumcontrol.github.io/QuantumPropagators.jl/$DEV_OR_STABLE",
-    "QuantumGradientGenerators" => "https://juliaquantumcontrol.github.io/QuantumGradientGenerators.jl/$DEV_OR_STABLE",
+    "Krotov" => org_inv("Krotov"),
+    "GRAPE" => org_inv("GRAPE"),
+    "QuantumPropagators" => org_inv("QuantumPropagators"),
+    "QuantumGradientGenerators" => org_inv("QuantumGradientGenerators"),
     "ComponentArrays" => (
         "https://jonniedie.github.io/ComponentArrays.jl/stable/",
         "https://jonniedie.github.io/ComponentArrays.jl/stable/objects.inv",
@@ -84,7 +93,8 @@ makedocs(;
                 "https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/assets/topbar/topbar.js"
             ),
         ],
-        footer="[$NAME.jl]($GITHUB) v$VERSION docs powered by [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl)."
+        footer="[$NAME.jl]($GITHUB) v$VERSION docs powered by [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl).",
+        size_threshold=1024 * 1024,
     ),
     pages=[
         "Home" => "index.md",
@@ -95,11 +105,8 @@ makedocs(;
         "Examples" => "examples/index.md",
         "API" => [
             "QuantumControl" => "api/quantum_control.md",
-            "Local Submodules" => "api/quantum_control_reference.md",
-            "Subpackages" => [
-                "QuantumPropagators" => "api/quantum_propagators.md",
-                "QuantumControlBase" => "api/quantum_control_base.md",
-            ],
+            "Reference" => "api/reference.md",
+            "Subpackages" => ["QuantumPropagators" => "api/quantum_propagators.md",],
             "Externals" => "api_externals.md",
             "Index" => "api/quantum_control_index.md",
         ],

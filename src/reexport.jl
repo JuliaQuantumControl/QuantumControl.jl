@@ -1,9 +1,9 @@
 # I'm aware of Reexport.jl, but it doesn't work for QuantumControl.jl
 #
-# For one thing, `@reexport using QuantumControlBase` re-exports not just the
-# members of `QuantumControlBase`, but also `QuantumControlBase` itself. Also,
-# as far as I can tell `@reexport using QuantumPropagators.Shapes` does not
-# work when it's inside a module also called `Shapes`, as we're doing.
+# For one thing, `@reexport using QuantumPropagators` re-exports not just the
+# members of `QuantumPropagators`, but also `QuantumControlPropagators` itself.
+# Also, as far as I can tell `@reexport using QuantumPropagators.Shapes` does
+# not work when it's inside a module also called `Shapes`, as we're doing.
 #
 # Besides, the macro below is pretty trivial
 

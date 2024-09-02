@@ -5,10 +5,6 @@ include("reexport.jl")
 using QuantumPropagators
 @reexport_members(QuantumPropagators)
 
-using QuantumControlBase
-@reexport_members(QuantumControlBase)
-
-
 module Generators
     # we need `QuantumPropagators.Generators` to be available under a name that
     # doesn't clash with `QuantumControl.Generators` in order for the
@@ -25,7 +21,7 @@ module Controls
     using QuantumPropagators.Controls
     include("reexport.jl")
     @reexport_members(QuantumPropagators_Controls)
-    using QuantumControlBase: get_control_deriv, get_control_derivs
+    include("derivs.jl")
     export get_control_deriv, get_control_derivs
 end
 
@@ -57,14 +53,11 @@ end
 module Interfaces
     using QuantumPropagators.Interfaces: check_state, check_operator, check_control, check_parameterized_function, check_parameterized, supports_inplace
     export check_state, check_operator, check_control, check_parameterized_function, check_parameterized, supports_inplace
-    using QuantumControlBase: check_generator, check_amplitude
+    include("interfaces/amplitude.jl")
+    include("interfaces/generator.jl")
     export check_generator, check_amplitude
 end
 
-
-include("workflows.jl")  # submodule Workflows
-using .Workflows: run_or_load, @optimize_or_load, save_optimization, load_optimization
-export run_or_load, @optimize_or_load, save_optimization, load_optimization
 
 include("pulse_parameterizations.jl")  # submodule PulseParameterizations
 
@@ -74,5 +67,21 @@ include("print_versions.jl")
 include("set_default_ad_framework.jl")
 
 include("deprecate.jl")
+
+include("atexit.jl")
+include("conditionalthreads.jl")
+include("trajectories.jl")
+include("control_problem.jl")
+include("propagate.jl")
+include("callbacks.jl")
+include("optimize.jl")
+export ControlProblem, Trajectory, optimize, propagate_trajectory
+export propagate_trajectories
+
+
+include("workflows.jl")  # submodule Workflows
+using .Workflows: run_or_load, @optimize_or_load, save_optimization, load_optimization
+export run_or_load, @optimize_or_load, save_optimization, load_optimization
+
 
 end
