@@ -250,9 +250,9 @@ open(outfile, "w") do out
     package for both private and public symbols. See also the summary of the
     [public API](@ref QuantumControlAPI).
 
-    `QuantumControl` exposes local [exported](#quantumcontrol-local-symbols)
-    and [unexported](#quantumcontrol-local-unexported-symbols) local symbols as
-    well as re-exporting symbols and sub-modules from the
+    `QuantumControl` exposes local [exported](@ref quantumcontrol-local-symbols)
+    and [unexported](@ref quantumcontrol-local-unexported-symbols) local
+    symbols as well as re-exporting symbols and sub-modules from the
     [QuantumPropagators](@ref QuantumPropagatorsPackage) subpackage and some
     of its submodules.
 
@@ -265,7 +265,7 @@ open(outfile, "w") do out
     """)
     write(out, raw"""
 
-    ## [Local Exported Symbols](@id #quantumcontrol-local-symbols)
+    ## [Local Exported Symbols](@id quantumcontrol-local-symbols)
 
     """)
     println(out, "```@docs")
