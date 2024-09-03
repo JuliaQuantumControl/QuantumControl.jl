@@ -72,13 +72,13 @@ end
 
 
 function make_automatic_grad_J_a(J_a, tlist, ::Val{:FiniteDifferences})
-    function automatic_grad_J_a!(∇J_a, pulsevals, tlist)
+    function automatic_grad_J_a(pulsevals, tlist)
         func = pulsevals -> J_a(pulsevals, tlist)
         fdm = FiniteDifferences.central_fdm(5, 1)
         ∇J_a_fdm = FiniteDifferences.grad(fdm, func, pulsevals)[1]
-        copyto!(∇J_a, ∇J_a_fdm)
+        return ∇J_a_fdm
     end
-    return automatic_grad_J_a!
+    return automatic_grad_J_a
 end
 
 function make_gate_chi(J_T_U, trajectories, ::Val{:FiniteDifferences}; kwargs...)

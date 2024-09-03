@@ -73,12 +73,12 @@ end
 
 
 function make_automatic_grad_J_a(J_a, tlist, ::Val{:Zygote})
-    function automatic_grad_J_a!(∇J_a, pulsevals, tlist)
+    function automatic_grad_J_a(pulsevals, tlist)
         func = pulsevals -> J_a(pulsevals, tlist)
         ∇J_a_zygote = Zygote.gradient(func, pulsevals)[1]
-        copyto!(∇J_a, ∇J_a_zygote)
+        return ∇J_a_zygote
     end
-    return automatic_grad_J_a!
+    return automatic_grad_J_a
 end
 
 

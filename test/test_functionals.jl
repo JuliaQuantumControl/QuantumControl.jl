@@ -6,7 +6,7 @@ using QuantumControl.Functionals:
     J_T_re,
     J_T_ss,
     J_a_fluence,
-    grad_J_a_fluence!,
+    grad_J_a_fluence,
     make_grad_J_a,
     make_chi,
     chi_re,
@@ -101,20 +101,17 @@ end
     J_a_val = J_a_fluence(pulsevals, tlist)
     @test J_a_val > 0.0
 
-    G1 = copy(wrk.grad_J_a)
-    grad_J_a_fluence!(G1, pulsevals, tlist)
+    G1 = grad_J_a_fluence(pulsevals, tlist)
 
-    grad_J_a_zygote! = make_grad_J_a(J_a_fluence, tlist; mode=:automatic, automatic=Zygote)
-    @test grad_J_a_zygote! ≢ grad_J_a_fluence!
-    G2 = copy(wrk.grad_J_a)
-    grad_J_a_zygote!(G2, pulsevals, tlist)
+    grad_J_a_zygote = make_grad_J_a(J_a_fluence, tlist; mode=:automatic, automatic=Zygote)
+    @test grad_J_a_zygote ≢ grad_J_a_fluence
+    G2 = grad_J_a_zygote(pulsevals, tlist)
 
-    grad_J_a_fdm! =
+    grad_J_a_fdm =
         make_grad_J_a(J_a_fluence, tlist; mode=:automatic, automatic=FiniteDifferences)
-    @test grad_J_a_fdm! ≢ grad_J_a_fluence!
-    @test grad_J_a_fdm! ≢ grad_J_a_zygote!
-    G3 = copy(wrk.grad_J_a)
-    grad_J_a_fdm!(G3, pulsevals, tlist)
+    @test grad_J_a_fdm ≢ grad_J_a_fluence
+    @test grad_J_a_fdm ≢ grad_J_a_zygote
+    G3 = grad_J_a_fdm(pulsevals, tlist)
 
     @test 0.0 ≤ norm(G2 - G1) < 1e-12  # zygote can be exact
     @test 0.0 < norm(G3 - G1) < 1e-12  # fdm should not be exact
@@ -324,7 +321,7 @@ end
     end
     grad_J_a = capture.value
     @test_throws DomainError begin
-        grad_J_a(1, 1, tlist)
+        grad_J_a(1, tlist)
     end
 
     QuantumControl.set_default_ad_framework(nothing; quiet=true)

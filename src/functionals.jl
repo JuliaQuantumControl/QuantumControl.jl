@@ -317,7 +317,7 @@ end
 Return a function to evaluate ``∂J_a/∂ϵ_{ln}`` for a pulse value running cost.
 
 ```julia
-grad_J_a! = make_grad_J_a(
+grad_J_a = make_grad_J_a(
     J_a,
     tlist;
     mode=:any,
@@ -325,10 +325,10 @@ grad_J_a! = make_grad_J_a(
 )
 ```
 
-returns a function so that `grad_J_a!(∇J_a, pulsevals, tlist)` sets
-``∂J_a/∂ϵ_{ln}`` as the elements of the (vectorized) `∇J_a`. The function `J_a`
-must have the interface `J_a(pulsevals, tlist)`, see, e.g.,
-`J_a_fluence`.
+returns a function so that `∇J_a = grad_J_a(pulsevals, tlist)` sets
+that retrurns a vector `∇J_a` containing the vectorized elements
+``∂J_a/∂ϵ_{ln}``. The function `J_a` must have the interface `J_a(pulsevals,
+tlist)`, see, e.g., [`J_a_fluence`](@ref).
 
 The parameters `mode` and `automatic` are handled as in [`make_chi`](@ref),
 where `mode` is one of `:any`, `:analytic`, `:automatic`, and `automatic` is
@@ -341,10 +341,11 @@ refers to the framework set with `QuantumControl.set_default_ad_framework`.
     new `J_a` function, define a new method `make_analytic_grad_J_a` like so:
 
     ```julia
-    make_analytic_grad_J_a(::typeof(J_a_fluence), tlist) = grad_J_a_fluence!
+    make_analytic_grad_J_a(::typeof(J_a_fluence), tlist) = grad_J_a_fluence
     ```
 
-    which links `make_grad_J_a` for `J_a_fluence` to `grad_J_a_fluence!`.
+    which links `make_grad_J_a` for [`J_a_fluence`](@ref) to
+    [`grad_J_a_fluence`](@ref).
 """
 function make_grad_J_a(J_a, tlist; mode=:any, automatic=:default)
     if mode == :any
@@ -890,19 +891,20 @@ end
 """Analytic derivative for [`J_a_fluence`](@ref).
 
 ```julia
-grad_J_a_fluence!(∇J_a, pulsevals, tlist)
+∇J_a = grad_J_a_fluence(pulsevals, tlist)
 ```
 
-sets the (vectorized) elements of `∇J_a` to ``2 ϵ_{nl} dt``, where
-``ϵ_{nl}`` are the (vectorized) elements of `pulsevals` and ``dt`` is the time
-step, taken from the first time interval of `tlist` and assumed to be uniform.
+returns the `∇J_a`, which contains the (vectorized) elements ``2 ϵ_{nl} dt``,
+where ``ϵ_{nl}`` are the (vectorized) elements of `pulsevals` and ``dt`` is the
+time step, taken from the first time interval of `tlist` and assumed to be
+uniform.
 """
-function grad_J_a_fluence!(∇J_a, pulsevals, tlist)
+function grad_J_a_fluence(pulsevals, tlist)
     dt = tlist[begin+1] - tlist[begin]
-    axpy!(2 * dt, pulsevals, ∇J_a)
+    return (2 * dt) * pulsevals
 end
 
 
-make_analytic_grad_J_a(::typeof(J_a_fluence), tlist) = grad_J_a_fluence!
+make_analytic_grad_J_a(::typeof(J_a_fluence), tlist) = grad_J_a_fluence
 
 end
