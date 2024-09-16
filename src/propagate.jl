@@ -98,14 +98,15 @@ function init_prop_trajectory(
     _prefixes=["prop_"],
     _msg="Initializing propagator for trajectory",
     _filter_kwargs=false,
+    _kwargs_dict::Dict{Symbol,Any}=Dict{Symbol,Any}(),
     initial_state=traj.initial_state,
     verbose=false,
     kwargs...
 )
     #
-    # The private keyword arguments, `_prefixes`, `_msg`, `_filter_kwargs` are
-    # for internal use when setting up optimal control workspace objects (see,
-    # e.g., Krotov.jl and GRAPE.jl)
+    # The private keyword arguments, `_prefixes`, `_msg`, `_filter_kwargs`,
+    # `_kwargs_dict` are for internal use when setting up optimal control
+    # workspace objects (see, e.g., Krotov.jl and GRAPE.jl)
     #
     # * `_prefixes`: which prefixes to translate into `init_prop` kwargs. For
     #   example, in Krotov/GRAPE, we have propagators both for the forward and
@@ -117,12 +118,16 @@ function init_prop_trajectory(
     #    allows to pass the keyword arguments from `optimize` directly to
     #    `init_prop_trajectory`. By convention, these use the same
     #    `prop`/`fw_prop`/`bw_prop` prefixes as the properties of `traj`.
+    # * `_kwargs_dict`: A dictionary Symbol => Any that collects the arguments
+    #   for `init_prop`. This allows to keep a copy of those arguments,
+    #   especially for arguments that cannot be obtained from the resulting
+    #   propagator, like the propagation callback.
     #
-    kwargs_dict = Dict{Symbol,Any}()
+    empty!(_kwargs_dict)
     for prefix in _prefixes
         for key in propertynames(traj)
             if startswith(string(key), prefix)
-                kwargs_dict[Symbol(string(key)[length(prefix)+1:end])] =
+                _kwargs_dict[Symbol(string(key)[length(prefix)+1:end])] =
                     getproperty(traj, key)
             end
         end
@@ -131,20 +136,20 @@ function init_prop_trajectory(
         for prefix in _prefixes
             for (key, val) in kwargs
                 if startswith(string(key), prefix)
-                    kwargs_dict[Symbol(string(key)[length(prefix)+1:end])] = val
+                    _kwargs_dict[Symbol(string(key)[length(prefix)+1:end])] = val
                 end
             end
         end
     else
-        merge!(kwargs_dict, kwargs)
+        merge!(_kwargs_dict, kwargs)
     end
     level = verbose ? Logging.Info : Logging.Debug
-    @logmsg level _msg kwargs = kwargs_dict
+    @logmsg level _msg kwargs = _kwargs_dict
     try
-        return init_prop(initial_state, traj.generator, tlist; verbose, kwargs_dict...)
+        return init_prop(initial_state, traj.generator, tlist; verbose, _kwargs_dict...)
     catch exception
         msg = "Cannot initialize propagation for trajectory"
-        @error msg exception kwargs = kwargs_dict
+        @error msg exception kwargs = _kwargs_dict
         rethrow()
     end
 end

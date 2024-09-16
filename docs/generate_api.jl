@@ -279,6 +279,7 @@ open(outfile, "w") do out
 
     ```@docs
     QuantumControl.set_default_ad_framework
+    QuantumControl.AbstractOptimizationResult
     ```
     """)
     write(out, raw"""

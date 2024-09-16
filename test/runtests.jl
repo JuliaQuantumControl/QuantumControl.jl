@@ -86,6 +86,11 @@ end
         include("test_pulse_parameterizations.jl")
     end
 
+    println("\n* Result Conversion (test_result_conversion.jl):")
+    @time @safetestset "Result Conversion" begin
+        include("test_result_conversion.jl")
+    end
+
     println("* Invalid interfaces (test_invalid_interfaces.jl):")
     @time @safetestset "Invalid interfaces" begin
         include("test_invalid_interfaces.jl")

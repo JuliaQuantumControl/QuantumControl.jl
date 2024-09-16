@@ -65,6 +65,7 @@ include("functionals.jl")  # submodule Functionals
 
 include("print_versions.jl")
 include("set_default_ad_framework.jl")
+include("result.jl")
 
 include("deprecate.jl")
 
