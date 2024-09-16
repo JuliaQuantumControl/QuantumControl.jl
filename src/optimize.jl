@@ -66,7 +66,8 @@ where `:Krotov` is the name of the module implementing the method. The above is
 also the method signature that a `Module` wishing to implement a control method
 must define.
 
-The returned `result` object is specific to the optimization method.
+The returned `result` object is specific to the optimization method, but should
+be a subtype of [`QuantumControl.AbstractOptimizationResult`](@ref).
 """
 function optimize(
     problem::ControlProblem;
