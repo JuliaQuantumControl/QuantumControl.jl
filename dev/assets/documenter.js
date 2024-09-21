@@ -57,7 +57,14 @@ $(document).ready(function() {
       "right": "\\]",
       "display": true
     }
-  ]
+  ],
+  "macros": {
+    "\\Op": "\\hat{#1}",
+    "\\Im": "\\operatorname{Im}",
+    "\\Re": "\\operatorname{Re}",
+    "\\ket": "\\vert#1\\rangle",
+    "\\bra": "\\langle#1\\vert"
+  }
 }
 
   );
