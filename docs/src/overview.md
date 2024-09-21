@@ -1,12 +1,12 @@
-# User Manual
+# Overview
 
-The User Manual describes the API of the `QuantumControl` package by outlining the general procedure for defining and solving quantum control problems. See the [API](@ref) for a detailed reference.
+This page describes the API of the `QuantumControl` package by outlining the general procedure for defining and solving quantum control problems. See the [API](@ref) for a detailed reference.
 
 ## Setting up control problems
 
 Quantum control problems are described by instantiating [`ControlProblem`](@ref). Remember that a quantum control problem aims to find control parameters in the dynamical generators ([Hamiltonians](@ref hamiltonian), [Liouvillians](@ref liouvillian)) of a quantum system to steer the dynamics of the system in some desired way. The dynamics of system are probed by one or more quantum states, each with its particular dynamical generator, which we encode as a [`Trajectory`](@ref) object.
 
-To determine how well the system dynamics meet the desired behavior, a [`Trajectory`](@ref) can have additional properties that are taken into account in the optimization functional. Most commonly, this is represented by a `target_state` property of the [`Trajectory`](@ref). The objective is fulfilled when the control parameters are chosen such that the initial state of each [`Trajectory`](@ref) evolves into the target state, on the time grid given as `tlist` in the [`ControlProblem`](@ref).
+To determine how well the system dynamics meet the desired behavior, a [`Trajectory`](@ref) can have additional properties that are taken into account in the [optimization functional](@ref "Functional"). Most commonly, this is represented by a `target_state` property of the [`Trajectory`](@ref). The objective is fulfilled when the control parameters are chosen such that the initial state of each [`Trajectory`](@ref) evolves into the target state, on the time grid given as `tlist` in the [`ControlProblem`](@ref).
 
 A control problem with a single such trajectory already encodes the common state-to-state problem, e.g., to initialize a system into an entangled state, or to control a chemical reaction. However, there are many control problems that require *simultaneously* solving more than one trajectory. For example, finding the control parameters that implement a two-qubit quantum gate ``Ô`` on a quantum computer naturally translates to four simultaneous trajectories, one for each two-qubit basis state: ``|00⟩ → Ô |00⟩``, ``|01⟩ → Ô |01⟩``, ``|10⟩ → Ô |10⟩``, ``|00⟩ → Ô |11⟩``. By virtue of the linearity of Hilbert space, finding a simultaneous solution to these four trajectories means the *any* state ``|Ψ⟩`` will then evolve as ``|Ψ⟩ → Ô |Ψ⟩``.
 

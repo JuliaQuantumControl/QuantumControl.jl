@@ -9,6 +9,7 @@ using QuantumControl.Generators
 using Krotov
 using GRAPE
 import OrdinaryDiffEq  # ensure ODE extension is loaded
+using Documenter.HTMLWriter: KaTeX
 using DocumenterCitations
 using DocumenterInterLinks
 
@@ -93,13 +94,24 @@ makedocs(;
                 "https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/assets/topbar/topbar.js"
             ),
         ],
+        mathengine=KaTeX(
+            Dict(
+                :macros => Dict(
+                    "\\Op" => "\\hat{#1}",
+                    "\\ket" => "\\vert#1\\rangle",
+                    "\\bra" => "\\langle#1\\vert",
+                    "\\Im" => "\\operatorname{Im}",
+                    "\\Re" => "\\operatorname{Re}",
+                ),
+            ),
+        ),
         footer="[$NAME.jl]($GITHUB) v$VERSION docs powered by [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl).",
         size_threshold=1024 * 1024,
     ),
     pages=[
         "Home" => "index.md",
         "Glossary" => "glossary.md",
-        "User Manual" => "manual.md",
+        "Overview" => "overview.md",
         "Control Methods" => "methods.md",
         "Howto" => "howto.md",
         "Examples" => "examples/index.md",
