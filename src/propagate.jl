@@ -127,7 +127,7 @@ function init_prop_trajectory(
     for prefix in _prefixes
         for key in propertynames(traj)
             if startswith(string(key), prefix)
-                _kwargs_dict[Symbol(string(key)[length(prefix)+1:end])] =
+                _kwargs_dict[Symbol(string(key)[(length(prefix)+1):end])] =
                     getproperty(traj, key)
             end
         end
@@ -136,7 +136,7 @@ function init_prop_trajectory(
         for prefix in _prefixes
             for (key, val) in kwargs
                 if startswith(string(key), prefix)
-                    _kwargs_dict[Symbol(string(key)[length(prefix)+1:end])] = val
+                    _kwargs_dict[Symbol(string(key)[(length(prefix)+1):end])] = val
                 end
             end
         end

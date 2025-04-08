@@ -170,8 +170,8 @@ function Base.take!(buffer::FirstLastBuffer)
         end
         result = Vector{UInt8}(undef, length_result)
         result[1:N] .= buffer.first
-        result[N+1:N+length(sep)] .= sep
-        result[N+length(sep)+1:end] .= circshift(last, shift)
+        result[(N+1):(N+length(sep))] .= sep
+        result[(N+length(sep)+1):end] .= circshift(last, shift)
     end
     buffer.written = 0
     return result

@@ -51,8 +51,8 @@ links = InterLinks(
     "QuantumPropagators" => org_inv("QuantumPropagators"),
     "QuantumGradientGenerators" => org_inv("QuantumGradientGenerators"),
     "ComponentArrays" => (
-        "https://jonniedie.github.io/ComponentArrays.jl/stable/",
-        "https://jonniedie.github.io/ComponentArrays.jl/stable/objects.inv",
+        "https://sciml.github.io/ComponentArrays.jl/stable/",
+        "https://sciml.github.io/ComponentArrays.jl/stable/objects.inv",
         joinpath(@__DIR__, "src", "inventories", "ComponentArrays.toml")
     ),
     "RecursiveArrayTools" => (

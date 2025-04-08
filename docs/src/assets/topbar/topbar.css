@@ -13,6 +13,7 @@ html {
     top: 0;
     background-color: #282f2f;
     border-bottom: 1px solid #5e6d6f;
+    font-family: "Lato Medium", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 #topbar-nav #nav-items {
