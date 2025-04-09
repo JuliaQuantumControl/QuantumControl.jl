@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var dropdownItems = packages.map(function(packageName) {
         return `<a class="nav-link nav-item ${name === packageName ? 'current' : ''}" href="https://juliaquantumcontrol.github.io/${packageName}/${suffix}">${packageName}</a>`;
     }).join('');
-    var isSecondaryPackage = !(name === "QuantumControl.jl" || name === "QuantumPropagators.jl" || name.includes('Examples'));
+    var isSecondaryPackage = !(name === "QuantumControl.jl" || name === "QuantumPropagators.jl" || name.includes('Tutorials'));
     var navElement = document.createElement('nav');
     navElement.id = "topbar-nav";
     navElement.innerHTML = `
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
           </div>
           <a class="nav-link nav-item ${name === 'QuantumPropagators.jl' ? 'current' : ''}" href="${name === 'QuantumPropagators.jl' ? '' : 'https://juliaquantumcontrol.github.io/QuantumPropagators.jl/' + suffix}">QuantumPropagators.jl</a>
           <a class="nav-link nav-item ${name === 'QuantumControl.jl' ? 'current' : ''}" href="${name === 'QuantumControl.jl' ? '' : 'https://juliaquantumcontrol.github.io/QuantumControl.jl/' + suffix}">QuantumControl.jl</a>
-          <a class="nav-link nav-item ${name.includes('Examples') ? 'current' : ''}" href="${name.includes('Examples') ? '' : 'https://juliaquantumcontrol.github.io/QuantumControlExamples.jl/' + suffix}">Examples</a>
+          <a class="nav-link nav-item ${name.includes('Tutorials') ? 'current' : ''}" href="${name.includes('Tutorials') ? '' : 'https://juliaquantumcontrol.github.io/Tutorials/' + suffix}">Tutorials</a>
         </div>
         <button id="multidoc-toggler">
             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
