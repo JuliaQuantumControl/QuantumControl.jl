@@ -61,6 +61,7 @@ html {
     padding: 0 0.75rem;
     line-height: var(--navbar-height);
     font-size: 16px;
+    font-weight: 400;
     display: inline-block;
     margin: 0;
 }
@@ -75,7 +76,7 @@ html {
 }
 
 #topbar-nav .nav-expanded .dropdown-label {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 #topbar-nav .dropdown-label::after {
@@ -133,6 +134,7 @@ html {
 }
 
 #topbar-nav a.nav-link {
+    text-decoration-line: none;
     color: #ccc;
 }
 
