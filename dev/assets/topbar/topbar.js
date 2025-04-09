@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if (match && match[1]) {
             name = match[1];
             name = name.concat(".jl");
+        } else {
+            name = content
         }
     }
     var footerMessageElement = document.querySelector('p.footer-message');
