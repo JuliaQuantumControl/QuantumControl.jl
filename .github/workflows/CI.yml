@@ -104,6 +104,39 @@ jobs:
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1'
+      - name: Get typos settings
+        run: wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/typos.toml
+      - name: Spell Check
+        uses: crate-ci/typos@master
+      - name: Version Check
+        shell: julia {0}
+        run: |
+          using Pkg
+          VERSION = VersionNumber(Pkg.TOML.parsefile("Project.toml")["version"])
+          BRANCH = ENV["GITHUB_REF_NAME"]
+          if ENV["GITHUB_EVENT_NAME"] == "pull_request"
+              # For pull_request events, return the head (aka., "from") branch,
+              # not the base (aka., "to") branch.
+              BRANCH = ENV["GITHUB_HEAD_REF"]
+          end
+          if startswith(BRANCH, "release-")
+              if (length(VERSION.prerelease) == length(VERSION.build))
+                  println("Version $VERSION on release branch OK")
+              else
+                  @error "Invalid version $VERSION on release branch"
+                  exit(1)
+              end
+          elseif (ENV["GITHUB_REF_TYPE"] == "branch") && (BRANCH != "master")
+              if ("dev" in VERSION.prerelease) || ("dev" in VERSION.build)
+                  println("Version $VERSION OK with dev-suffix on $BRANCH")
+              else
+                  @error "Invalid version $VERSION on branch $BRANCH: must contain dev suffix"
+                  exit(1)
+              end
+          else
+              println("Version $VERSION OK on $BRANCH")
+          end
+          exit(0)
       - name: Get codestyle settings
         run: wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/.JuliaFormatter.toml
       - name: Install JuliaFormatter and format

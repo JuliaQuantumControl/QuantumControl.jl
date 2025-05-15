@@ -326,7 +326,7 @@ grad_J_a = make_grad_J_a(
 ```
 
 returns a function so that `∇J_a = grad_J_a(pulsevals, tlist)` sets
-that retrurns a vector `∇J_a` containing the vectorized elements
+that returns a vector `∇J_a` containing the vectorized elements
 ``∂J_a/∂ϵ_{ln}``. The function `J_a` must have the interface `J_a(pulsevals,
 tlist)`, see, e.g., [`J_a_fluence`](@ref).
 
