@@ -60,6 +60,7 @@ links = InterLinks(
         "https://docs.sciml.ai/RecursiveArrayTools/stable/objects.inv",
         joinpath(@__DIR__, "src", "inventories", "RecursiveArrayTools.toml")
     ),
+    "DrWatson" => "https://juliadynamics.github.io/DrWatson.jl/stable/",
 )
 
 println("Starting makedocs")
