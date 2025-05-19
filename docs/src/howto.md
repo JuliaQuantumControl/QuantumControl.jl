@@ -1,4 +1,29 @@
-# Howto
+# [How-to Guides](@id howto)
+
+**Contents**
+
+```@contents
+Pages=[
+ "howto.md"
+]
+Depth = 2:2
+```
+
+Also see the following how-to guides from the [QuantumPropagators documentation](@extref QuantumPropagators :doc:howto):
+
+```@eval
+using Markdown
+using DocInventories
+
+inventory = Inventory("https://juliaquantumcontrol.github.io/QuantumPropagators.jl/stable/objects.inv")
+
+howtos = [item for item in inventory if item.role == "label" && startswith(item.uri, "howto") && item.name != "Howtos"]
+
+lines = ["* [$(DocInventories.dispname(item))]($(DocInventories.uri(inventory, DocInventories.spec(item))))" for item in howtos]
+
+Markdown.parse(join(lines, "\n"))
+```
+
 
 ## How to deal with long-running calculations
 

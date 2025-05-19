@@ -114,7 +114,7 @@ makedocs(;
         "Glossary" => "glossary.md",
         "Overview" => "overview.md",
         "Control Methods" => "methods.md",
-        "Howto" => "howto.md",
+        "How-to Guides" => "howto.md",
         "Examples" => "examples/index.md",
         "API" => [
             "QuantumControl" => "api/quantum_control.md",
