@@ -48,11 +48,6 @@ jobs:
         run: |
           import GRAPE
           include(pkgdir(GRAPE, "test", "runtests.jl"))
-      - name: "Summarize coverage"
-        shell: julia --project=test {0}
-        run: |
-          using QuantumControlTestUtils
-          show_coverage()
       - uses: julia-actions/julia-processcoverage@v1
       - name: "Summarize coverage"
         run: julia --project=test -e 'using QuantumControlTestUtils; show_coverage();'
@@ -60,6 +55,14 @@ jobs:
         with:
           files: lcov.info
           token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Save Julia depot cache on cancel or failure
+        id: julia-cache-save
+        if: cancelled() || failure()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ${{ steps.julia-cache.outputs.cache-paths }}
+          key: ${{ steps.julia-cache.outputs.cache-key }}
   docs:
     name: Documentation
     runs-on: ubuntu-latest
@@ -78,10 +81,10 @@ jobs:
           wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
           install -m 600 -D /dev/null ~/.ssh/known_hosts
           ssh-keyscan -H github.com > ~/.ssh/known_hosts
-          julia --project=test -e 'include("installorg.jl"); installorg(; github="develop")'
+          julia --project=docs -e 'include("installorg.jl"); installorg(; github="develop")'
           # installing in develop mode enables proper "source" links in subpackage APIs
       - name: "Build documentation"
-        run: julia --project=test docs/make.jl
+        run: julia --project=docs docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
@@ -96,6 +99,14 @@ jobs:
           path: |
             README.md
             ./docs.zip
+      - name: Save Julia depot cache on cancel or failure
+        id: julia-cache-save
+        if: cancelled() || failure()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ${{ steps.julia-cache.outputs.cache-paths }}
+          key: ${{ steps.julia-cache.outputs.cache-key }}
   codestyle:
     name: Codestyle
     runs-on: ubuntu-latest

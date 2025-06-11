@@ -1,4 +1,5 @@
 using Pkg
+Pkg.develop(path=joinpath(@__DIR__, ".."))
 
 using Documenter
 using QuantumPropagators
@@ -128,5 +129,4 @@ makedocs(;
 )
 
 println("Finished makedocs")
-
-deploydocs(; repo="github.com/JuliaQuantumControl/QuantumControl.jl")
+deploydocs(; repo="github.com/JuliaQuantumControl/QuantumControl.jl", push_preview=true)
