@@ -1,0 +1,84 @@
+# DocInventory version 1
+project = "TimerOutputs.jl"
+version = "0.5.23"
+
+[[jl.function]]
+name = "TimerOutputs.print_timer"
+uri = "#settings-for-printing"
+[[jl.function]]
+name = "TimerOutputs.reset_timer!"
+uri = "#resetting"
+
+[[jl.type]]
+name = "TimerOutputs.TimerOutput"
+uri = "#usage"
+
+[[std.doc]]
+dispname = "TimerOutputs"
+name = "readme"
+uri = ""
+
+[[std.label]]
+dispname = "Acknowledgments"
+name = "acknowledgments"
+uri = "#$"
+[[std.label]]
+dispname = "Autor"
+name = "author"
+uri = "#$"
+[[std.label]]
+dispname = "Default Timer"
+name = "default-timer"
+uri = "#$"
+[[std.label]]
+dispname = "Example output"
+name = "example-output"
+uri = "#$"
+[[std.label]]
+dispname = "Flattening"
+name = "flattening"
+uri = "#$"
+[[std.label]]
+dispname = "Indexing into a table"
+name = "indexing-into-a-table"
+uri = "#$"
+[[std.label]]
+dispname = "Measuring time consumed outside @timeit blocks"
+name = "measuring-time-consumed-outside-timeit-blocks"
+uri = "#$"
+[[std.label]]
+dispname = "Merging"
+name = "merging"
+uri = "#$"
+[[std.label]]
+dispname = "Overhead"
+name = "overhead"
+uri = "#$"
+[[std.label]]
+dispname = "Querying data"
+name = "querying-data"
+uri = "#$"
+[[std.label]]
+dispname = "Resetting"
+name = "resetting"
+uri = "#$"
+[[std.label]]
+dispname = "Serialization"
+name = "serialization"
+uri = "#$"
+[[std.label]]
+dispname = "Settings for printing"
+name = "settings-for-printing"
+uri = "#$"
+[[std.label]]
+dispname = "Shared Timers"
+name = "shared-timers"
+uri = "#$"
+[[std.label]]
+dispname = "TimerOutputs"
+name = "timeroutputs"
+uri = "#$"
+[[std.label]]
+dispname = "Usage"
+name = "usage"
+uri = "#$"
