@@ -38,7 +38,6 @@ function clean(; distclean=false, _exit=true)
     for folder in ["", "docs", "test"]
         _push!(DISTCLEAN, joinpath(joinpath(ROOT, folder), "Manifest.toml"))
     end
-    _push!(DISTCLEAN, joinpath(ROOT, "docs", "Project.toml"))
     _push!(DISTCLEAN, joinpath(ROOT, "docs", "src", "examples", ".ipynb_checkpoints"))
     _push!(DISTCLEAN, joinpath(ROOT, ".JuliaFormatter.toml"))
     ###########################################################################

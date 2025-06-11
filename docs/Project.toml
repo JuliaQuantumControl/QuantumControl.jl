@@ -1,0 +1,17 @@
+[deps]
+DocInventories = "43dc2714-ed3b-44b5-b226-857eda1aa7de"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterCitations = "daee34ce-89f3-4625-b898-19384cb65244"
+DocumenterInterLinks = "d12716ef-a0f6-4df4-a9f1-a5a34e75c656"
+GRAPE = "6b52fcaf-80fe-489a-93e9-9f92080510be"
+Krotov = "b05dcdc7-62f6-4360-bf2c-0898bba419de"
+OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
+QuantumControl = "8a270532-f23f-47a8-83a9-b33d10cad486"
+QuantumPropagators = "7bf12567-5742-4b91-a078-644e72a65fc1"
+
+[sources]
+QuantumControl = {path = ".."}
+
+[compat]
+Documenter = "1.4"
+julia = "1.11"
