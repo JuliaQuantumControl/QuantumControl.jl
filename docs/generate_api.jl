@@ -278,8 +278,12 @@ open(outfile, "w") do out
     ## [Local Unexported Symbols](@id quantumcontrol-local-unexported-symbols)
 
     ```@docs
-    QuantumControl.set_default_ad_framework
     QuantumControl.AbstractOptimizationResult
+    QuantumControl.chain_callbacks
+    QuantumControl.init_prop_trajectory
+    QuantumControl.make_print_iters
+    QuantumControl.set_atexit_save_optimization
+    QuantumControl.set_default_ad_framework
     ```
     """)
     write(out, raw"""

@@ -1,5 +1,7 @@
 using Pkg
-Pkg.develop(path=joinpath(@__DIR__, ".."))
+if Base.VERSION < v"1.11"
+    Pkg.develop(path=joinpath(@__DIR__, ".."))
+end
 
 using Documenter
 using QuantumPropagators
@@ -64,6 +66,17 @@ links = InterLinks(
     "DrWatson" => "https://juliadynamics.github.io/DrWatson.jl/stable/",
 )
 
+fallbacks = DocumenterInterLinks.ExternalFallbacks(
+    "GRAPE-Background" => "@extref GRAPE :std:label:`GRAPE-Background`",
+    "QuantumGradientGenerators.GradVector" => "@extref QuantumGradientGenerators :jl:type:`QuantumGradientGenerators.GradVector`",
+    "howto_parameterized" => "@extref QuantumPropagators :std:label:`howto_parameterized`",
+    "KrotovResult" => "@extref Krotov :jl:type:`Krotov.KrotovResult`",
+    "KrotovWrk" => "@extref Krotov :jl:type:`Krotov.KrotovWrk`",
+    "GrapeResult" => "@extref GRAPE :jl:type:`GRAPE.GrapeResult`",
+    "GrapeWrk" => "@extref GRAPE :jl:type:`GRAPE.GrapeWrk`";
+    automatic=false,
+)
+
 println("Starting makedocs")
 
 include("generate_api.jl")
@@ -76,7 +89,7 @@ if get(ENV, "DOCUMENTER_WARN_ONLY", "0") == "1"  # cf. test/init.jl
 end
 
 makedocs(;
-    plugins=[bib, links],
+    plugins=[bib, links, fallbacks],
     authors=AUTHORS,
     sitename="QuantumControl.jl",
     # Link checking is disabled in REPL, see `devrepl.jl`.
@@ -121,7 +134,6 @@ makedocs(;
             "QuantumControl" => "api/quantum_control.md",
             "Reference" => "api/reference.md",
             "Subpackages" => ["QuantumPropagators" => "api/quantum_propagators.md",],
-            "Externals" => "api_externals.md",
             "Index" => "api/quantum_control_index.md",
         ],
         "References" => "references.md",
