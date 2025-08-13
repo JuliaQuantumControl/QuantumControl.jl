@@ -66,6 +66,9 @@ jobs:
   docs:
     name: Documentation
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2
@@ -76,7 +79,7 @@ jobs:
           # Install Python dependencies
           set -x
           /usr/bin/python3 -m pip install zip-files
-      - name: "Instantiate test environment"
+      - name: "Instantiate build environment"
         run: |
           wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
           install -m 600 -D /dev/null ~/.ssh/known_hosts
