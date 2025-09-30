@@ -4,15 +4,10 @@ using LinearAlgebra
 
 import Zygote
 import QuantumControl.Functionals:
-    _default_chi_via, make_gate_chi, make_automatic_chi, make_automatic_grad_J_a
+    make_gate_chi, make_automatic_chi, make_automatic_grad_J_a
 
 
-function make_automatic_chi(
-    J_T,
-    trajectories,
-    ::Val{:Zygote};
-    via=_default_chi_via(trajectories)
-)
+function make_automatic_chi(J_T, trajectories, ::Val{:Zygote}; via=:states)
 
     # TODO: At some point, for a large system, we could benchmark if there is
     # any benefit to making χ a closure and using LinearAlgebra.axpby! to
@@ -26,7 +21,14 @@ function make_automatic_chi(
         χ = Vector{eltype(Ψ)}(undef, length(Ψ))
         ∇J = Zygote.gradient(_J_T, Ψ...)
         for (k, ∇Jₖ) ∈ enumerate(∇J)
-            χ[k] = 0.5 * ∇Jₖ  # ½ corrects for gradient vs Wirtinger deriv
+            if isnothing(∇Jₖ)
+                # Functional does not depend on Ψₖ. That probably means a buggy
+                # J_T, but who knows: maybe there are situations where that
+                # makes sense. It would be extremely noisy to warn here.
+                χ[k] = zero(χ[k])
+            else
+                χ[k] = 0.5 * ∇Jₖ  # ½ corrects for gradient vs Wirtinger deriv
+            end
             # axpby!(0.5, ∇Jₖ, false, χ[k])
         end
         return χ
@@ -43,7 +45,12 @@ function make_automatic_chi(
         χ = Vector{eltype(Ψ)}(undef, length(Ψ))
         ∇J = Zygote.gradient(_J_T, τ...)
         for (k, traj) ∈ enumerate(trajectories)
-            ∂J╱∂τ̄ₖ = 0.5 * ∇J[k]  # ½ corrects for gradient vs Wirtinger deriv
+            if isnothing(∇J[k])
+                # Functional does not depend on τₖ
+                ∂J╱∂τ̄ₖ = zero(ComplexF64)
+            else
+                ∂J╱∂τ̄ₖ = 0.5 * ∇J[k]  # ½ corrects for gradient vs Wirtinger deriv
+            end
             χ[k] = ∂J╱∂τ̄ₖ * traj.target_state
             # axpby!(∂J╱∂τ̄ₖ, traj.target_state, false, χ[k])
         end

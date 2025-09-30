@@ -4,15 +4,10 @@ using LinearAlgebra
 
 import FiniteDifferences
 import QuantumControl.Functionals:
-    _default_chi_via, make_gate_chi, make_automatic_chi, make_automatic_grad_J_a
+    make_gate_chi, make_automatic_chi, make_automatic_grad_J_a
 
 
-function make_automatic_chi(
-    J_T,
-    trajectories,
-    ::Val{:FiniteDifferences};
-    via=_default_chi_via(trajectories)
-)
+function make_automatic_chi(J_T, trajectories, ::Val{:FiniteDifferences}; via=:states)
 
     # TODO: Benchmark if χ should be closure, see QuantumControlZygoteExt.jl
 
