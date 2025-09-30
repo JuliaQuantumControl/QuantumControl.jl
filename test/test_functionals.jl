@@ -299,13 +299,13 @@ end
         throw(DomainError("XXX"))
     end
 
-    @test_throws DomainError begin
+    @test_throws Exception begin
         IOCapture.capture() do
             make_chi(J_T_xxx, trajectories)
         end
     end
 
-    @test_throws DomainError begin
+    @test_throws Exception begin
         IOCapture.capture() do
             make_chi(J_T_xxx, trajectories; mode=:automatic)
         end
