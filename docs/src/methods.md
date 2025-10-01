@@ -28,3 +28,8 @@ The Gradient Ascent Pulse Engineering (GRAPE) method is implemented in the [`GRA
 ```@docs; canonical=false
 optimize(::ControlProblem, ::Val{:GRAPE})
 ```
+
+```@docs
+GRAPE.optimize
+```
+

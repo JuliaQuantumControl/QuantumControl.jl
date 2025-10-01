@@ -73,7 +73,8 @@ fallbacks = DocumenterInterLinks.ExternalFallbacks(
     "KrotovResult" => "@extref Krotov :jl:type:`Krotov.KrotovResult`",
     "KrotovWrk" => "@extref Krotov :jl:type:`Krotov.KrotovWrk`",
     "GrapeResult" => "@extref GRAPE :jl:type:`GRAPE.GrapeResult`",
-    "GrapeWrk" => "@extref GRAPE :jl:type:`GRAPE.GrapeWrk`";
+    "make_grape_print_iters" => "@extref GRAPE :jl:function:`GRAPE.make_grape_print_iters`",
+    "GrapeWrk" => "@extref GRAPE :jl:type:`GRAPE.GrapeWrk`",
     automatic=false,
 )
 
