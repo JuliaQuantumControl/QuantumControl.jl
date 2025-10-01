@@ -1,7 +1,7 @@
 name = "QuantumControl"
 uuid = "8a270532-f23f-47a8-83a9-b33d10cad486"
 authors = ["Michael Goerz <mail@michaelgoerz.net>"]
-version = "0.11.2+dev"
+version = "0.11.3+dev"
 
 [deps]
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
