@@ -5,7 +5,7 @@ using Test
 using SafeTestsets
 
 @testset "QuantumControl versions" begin
-    captured = IOCapture.capture(passthrough=true) do
+    captured = IOCapture.capture(passthrough = true) do
         QuantumControl.print_versions()
     end
     qp_exports = QuantumControl._exported_names(QuantumPropagators)

@@ -46,14 +46,14 @@ function check_generator(
     generator;
     state,
     tlist,
-    for_expval=true,
-    for_pwc=true,
-    for_time_continuous=false,
-    for_parameterization=false,
-    for_gradient_optimization=true,
-    atol=1e-15,
-    quiet=false,
-    _message_prefix=""  # for recursive calling
+    for_expval = true,
+    for_pwc = true,
+    for_time_continuous = false,
+    for_parameterization = false,
+    for_gradient_optimization = true,
+    atol = 1e-15,
+    quiet = false,
+    _message_prefix = ""  # for recursive calling
 )
 
     px = _message_prefix
@@ -69,7 +69,7 @@ function check_generator(
         atol,
         quiet,
         _message_prefix,
-        _check_amplitudes=false  # amplitudes are checked separately
+        _check_amplitudes = false  # amplitudes are checked separately
     )
     success || (return false)
 
@@ -110,8 +110,8 @@ function check_generator(
                     for_expval,
                     atol,
                     quiet,
-                    _message_prefix="On `deriv = get_control_deriv(generator, control)` of type $(typeof(deriv)) for control $i: ",
-                    for_gradient_optimization=false
+                    _message_prefix = "On `deriv = get_control_deriv(generator, control)` of type $(typeof(deriv)) for control $i: ",
+                    for_gradient_optimization = false
                 )
                 if !valid_deriv
                     quiet ||
@@ -159,7 +159,7 @@ function check_generator(
                     tlist,
                     for_gradient_optimization,
                     quiet,
-                    _message_prefix="On ampl $i ($(typeof(ampl))) in `generator`: "
+                    _message_prefix = "On ampl $i ($(typeof(ampl))) in `generator`: "
                 )
                 if !valid_ampl
                     quiet ||

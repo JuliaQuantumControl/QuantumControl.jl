@@ -68,7 +68,7 @@ Throws an `ArgumentError` if any of trajectories have a `target_state` of
 `nothing`. If `ignore_missing_target_state=true`, values in `τ` instead will
 remain unchanged for any trajectories with a missing target state.
 """
-function taus!(τ::Vector{ComplexF64}, Ψ, trajectories; ignore_missing_target_state=false)
+function taus!(τ::Vector{ComplexF64}, Ψ, trajectories; ignore_missing_target_state = false)
     for (k, (traj, Ψₖ)) in enumerate(zip(trajectories, Ψ))
         if !isnothing(traj.target_state)
             τ[k] = dot(traj.target_state, Ψₖ)
@@ -212,7 +212,7 @@ and the definition of the Zygote gradient with respect to a complex scalar,
     gradients). Always test automatic derivatives against finite differences
     and/or other automatic differentiation frameworks.
 """
-function make_chi(J_T, trajectories; mode=:any, automatic=:default, via=:automatic,)
+function make_chi(J_T, trajectories; mode = :any, automatic = :default, via = :automatic,)
     states = [traj.initial_state for traj in trajectories]
     tau = [zero(ComplexF64) for _ in states]
     J_T_takes_tau = hasmethod(J_T, Tuple{typeof(states),typeof(trajectories)}, (:tau,))
@@ -338,7 +338,7 @@ end
 
 # There is a user-facing wrapper `QuantumControl.set_default_ad_framework`.
 # See the documentation there.
-function _set_default_ad_framework(mod::Module; quiet=false)
+function _set_default_ad_framework(mod::Module; quiet = false)
     global DEFAULT_AD_FRAMEWORK
     automatic = nameof(mod)
     if !quiet
@@ -349,7 +349,7 @@ function _set_default_ad_framework(mod::Module; quiet=false)
 end
 
 
-function _set_default_ad_framework(::Nothing; quiet=false)
+function _set_default_ad_framework(::Nothing; quiet = false)
     global DEFAULT_AD_FRAMEWORK
     if !quiet
         @info "Unsetting the default provider for automatic differentiation."
@@ -394,7 +394,7 @@ refers to the framework set with `QuantumControl.set_default_ad_framework`.
     which links `make_grad_J_a` for [`J_a_fluence`](@ref) to
     [`grad_J_a_fluence`](@ref).
 """
-function make_grad_J_a(J_a, tlist; mode=:any, automatic=:default)
+function make_grad_J_a(J_a, tlist; mode = :any, automatic = :default)
     if mode == :any
         try
             grad_J_a = make_analytic_grad_J_a(J_a, tlist)
@@ -517,7 +517,7 @@ weights should sum to ``N``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function f_tau(Ψ, trajectories; tau=nothing, τ=tau)
+function f_tau(Ψ, trajectories; tau = nothing, τ = tau)
     N = length(trajectories)
     if τ === nothing
         # If we did this in the function header, we'd redundandly call `taus`
@@ -551,7 +551,7 @@ with ``N``, ``w_k`` and ``τ_k`` as in [`f_tau`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_ss(Ψ, trajectories; tau=nothing, τ=tau)
+function F_ss(Ψ, trajectories; tau = nothing, τ = tau)
     N = length(trajectories)
     if τ === nothing
         τ = taus(Ψ, trajectories)
@@ -582,8 +582,8 @@ All arguments are passed to [`F_ss`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_ss(Ψ, trajectories; tau=nothing, τ=tau)
-    return 1.0 - F_ss(Ψ, trajectories; τ=τ)
+function J_T_ss(Ψ, trajectories; tau = nothing, τ = tau)
+    return 1.0 - F_ss(Ψ, trajectories; τ = τ)
 end
 
 
@@ -605,7 +605,7 @@ with ``|Ψ^{\tgt}_k⟩``, ``τ_k`` and ``w_k`` as defined in [`f_tau`](@ref).
 
 Note: this function can be obtained with `make_chi(J_T_ss, trajectories)`.
 """
-function chi_ss(Ψ, trajectories; tau=nothing, τ=tau)
+function chi_ss(Ψ, trajectories; tau = nothing, τ = tau)
     N = length(trajectories)
     if τ === nothing
         τ = taus(Ψ, trajectories)
@@ -649,8 +649,8 @@ All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_sm(Ψ, trajectories; tau=nothing, τ=tau)
-    return abs2(f_tau(Ψ, trajectories; τ=τ))
+function F_sm(Ψ, trajectories; tau = nothing, τ = tau)
+    return abs2(f_tau(Ψ, trajectories; τ = τ))
 end
 
 
@@ -673,8 +673,8 @@ in [`F_sm`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_sm(Ψ, trajectories; tau=nothing, τ=tau)
-    return 1.0 - F_sm(Ψ, trajectories; τ=τ)
+function J_T_sm(Ψ, trajectories; tau = nothing, τ = tau)
+    return 1.0 - F_sm(Ψ, trajectories; τ = τ)
 end
 
 
@@ -696,7 +696,7 @@ with ``|Ψ^{\tgt}_k⟩``, ``τ_j`` and ``w_k`` as defined in [`f_tau`](@ref).
 
 Note: this function can be obtained with `make_chi(J_T_sm, trajectories)`.
 """
-function chi_sm(Ψ, trajectories; tau=nothing, τ=tau)
+function chi_sm(Ψ, trajectories; tau = nothing, τ = tau)
     N = length(trajectories)
     if τ === nothing
         τ = taus(Ψ, trajectories)
@@ -745,8 +745,8 @@ All arguments are passed to [`f_tau`](@ref) to evaluate ``f_τ``.
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function F_re(Ψ, trajectories; tau=nothing, τ=tau)
-    return real(f_tau(Ψ, trajectories; τ=τ))
+function F_re(Ψ, trajectories; tau = nothing, τ = tau)
+    return real(f_tau(Ψ, trajectories; τ = τ))
 end
 
 
@@ -772,8 +772,8 @@ in [`F_re`](@ref).
 
 * [PalaoPRA2003](@cite) Palao and Kosloff,  Phys. Rev. A 68, 062308 (2003)
 """
-function J_T_re(Ψ, trajectories; tau=nothing, τ=tau)
-    return 1.0 - F_re(Ψ, trajectories; τ=τ)
+function J_T_re(Ψ, trajectories; tau = nothing, τ = tau)
+    return 1.0 - F_re(Ψ, trajectories; τ = τ)
 end
 
 
@@ -796,7 +796,7 @@ with ``|Ψ^{\tgt}_k⟩`` and ``w_k`` as defined in [`f_tau`](@ref).
 
 Note: this function can be obtained with `make_chi(J_T_re, trajectories)`.
 """
-function chi_re(Ψ, trajectories; tau=nothing, τ=tau)
+function chi_re(Ψ, trajectories; tau = nothing, τ = tau)
     N = length(trajectories)
     if τ === nothing
         τ = taus(Ψ, trajectories)
@@ -888,7 +888,7 @@ Compared to the more general [`make_chi`](@ref) with `mode=:automatic`,
 `make_gate_chi` will generally have a slightly smaller numerical overhead, as
 it pushes the use of automatic differentiation down by one level.
 """
-function make_gate_chi(J_T_U, trajectories; automatic=:default, kwargs...)
+function make_gate_chi(J_T_U, trajectories; automatic = :default, kwargs...)
     if automatic == :default
         if DEFAULT_AD_FRAMEWORK == :nothing
             msg = "make_gate_chi: no default `automatic`. You must run `set_default_ad_framework` first, e.g. `import Zygote; QuantumControl.set_default_ad_framework(Zygote)`."

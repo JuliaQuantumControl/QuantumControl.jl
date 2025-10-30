@@ -19,7 +19,7 @@ end
 
 @testset "Dense trajectory adjoint" begin
 
-    traj = dummy_control_problem(density=1.0).trajectories[1]
+    traj = dummy_control_problem(density = 1.0).trajectories[1]
     adj = adjoint(traj)
 
     @test norm(adj.initial_state - traj.initial_state) ≈ 0
@@ -33,7 +33,7 @@ end
 
 @testset "Non-Hermitian trajectory adjoint" begin
 
-    traj = dummy_control_problem(sparsity=1.0, hermitian=false).trajectories[1]
+    traj = dummy_control_problem(sparsity = 1.0, hermitian = false).trajectories[1]
     adj = adjoint(traj)
 
     @test norm(adj.initial_state - traj.initial_state) ≈ 0
@@ -51,10 +51,10 @@ end
 
     traj0 = dummy_control_problem().trajectories[1]
     traj = Trajectory(
-        initial_state=traj0.initial_state,
-        generator=traj0.generator,
-        target_state=traj0.target_state,
-        weight=0.2
+        initial_state = traj0.initial_state,
+        generator = traj0.generator,
+        target_state = traj0.target_state,
+        weight = 0.2
     )
     adj = adjoint(traj)
 
@@ -64,14 +64,14 @@ end
 
 @testset "custom trajectory adjoint" begin
 
-    traj0 = dummy_control_problem(hermitian=false).trajectories[1]
+    traj0 = dummy_control_problem(hermitian = false).trajectories[1]
 
     traj = Trajectory(
-        initial_state=traj0.initial_state,
-        generator=traj0.generator,
-        gate="CNOT",
-        weight=0.5,
-        coeff=1im
+        initial_state = traj0.initial_state,
+        generator = traj0.generator,
+        gate = "CNOT",
+        weight = 0.5,
+        coeff = 1im
     )
 
     @test propertynames(traj) ==

@@ -77,13 +77,13 @@ get_control_deriv(::InvalidAmplitudeWrongDeriv, control) = nothing
 @testset "Invalid generator" begin
 
     state = ComplexF64[1, 0, 0, 0]
-    tlist = collect(range(0, 10, length=101))
+    tlist = collect(range(0, 10, length = 101))
 
     generator = InvalidGenerator(t -> 1.0)
 
     @test QuantumPropagators.Interfaces.check_generator(generator; state, tlist)
 
-    captured = IOCapture.capture(rethrow=Union{}, passthrough=false) do
+    captured = IOCapture.capture(rethrow = Union{}, passthrough = false) do
         check_generator(generator; state, tlist)
     end
     @test captured.value ≡ false
@@ -96,11 +96,11 @@ get_control_deriv(::InvalidAmplitudeWrongDeriv, control) = nothing
         "`get_control_deriv(generator, control)` must return `nothing` if `control` is not in `get_controls(generator)`"
     )
 
-    H₀ = random_matrix(4; hermitian=true)
-    H₁ = random_matrix(4; hermitian=true)
+    H₀ = random_matrix(4; hermitian = true)
+    H₁ = random_matrix(4; hermitian = true)
     ampl = InvalidAmplitudeNonPreserving(t -> 1.0)
     generator = hamiltonian(H₀, (H₁, ampl))
-    captured = IOCapture.capture(rethrow=Union{}, passthrough=false) do
+    captured = IOCapture.capture(rethrow = Union{}, passthrough = false) do
         check_generator(generator; state, tlist)
     end
     @test captured.value ≡ false
@@ -116,10 +116,10 @@ end
 
     N = 5
     state = random_state_vector(N)
-    tlist = collect(range(0, 10, length=101))
+    tlist = collect(range(0, 10, length = 101))
 
-    H₀ = random_matrix(5; hermitian=true)
-    H₁ = random_matrix(5; hermitian=true)
+    H₀ = random_matrix(5; hermitian = true)
+    H₁ = random_matrix(5; hermitian = true)
     ampl = InvalidAmplitude(t -> 1.0)
 
     @test QuantumPropagators.Interfaces.check_amplitude(ampl; tlist)
@@ -128,14 +128,14 @@ end
 
     @test QuantumPropagators.Interfaces.check_generator(H; state, tlist)
 
-    captured = IOCapture.capture(rethrow=Union{}, passthrough=false) do
+    captured = IOCapture.capture(rethrow = Union{}, passthrough = false) do
         check_generator(H; state, tlist)
     end
     @test captured.value ≡ false
     @test contains(captured.output, "get_control_deriv(ampl, control) must be defined")
 
     ampl = InvalidAmplitudeWrongDeriv(t -> 1.0)
-    captured = IOCapture.capture(rethrow=Union{}, passthrough=false) do
+    captured = IOCapture.capture(rethrow = Union{}, passthrough = false) do
         check_amplitude(ampl; tlist)
     end
     @test contains(
@@ -150,7 +150,7 @@ end
     ampl = InvalidAmplitudeNonPreserving(t -> 1.0, tlist)
     deriv = get_control_deriv(ampl, ampl.control)
     @test get_controls(ampl)[1] ≢ get_controls(deriv)[1]  # This is the "bug"
-    captured = IOCapture.capture(rethrow=Union{}, passthrough=false) do
+    captured = IOCapture.capture(rethrow = Union{}, passthrough = false) do
         check_amplitude(ampl; tlist)
     end
     @test contains(

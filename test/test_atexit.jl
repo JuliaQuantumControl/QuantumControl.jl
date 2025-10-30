@@ -15,7 +15,7 @@ end
 
     n_atexit_hooks = length(Base.atexit_hooks)
 
-    set_atexit_save_optimization(filename, result; msg_property=:msg)
+    set_atexit_save_optimization(filename, result; msg_property = :msg)
 
     @test length(Base.atexit_hooks) == n_atexit_hooks + 1
 

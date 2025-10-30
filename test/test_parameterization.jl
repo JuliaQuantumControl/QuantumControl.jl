@@ -8,7 +8,7 @@ using Test
 
 
 struct GaussianControl <: ParameterizedFunction
-    parameters::ComponentVector{Float64,Vector{Float64},Tuple{Axis{(A=1, t₀=2, σ=3)}}}
+    parameters::ComponentVector{Float64,Vector{Float64},Tuple{Axis{(A = 1, t₀ = 2, σ = 3)}}}
     GaussianControl(; kwargs...) = new(ComponentVector(; kwargs...))
 end
 
@@ -21,7 +21,13 @@ end
 const 𝕚 = 1im
 
 
-function total_enantiomer_ham(parameters; sign, a, independent_parameters=false, kwargs...)
+function total_enantiomer_ham(
+    parameters;
+    sign,
+    a,
+    independent_parameters = false,
+    kwargs...
+)
 
     μ = (sign == "-" ? -1 : 1)
     H₁Re = μ * ComplexF64[0 1 0; 1 0 0; 0  0 0]
@@ -61,110 +67,185 @@ struct TEH_field1Re <: ParameterizedFunction
     parameters::ComponentVector{
         Float64,
         Vector{Float64},
-        Tuple{Axis{(ΔT₁=1, ΔT₂=2, ΔT₃=3, ϕ₁=4, ϕ₂=5, ϕ₃=6, E₀₁=7, E₀₂=8, E₀₃=9)}}
+        Tuple{
+            Axis{(
+                ΔT₁ = 1,
+                ΔT₂ = 2,
+                ΔT₃ = 3,
+                ϕ₁ = 4,
+                ϕ₂ = 5,
+                ϕ₃ = 6,
+                E₀₁ = 7,
+                E₀₂ = 8,
+                E₀₃ = 9
+            )}
+        }
     }
     a::Float64
 end
 
 function (E::TEH_field1Re)(t)
     @unpack E₀₁, ΔT₁, ϕ₁ = E.parameters
-    _tanhfield(t; E₀=E₀₁, t₁=0.0, t₂=ΔT₁, a=E.a) * cos(ϕ₁)
+    _tanhfield(t; E₀ = E₀₁, t₁ = 0.0, t₂ = ΔT₁, a = E.a) * cos(ϕ₁)
 end
 
 struct TEH_field2Re <: ParameterizedFunction
     parameters::ComponentVector{
         Float64,
         Vector{Float64},
-        Tuple{Axis{(ΔT₁=1, ΔT₂=2, ΔT₃=3, ϕ₁=4, ϕ₂=5, ϕ₃=6, E₀₁=7, E₀₂=8, E₀₃=9)}}
+        Tuple{
+            Axis{(
+                ΔT₁ = 1,
+                ΔT₂ = 2,
+                ΔT₃ = 3,
+                ϕ₁ = 4,
+                ϕ₂ = 5,
+                ϕ₃ = 6,
+                E₀₁ = 7,
+                E₀₂ = 8,
+                E₀₃ = 9
+            )}
+        }
     }
     a::Float64
 end
 
 function (E::TEH_field2Re)(t)
     @unpack E₀₂, ΔT₁, ΔT₂, ϕ₂ = E.parameters
-    _tanhfield(t; E₀=E₀₂, t₁=ΔT₁, t₂=(ΔT₁ + ΔT₂), a=E.a) * cos(ϕ₂)
+    _tanhfield(t; E₀ = E₀₂, t₁ = ΔT₁, t₂ = (ΔT₁ + ΔT₂), a = E.a) * cos(ϕ₂)
 end
 
 struct TEH_field3Re <: ParameterizedFunction
     parameters::ComponentVector{
         Float64,
         Vector{Float64},
-        Tuple{Axis{(ΔT₁=1, ΔT₂=2, ΔT₃=3, ϕ₁=4, ϕ₂=5, ϕ₃=6, E₀₁=7, E₀₂=8, E₀₃=9)}}
+        Tuple{
+            Axis{(
+                ΔT₁ = 1,
+                ΔT₂ = 2,
+                ΔT₃ = 3,
+                ϕ₁ = 4,
+                ϕ₂ = 5,
+                ϕ₃ = 6,
+                E₀₁ = 7,
+                E₀₂ = 8,
+                E₀₃ = 9
+            )}
+        }
     }
     a::Float64
 end
 
 function (E::TEH_field3Re)(t)
     @unpack E₀₃, ΔT₁, ΔT₂, ΔT₃, ϕ₃ = E.parameters
-    _tanhfield(t; E₀=E₀₃, t₁=(ΔT₁ + ΔT₂), t₂=(ΔT₁ + ΔT₂ + ΔT₃), a=E.a) * cos(ϕ₃)
+    _tanhfield(t; E₀ = E₀₃, t₁ = (ΔT₁ + ΔT₂), t₂ = (ΔT₁ + ΔT₂ + ΔT₃), a = E.a) * cos(ϕ₃)
 end
 
 struct TEH_field1Im <: ParameterizedFunction
     parameters::ComponentVector{
         Float64,
         Vector{Float64},
-        Tuple{Axis{(ΔT₁=1, ΔT₂=2, ΔT₃=3, ϕ₁=4, ϕ₂=5, ϕ₃=6, E₀₁=7, E₀₂=8, E₀₃=9)}}
+        Tuple{
+            Axis{(
+                ΔT₁ = 1,
+                ΔT₂ = 2,
+                ΔT₃ = 3,
+                ϕ₁ = 4,
+                ϕ₂ = 5,
+                ϕ₃ = 6,
+                E₀₁ = 7,
+                E₀₂ = 8,
+                E₀₃ = 9
+            )}
+        }
     }
     a::Float64
 end
 
 function (E::TEH_field1Im)(t)
     @unpack E₀₁, ΔT₁, ϕ₁ = E.parameters
-    _tanhfield(t; E₀=E₀₁, t₁=0.0, t₂=ΔT₁, a=E.a) * sin(ϕ₁)
+    _tanhfield(t; E₀ = E₀₁, t₁ = 0.0, t₂ = ΔT₁, a = E.a) * sin(ϕ₁)
 end
 
 struct TEH_field2Im <: ParameterizedFunction
     parameters::ComponentVector{
         Float64,
         Vector{Float64},
-        Tuple{Axis{(ΔT₁=1, ΔT₂=2, ΔT₃=3, ϕ₁=4, ϕ₂=5, ϕ₃=6, E₀₁=7, E₀₂=8, E₀₃=9)}}
+        Tuple{
+            Axis{(
+                ΔT₁ = 1,
+                ΔT₂ = 2,
+                ΔT₃ = 3,
+                ϕ₁ = 4,
+                ϕ₂ = 5,
+                ϕ₃ = 6,
+                E₀₁ = 7,
+                E₀₂ = 8,
+                E₀₃ = 9
+            )}
+        }
     }
     a::Float64
 end
 
 function (E::TEH_field2Im)(t)
     @unpack E₀₂, ΔT₁, ΔT₂, ϕ₂ = E.parameters
-    _tanhfield(t; E₀=E₀₂, t₁=ΔT₁, t₂=(ΔT₁ + ΔT₂), a=E.a) * sin(ϕ₂)
+    _tanhfield(t; E₀ = E₀₂, t₁ = ΔT₁, t₂ = (ΔT₁ + ΔT₂), a = E.a) * sin(ϕ₂)
 end
 
 struct TEH_field3Im <: ParameterizedFunction
     parameters::ComponentVector{
         Float64,
         Vector{Float64},
-        Tuple{Axis{(ΔT₁=1, ΔT₂=2, ΔT₃=3, ϕ₁=4, ϕ₂=5, ϕ₃=6, E₀₁=7, E₀₂=8, E₀₃=9)}}
+        Tuple{
+            Axis{(
+                ΔT₁ = 1,
+                ΔT₂ = 2,
+                ΔT₃ = 3,
+                ϕ₁ = 4,
+                ϕ₂ = 5,
+                ϕ₃ = 6,
+                E₀₁ = 7,
+                E₀₂ = 8,
+                E₀₃ = 9
+            )}
+        }
     }
     a::Float64
 end
 
 function (E::TEH_field3Im)(t)
     @unpack E₀₃, ΔT₁, ΔT₂, ΔT₃, ϕ₃ = E.parameters
-    _tanhfield(t; E₀=E₀₃, t₁=(ΔT₁ + ΔT₂), t₂=(ΔT₁ + ΔT₂ + ΔT₃), a=E.a) * sin(ϕ₃)
+    _tanhfield(t; E₀ = E₀₃, t₁ = (ΔT₁ + ΔT₂), t₂ = (ΔT₁ + ΔT₂ + ΔT₃), a = E.a) * sin(ϕ₃)
 end
 
 _tanhfield(t; E₀, t₁, t₂, a) = (E₀ / 2) * (tanh(a * (t - t₁)) - tanh(a * (t - t₂)));
 
 _ENANTIOMER_PARAMETERS = ComponentVector(
-    ΔT₁=0.3,
-    ΔT₂=0.4,
-    ΔT₃=0.3,
-    ϕ₁=0.0,
-    ϕ₂=0.0,
-    ϕ₃=0.0,
-    E₀₁=4.5,
-    E₀₂=4.0,
-    E₀₃=5.0
+    ΔT₁ = 0.3,
+    ΔT₂ = 0.4,
+    ΔT₃ = 0.3,
+    ϕ₁ = 0.0,
+    ϕ₂ = 0.0,
+    ϕ₃ = 0.0,
+    E₀₁ = 4.5,
+    E₀₂ = 4.0,
+    E₀₃ = 5.0
 )
 
 
 @testset "enantiomer problem - dependent parameters" begin
-    H₊ = total_enantiomer_ham(_ENANTIOMER_PARAMETERS; sign="+", a=100)
-    H₋ = total_enantiomer_ham(_ENANTIOMER_PARAMETERS; sign="-", a=100)
+    H₊ = total_enantiomer_ham(_ENANTIOMER_PARAMETERS; sign = "+", a = 100)
+    H₋ = total_enantiomer_ham(_ENANTIOMER_PARAMETERS; sign = "-", a = 100)
     tlist = [0.0, 0.5, 1.0]
     Ψ₀ = ComplexF64[1, 0, 0]
     Ψ₊tgt = ComplexF64[1, 0, 0]
     Ψ₋tgt = ComplexF64[0, 0, 1]
     problem = ControlProblem(
-        [Trajectory(Ψ₀, H₊; target_state=Ψ₊tgt), Trajectory(Ψ₀, H₋; target_state=Ψ₋tgt)],
+        [
+            Trajectory(Ψ₀, H₊; target_state = Ψ₊tgt),
+            Trajectory(Ψ₀, H₋; target_state = Ψ₋tgt)
+        ],
         tlist;
     )
     p = get_parameters(problem)
@@ -176,14 +257,17 @@ end
 
 
 @testset "enantiomer problem - partially independent parameters" begin
-    H₊ = total_enantiomer_ham(copy(_ENANTIOMER_PARAMETERS); sign="+", a=100)
-    H₋ = total_enantiomer_ham(copy(_ENANTIOMER_PARAMETERS); sign="-", a=100)
+    H₊ = total_enantiomer_ham(copy(_ENANTIOMER_PARAMETERS); sign = "+", a = 100)
+    H₋ = total_enantiomer_ham(copy(_ENANTIOMER_PARAMETERS); sign = "-", a = 100)
     tlist = [0.0, 0.5, 1.0]
     Ψ₀ = ComplexF64[1, 0, 0]
     Ψ₊tgt = ComplexF64[1, 0, 0]
     Ψ₋tgt = ComplexF64[0, 0, 1]
     problem = ControlProblem(
-        [Trajectory(Ψ₀, H₊; target_state=Ψ₊tgt), Trajectory(Ψ₀, H₋; target_state=Ψ₋tgt)],
+        [
+            Trajectory(Ψ₀, H₊; target_state = Ψ₊tgt),
+            Trajectory(Ψ₀, H₋; target_state = Ψ₋tgt)
+        ],
         tlist;
     )
     p = get_parameters(problem)
@@ -199,22 +283,25 @@ end
 @testset "enantiomer problem - fully independent parameters" begin
     H₊ = total_enantiomer_ham(
         copy(_ENANTIOMER_PARAMETERS);
-        independent_parameters=true,
-        sign="+",
-        a=100
+        independent_parameters = true,
+        sign = "+",
+        a = 100
     )
     H₋ = total_enantiomer_ham(
         copy(_ENANTIOMER_PARAMETERS);
-        independent_parameters=true,
-        sign="-",
-        a=100
+        independent_parameters = true,
+        sign = "-",
+        a = 100
     )
     tlist = [0.0, 0.5, 1.0]
     Ψ₀ = ComplexF64[1, 0, 0]
     Ψ₊tgt = ComplexF64[1, 0, 0]
     Ψ₋tgt = ComplexF64[0, 0, 1]
     problem = ControlProblem(
-        [Trajectory(Ψ₀, H₊; target_state=Ψ₊tgt), Trajectory(Ψ₀, H₋; target_state=Ψ₋tgt)],
+        [
+            Trajectory(Ψ₀, H₊; target_state = Ψ₊tgt),
+            Trajectory(Ψ₀, H₋; target_state = Ψ₋tgt)
+        ],
         tlist;
     )
     p = get_parameters(problem)

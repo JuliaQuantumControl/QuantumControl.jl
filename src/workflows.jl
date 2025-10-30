@@ -55,11 +55,11 @@ for details. A common examples would be a
 function run_or_load(
     f::Function,
     file;
-    save::Function=(_is_jld2_filename(file) ? JLD2.save_object : FileIO.save),
-    load::Function=(_is_jld2_filename(file) ? JLD2.load_object : FileIO.load),
-    force=false,
-    verbose=true,
-    _else=nothing,   # undocumented function to run on data if loaded
+    save::Function = (_is_jld2_filename(file) ? JLD2.save_object : FileIO.save),
+    load::Function = (_is_jld2_filename(file) ? JLD2.load_object : FileIO.load),
+    force = false,
+    verbose = true,
+    _else = nothing,   # undocumented function to run on data if loaded
     kwargs...
 )
     # Using `JLD2.save_object` instead of `FileIO.save` is more flexible:
@@ -131,7 +131,7 @@ mutable struct FirstLastBuffer
 end
 
 
-function FirstLastBuffer(N=1024)
+function FirstLastBuffer(N = 1024)
     first = Vector{UInt8}(undef, N)
     last = Vector{UInt8}(undef, N)
     FirstLastBuffer(first, last, N, 0)
@@ -207,10 +207,10 @@ function optimize_or_load(
     file,
     problem;
     method,
-    force=false,
-    verbose=get(problem.kwargs, :verbose, false),
-    metadata::Union{Nothing,Dict}=nothing,
-    logfile=nothing,
+    force = false,
+    verbose = get(problem.kwargs, :verbose, false),
+    metadata::Union{Nothing,Dict} = nothing,
+    logfile = nothing,
     kwargs...
 )
 
@@ -230,7 +230,7 @@ function optimize_or_load(
         load,
         force,
         verbose,
-        _else=_print_loaded_output
+        _else = _print_loaded_output
     ) do
         color = get(stdout, :color, false)
         if haskey(ENV, "JULIA_CAPTURE_COLOR")
@@ -241,9 +241,9 @@ function optimize_or_load(
         end
         if isnothing(logfile)
             c = IOCapture.capture(
-                passthrough=true,
-                capture_buffer=FirstLastBuffer(),
-                color=color,
+                passthrough = true,
+                capture_buffer = FirstLastBuffer(),
+                color = color,
             ) do
                 optimize(problem; method, verbose, atexit_filename, kwargs...)
             end
@@ -414,7 +414,7 @@ stored with the result. The `metadata` dict should use strings as keys.
 * [`@optimize_or_load`](@ref): Run [`optimize`](@ref) and
   [`save_optimization`](@ref) in one go.
 """
-function save_optimization(file, result; metadata=nothing)
+function save_optimization(file, result; metadata = nothing)
     JLD2_fmt = FileIO.DataFormat{:JLD2}
     data = Dict{String,Any}("result" => result)
     if !isnothing(metadata)
@@ -446,7 +446,7 @@ string keys to values.
 Calling `load_optimization` with `verbose=true` will `@info` the
 metadata after loading the file
 """
-function load_optimization(file; return_metadata=false, verbose=false, kwargs...)
+function load_optimization(file; return_metadata = false, verbose = false, kwargs...)
     data = FileIO.load(file)
     result = data["result"]
     metadata = filter(kv -> (kv[1] != "result"), data)

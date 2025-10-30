@@ -10,7 +10,7 @@ include(joinpath(@__DIR__, "clean.jl"))
 function servedocs(; kwargs...)
     clean()  # otherwise, we get an infinite loop
     ENV["DOCUMENTER_WARN_ONLY"] = "1"
-    _servedocs(; skip_dirs=["docs/src/api"], kwargs...)
+    _servedocs(; skip_dirs = ["docs/src/api"], kwargs...)
 end
 
 REPL_MESSAGE = """

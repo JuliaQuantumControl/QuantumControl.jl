@@ -22,22 +22,22 @@ using QuantumControl: ControlProblem, Trajectory
 
     problem = ControlProblem(
         [Trajectory(nothing, nothing)],
-        pulse_options=Dict(),
-        tlist=[0.0, 10.0],
-        iter_stop=2,
-        flag=false
+        pulse_options = Dict(),
+        tlist = [0.0, 10.0],
+        iter_stop = 2,
+        flag = false
     )
 
-    res = QuantumControl.optimize(problem; method=:kwargstest, check=false)
+    res = QuantumControl.optimize(problem; method = :kwargstest, check = false)
     @test res.iter_stop == 2
     @test !res.flag
 
     res2 = QuantumControl.optimize(
         problem;
-        method=:kwargstest,
-        iter_stop=10,
-        flag=true,
-        check=false
+        method = :kwargstest,
+        iter_stop = 10,
+        flag = true,
+        check = false
     )
     @test res2.iter_stop == 10
     @test res2.flag

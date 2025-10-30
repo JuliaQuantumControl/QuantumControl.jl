@@ -57,8 +57,8 @@ struct Trajectory{ST,GT}
     function Trajectory(
         initial_state::ST,
         generator::GT;
-        target_state::Union{Nothing,ST}=nothing,
-        weight=1.0,
+        target_state::Union{Nothing,ST} = nothing,
+        weight = 1.0,
         kwargs...
     ) where {ST,GT}
         new{ST,GT}(initial_state, generator, target_state, weight, kwargs)
@@ -73,7 +73,7 @@ function Trajectory(; initial_state, generator, kwargs...)
 end
 
 
-function _show_trajectory(io::IO, traj::Trajectory; multiline=false)
+function _show_trajectory(io::IO, traj::Trajectory; multiline = false)
     print(io, "Trajectory(")
     multiline && print(io, ";")
     print(io, multiline ? "\n  initial_state=" : "", traj.initial_state)
@@ -151,7 +151,7 @@ function Base.show(io::IO, ::MIME"text/plain", traj::Trajectory)
 end
 
 
-function Base.propertynames(traj::Trajectory, private::Bool=false)
+function Base.propertynames(traj::Trajectory, private::Bool = false)
     return (
         :initial_state,
         :generator,
@@ -295,5 +295,8 @@ type to define a custom `get_parameters` method to override the default of
 obtaining the parameters recursively from the controls inside the generator.
 """
 function get_parameters(trajectories::Vector{<:Trajectory})
-    return _get_parameters(trajectories; via=(trajs -> [traj.generator for traj in trajs]))
+    return _get_parameters(
+        trajectories;
+        via = (trajs -> [traj.generator for traj in trajs])
+    )
 end

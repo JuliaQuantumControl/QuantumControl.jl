@@ -35,7 +35,7 @@ end
     _R = convert(_TestOptimizationResult1, data)
     @test _R == R
 
-    captured = IOCapture.capture(; passthrough=false, rethrow=Union{}) do
+    captured = IOCapture.capture(; passthrough = false, rethrow = Union{}) do
         convert(_TestOptimizationResult2, data)
     end
     @test captured.value isa MissingResultDataException
@@ -61,7 +61,7 @@ end
     @test _R isa _TestOptimizationResult3
     @test convert(Dict{Symbol,Any}, _R) == convert(Dict{Symbol,Any}, R)
 
-    captured = IOCapture.capture(; passthrough=false, rethrow=Union{}) do
+    captured = IOCapture.capture(; passthrough = false, rethrow = Union{}) do
         convert(_TestOptimizationResult2, R)
     end
     @test captured.value isa IncompatibleResultsException
@@ -73,7 +73,7 @@ end
     @test contains(msg, "does not provide required fields [:J_T, :J_T_prev]")
 
     R2 = _TestOptimizationResult2(0, 0.1, 0.4)
-    captured = IOCapture.capture(; passthrough=false, rethrow=Union{}) do
+    captured = IOCapture.capture(; passthrough = false, rethrow = Union{}) do
         convert(_TestOptimizationResult1, R2)
     end
     @test captured.value isa IncompatibleResultsException

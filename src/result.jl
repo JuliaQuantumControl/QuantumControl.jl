@@ -60,7 +60,7 @@ end
 function Base.convert(
     ::Type{R},
     data::Dict{Symbol,<:Any},
-    defaults::Dict{Symbol,<:Any}=Dict{Symbol,Any}(),
+    defaults::Dict{Symbol,<:Any} = Dict{Symbol,Any}(),
 ) where {R<:AbstractOptimizationResult}
 
     function _get(data, field, defaults)
@@ -93,7 +93,7 @@ end
 function Base.convert(
     ::Type{R1},
     result::R2,
-    defaults::Dict{Symbol,<:Any}=Dict{Symbol,Any}(),
+    defaults::Dict{Symbol,<:Any} = Dict{Symbol,Any}(),
 ) where {R1<:AbstractOptimizationResult,R2<:AbstractOptimizationResult}
     data = convert(Dict{Symbol,Any}, result)
     try

@@ -15,8 +15,8 @@ load_csv(f) = DataFrame(CSV.File(f))
 @testset "run_or_load to csv" begin
     mktempdir() do folder
         file = joinpath(folder, "data", "out.csv")
-        run_or_load(file; load=load_csv, force=true, verbose=false) do
-            DataFrame(a=rand(100), b=rand(100))
+        run_or_load(file; load = load_csv, force = true, verbose = false) do
+            DataFrame(a = rand(100), b = rand(100))
         end
         df = load_csv(file)
         @test names(df) == ["a", "b"]
@@ -27,8 +27,8 @@ end
 @testset "run_or_load invalid" begin
     mktempdir() do folder
         file = joinpath(folder, "data", "out.csv")
-        captured = IOCapture.capture(passthrough=false, rethrow=Union{}) do
-            run_or_load(file; load=load_csv, force=true, verbose=false) do
+        captured = IOCapture.capture(passthrough = false, rethrow = Union{}) do
+            run_or_load(file; load = load_csv, force = true, verbose = false) do
                 # A tuple of vectors is not something that can be written
                 # to a csv file
                 return rand(100), rand(100)

@@ -45,15 +45,19 @@ function QuantumPropagators.Controls.evaluate(a::MySquareAmpl, args...; kwargs..
 end
 
 
-function QuantumPropagators.Controls.evaluate(a::MyScaledAmpl, args...; vals_dict=IdDict())
+function QuantumPropagators.Controls.evaluate(
+    a::MyScaledAmpl,
+    args...;
+    vals_dict = IdDict()
+)
     return a.c * evaluate(a.control, args...; vals_dict)
 end
 
 
 @testset "Standard get_control_derivs" begin
-    H₀ = random_matrix(5; hermitian=true)
-    H₁ = random_matrix(5; hermitian=true)
-    H₂ = random_matrix(5; hermitian=true)
+    H₀ = random_matrix(5; hermitian = true)
+    H₁ = random_matrix(5; hermitian = true)
+    H₂ = random_matrix(5; hermitian = true)
     ϵ₁ = t -> 1.0
     ϵ₂ = t -> 1.0
     H = (H₀, (H₁, ϵ₁), (H₂, ϵ₂))
@@ -71,24 +75,24 @@ end
     @test norm(derivs[2] - H₂) < 1e-14
 
     for deriv in derivs
-        O = evaluate(deriv; vals_dict=IdDict(ϵ₁ => 1.1, ϵ₂ => 2.0))
+        O = evaluate(deriv; vals_dict = IdDict(ϵ₁ => 1.1, ϵ₂ => 2.0))
         @test O ≡ deriv
     end
 
     @test isnothing(get_control_deriv(H, t -> 3.0))
 
     Ψ = random_state_vector(5)
-    tlist = collect(range(0, 10; length=101))
-    @test check_generator(H; state=Ψ, tlist, for_gradient_optimization=true)
+    tlist = collect(range(0, 10; length = 101))
+    @test check_generator(H; state = Ψ, tlist, for_gradient_optimization = true)
 
 end
 
 
 @testset "Nonlinear get_control_derivs" begin
 
-    H₀ = random_matrix(5; hermitian=true)
-    H₁ = random_matrix(5; hermitian=true)
-    H₂ = random_matrix(5; hermitian=true)
+    H₀ = random_matrix(5; hermitian = true)
+    H₁ = random_matrix(5; hermitian = true)
+    H₂ = random_matrix(5; hermitian = true)
     ϵ₁ = t -> 1.0
     ϵ₂ = t -> 1.0
     H = (H₀, (H₁, MySquareAmpl(ϵ₁)), (H₂, MySquareAmpl(ϵ₂)))
@@ -99,13 +103,13 @@ end
     @test derivs[1].ops[1] ≡ H₁
     @test _AT(derivs[1]) ≡ MyScaledAmpl
 
-    O₁ = evaluate(derivs[1]; vals_dict=IdDict(ϵ₁ => 1.1, ϵ₂ => 2.0))
+    O₁ = evaluate(derivs[1]; vals_dict = IdDict(ϵ₁ => 1.1, ϵ₂ => 2.0))
     @test O₁ isa Operator
     @test length(O₁.ops) == length(O₁.coeffs) == 1
     @test O₁.ops[1] ≡ H₁
     @test O₁.coeffs[1] ≈ (2 * 1.1)
 
-    O₂ = evaluate(derivs[2]; vals_dict=IdDict(ϵ₁ => 1.1, ϵ₂ => 2.0))
+    O₂ = evaluate(derivs[2]; vals_dict = IdDict(ϵ₁ => 1.1, ϵ₂ => 2.0))
     @test O₂ isa Operator
     @test length(O₂.ops) == length(O₂.coeffs) == 1
     @test O₂.ops[1] ≡ H₂
@@ -114,10 +118,10 @@ end
     @test isnothing(get_control_deriv(H, t -> 3.0))
 
     Ψ = random_state_vector(5)
-    tlist = collect(range(0, 10; length=101))
+    tlist = collect(range(0, 10; length = 101))
     @test check_amplitude(H[2][2]; tlist)
     @test check_amplitude(H[3][2]; tlist)
-    @test check_generator(H; state=Ψ, tlist, for_gradient_optimization=true)
+    @test check_generator(H; state = Ψ, tlist, for_gradient_optimization = true)
 
 end
 

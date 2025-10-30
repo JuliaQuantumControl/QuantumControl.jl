@@ -7,7 +7,7 @@ import QuantumControl.Functionals:
     make_gate_chi, make_automatic_chi, make_automatic_grad_J_a
 
 
-function make_automatic_chi(J_T, trajectories, ::Val{:FiniteDifferences}; via=:states)
+function make_automatic_chi(J_T, trajectories, ::Val{:FiniteDifferences}; via = :states)
 
     # TODO: Benchmark if χ should be closure, see QuantumControlZygoteExt.jl
 
@@ -25,13 +25,13 @@ function make_automatic_chi(J_T, trajectories, ::Val{:FiniteDifferences}; via=:s
         return χ
     end
 
-    function fdm_chi_via_tau(Ψ, trajectories; tau=nothing, τ=tau)
+    function fdm_chi_via_tau(Ψ, trajectories; tau = nothing, τ = tau)
         if isnothing(τ)
             msg = "`chi` returned by `make_chi` with `via=:tau` requires keyword argument tau/τ"
             throw(ArgumentError(msg))
         end
         function _J_T(τ...)
-            -J_T(Ψ, trajectories; tau=τ)
+            -J_T(Ψ, trajectories; tau = τ)
         end
         fdm = FiniteDifferences.central_fdm(5, 1)
         χ = Vector{eltype(Ψ)}(undef, length(Ψ))
@@ -53,7 +53,7 @@ function make_automatic_chi(J_T, trajectories, ::Val{:FiniteDifferences}; via=:s
         end
         τ_tgt = ones(ComplexF64, length(trajectories))
         Ψ_undef = similar(Ψ_tgt)
-        if abs(J_T(Ψ_tgt, trajectories) - J_T(Ψ_undef, trajectories; tau=τ_tgt)) > 1e-12
+        if abs(J_T(Ψ_tgt, trajectories) - J_T(Ψ_undef, trajectories; tau = τ_tgt)) > 1e-12
             msg = "`via=:tau` in `make_chi` requires that `J_T`=$(repr(J_T)) can be evaluated solely via `tau`"
             error(msg)
         end

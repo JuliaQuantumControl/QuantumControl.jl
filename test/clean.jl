@@ -4,11 +4,11 @@
 Clean up build/doc/testing artifacts. Restore to clean checkout state
 (distclean)
 """
-function clean(; distclean=false, _exit=true)
+function clean(; distclean = false, _exit = true)
 
     _glob(folder, ending) =
-        [name for name in readdir(folder; join=true) if (name |> endswith(ending))]
-    _glob_star(folder; except=[]) = [
+        [name for name in readdir(folder; join = true) if (name |> endswith(ending))]
+    _glob_star(folder; except = []) = [
         joinpath(folder, name) for
         name in readdir(folder) if !(name |> startswith(".") || name ∈ except)
     ]
@@ -24,7 +24,7 @@ function clean(; distclean=false, _exit=true)
     end
     append!(
         CLEAN,
-        _glob_star(joinpath(ROOT, "docs", "src", "examples"), except=["index.md"])
+        _glob_star(joinpath(ROOT, "docs", "src", "examples"), except = ["index.md"])
     )
     append!(CLEAN, _glob(joinpath(ROOT, "docs", "src", "api"), ".md"))
     _push!(CLEAN, joinpath(ROOT, "coverage"))
@@ -44,12 +44,12 @@ function clean(; distclean=false, _exit=true)
 
     for name in CLEAN
         @info "rm $name"
-        rm(name, force=true, recursive=true)
+        rm(name, force = true, recursive = true)
     end
     if distclean
         for name in DISTCLEAN
             @info "rm $name"
-            rm(name, force=true, recursive=true)
+            rm(name, force = true, recursive = true)
         end
         if _exit
             @info "Exiting"
@@ -59,4 +59,4 @@ function clean(; distclean=false, _exit=true)
 
 end
 
-distclean() = clean(distclean=true)
+distclean() = clean(distclean = true)

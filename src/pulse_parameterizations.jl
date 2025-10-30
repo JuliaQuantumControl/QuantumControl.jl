@@ -222,7 +222,7 @@ abstract type ShapedParameterizedAmplitude <: ParameterizedAmplitude end
 function ParameterizedAmplitude(
     control;
     parameterization::PulseParameterization,
-    shape=nothing
+    shape = nothing
 )
     if isnothing(shape)
         if control isa Vector{Float64}
@@ -265,8 +265,8 @@ function ParameterizedAmplitude(
     control,
     tlist;
     parameterization::PulseParameterization,
-    shape=nothing,
-    parameterize=false
+    shape = nothing,
+    parameterize = false
 )
     control = discretize_on_midpoints(control, tlist)
     if parameterize
@@ -392,7 +392,7 @@ struct ShapedParameterizationContinuousDerivative <: ControlAmplitude
     shape
 end
 
-function evaluate(deriv::ParameterizationDerivative, args...; vals_dict=IdDict())
+function evaluate(deriv::ParameterizationDerivative, args...; vals_dict = IdDict())
     ϵ = evaluate(deriv.control, args...; vals_dict)
     return deriv.func(ϵ)
 end
@@ -401,7 +401,7 @@ function evaluate(
     deriv::ShapedParameterizationPulseDerivative,
     tlist,
     n;
-    vals_dict=IdDict()
+    vals_dict = IdDict()
 )
     ϵ = evaluate(deriv.control, tlist, n; vals_dict)
     S = evaluate(deriv.shape, tlist, n; vals_dict)
@@ -412,7 +412,7 @@ function evaluate(
     deriv::ShapedParameterizationContinuousDerivative,
     tlist,
     n;
-    vals_dict=IdDict()
+    vals_dict = IdDict()
 )
     ϵ = evaluate(deriv.control, tlist, n; vals_dict)
     S = evaluate(deriv.shape, tlist, n; vals_dict)

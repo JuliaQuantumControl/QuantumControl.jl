@@ -43,8 +43,8 @@ The resulting JLD2 file is compatible with `QuantumControl.load_optimization`.
 function set_atexit_save_optimization(
     filename,
     result;
-    msg_property=:message,
-    msg="Abort: ATEXIT"
+    msg_property = :message,
+    msg = "Abort: ATEXIT"
 )
 
     function dump_on_exit()

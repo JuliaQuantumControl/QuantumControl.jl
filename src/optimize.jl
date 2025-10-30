@@ -72,13 +72,13 @@ be a subtype of [`QuantumControl.AbstractOptimizationResult`](@ref).
 function optimize(
     problem::ControlProblem;
     method::Union{Module,Symbol},
-    check=get(problem.kwargs, :check, true),
-    print_iters=get(problem.kwargs, :print_iters, true),
-    callback=get(problem.kwargs, :callback, nothing),
-    for_expval=true, # undocumented
-    for_pwc=true,  # undocumented
-    for_time_continuous=false,  # undocumented
-    for_parameterization=false, # undocumented
+    check = get(problem.kwargs, :check, true),
+    print_iters = get(problem.kwargs, :print_iters, true),
+    callback = get(problem.kwargs, :callback, nothing),
+    for_expval = true, # undocumented
+    for_pwc = true,  # undocumented
+    for_time_continuous = false,  # undocumented
+    for_parameterization = false, # undocumented
     kwargs...
 )
 
@@ -107,8 +107,8 @@ function optimize(
     end
 
     temp_problem = ControlProblem(;
-        trajectories=problem.trajectories,
-        tlist=problem.tlist,
+        trajectories = problem.trajectories,
+        tlist = problem.tlist,
         temp_kwargs...
     )
 
@@ -121,8 +121,8 @@ function optimize(
             end
             if !check_generator(
                 traj.generator;
-                state=traj.initial_state,
-                tlist=problem.tlist,
+                state = traj.initial_state,
+                tlist = problem.tlist,
                 for_expval,
                 for_pwc,
                 for_time_continuous,

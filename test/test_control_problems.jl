@@ -13,18 +13,18 @@ using StableRNGs
     Ψ1 = random_state_vector(N; rng)
     Ψ0_tgt = random_state_vector(N; rng)
     Ψ1_tgt = random_state_vector(N; rng)
-    tlist = collect(range(0, 5; length=101))
+    tlist = collect(range(0, 5; length = 101))
     H = random_dynamic_generator(N, tlist)
 
     problem = ControlProblem(
         [
-            Trajectory(Ψ0, H; target_state=Ψ0_tgt, weight=0.3),
-            Trajectory(Ψ1, H; target_state=Ψ1_tgt, weight=0.7),
+            Trajectory(Ψ0, H; target_state = Ψ0_tgt, weight = 0.3),
+            Trajectory(Ψ1, H; target_state = Ψ1_tgt, weight = 0.7),
         ],
         tlist,
-        J_T=(Ψ -> 1.0),
-        prop_method=Cheby,
-        iter_stop=10,
+        J_T = (Ψ -> 1.0),
+        prop_method = Cheby,
+        iter_stop = 10,
     )
 
     @test length(problem.trajectories) == 2
@@ -35,7 +35,7 @@ using StableRNGs
         summary(problem),
         "ControlProblem with 2 trajectories and 101 time steps"
     )
-    repl_repr = repr("text/plain", problem; context=(:limit => true))
+    repl_repr = repr("text/plain", problem; context = (:limit => true))
     @test contains(repl_repr, "ControlProblem with 2 trajectories and 101 time steps")
     @test contains(
         repl_repr,
@@ -50,8 +50,8 @@ using StableRNGs
     @test contains(repl_repr, ":iter_stop => 10")
     @test contains(repl_repr, r":prop_method => .*.Cheby")
 
-    problem = ControlProblem([Trajectory(Ψ0, H; target_state=Ψ0_tgt)], [0.0, 0.1])
-    repl_repr = repr("text/plain", problem; context=(:limit => true))
+    problem = ControlProblem([Trajectory(Ψ0, H; target_state = Ψ0_tgt)], [0.0, 0.1])
+    repl_repr = repr("text/plain", problem; context = (:limit => true))
     @test contains(repl_repr, "tlist: [0.0, 0.1]")
 
 end
@@ -65,20 +65,20 @@ end
     Ψ1 = random_state_vector(N; rng)
     Ψ0_tgt = random_state_vector(N; rng)
     Ψ1_tgt = random_state_vector(N; rng)
-    tlist = collect(range(0, 5; length=101))
+    tlist = collect(range(0, 5; length = 101))
     ϵ1(t) = 0.0
     ϵ2(t) = 1.0
-    H = random_dynamic_generator(N, tlist; amplitudes=[ϵ1])
+    H = random_dynamic_generator(N, tlist; amplitudes = [ϵ1])
 
     problem = ControlProblem(
         [
-            Trajectory(Ψ0, H; target_state=Ψ0_tgt, weight=0.3),
-            Trajectory(Ψ1, H; target_state=Ψ1_tgt, weight=0.7),
+            Trajectory(Ψ0, H; target_state = Ψ0_tgt, weight = 0.3),
+            Trajectory(Ψ1, H; target_state = Ψ1_tgt, weight = 0.7),
         ],
         tlist,
-        J_T=(Ψ -> 1.0),
-        prop_method=Cheby,
-        iter_stop=10,
+        J_T = (Ψ -> 1.0),
+        prop_method = Cheby,
+        iter_stop = 10,
     )
 
     @test get_controls(problem) == (ϵ1,)

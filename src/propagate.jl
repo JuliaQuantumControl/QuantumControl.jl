@@ -31,8 +31,8 @@ explicitly.
 function propagate_trajectory(
     traj,
     tlist;
-    _prefixes=["prop_"],
-    initial_state=traj.initial_state,
+    _prefixes = ["prop_"],
+    initial_state = traj.initial_state,
     kwargs...
 )
 
@@ -95,12 +95,12 @@ must be given as an explicit keyword argument.
 function init_prop_trajectory(
     traj::Trajectory,
     tlist;
-    _prefixes=["prop_"],
-    _msg="Initializing propagator for trajectory",
-    _filter_kwargs=false,
-    _kwargs_dict::Dict{Symbol,Any}=Dict{Symbol,Any}(),
-    initial_state=traj.initial_state,
-    verbose=false,
+    _prefixes = ["prop_"],
+    _msg = "Initializing propagator for trajectory",
+    _filter_kwargs = false,
+    _kwargs_dict::Dict{Symbol,Any} = Dict{Symbol,Any}(),
+    initial_state = traj.initial_state,
+    verbose = false,
     kwargs...
 )
     #
@@ -175,9 +175,9 @@ results.
 function propagate_trajectories(
     trajectories,
     tlist;
-    use_threads=true,
-    storage=nothing,
-    initial_state=[traj.initial_state for traj in trajectories],
+    use_threads = true,
+    storage = nothing,
+    initial_state = [traj.initial_state for traj in trajectories],
     kwargs...
 )
     result = Vector{Any}(undef, length(trajectories))
@@ -186,16 +186,16 @@ function propagate_trajectories(
             result[k] = propagate_trajectory(
                 traj,
                 tlist;
-                storage=storage,
-                initial_state=initial_state[k],
+                storage = storage,
+                initial_state = initial_state[k],
                 kwargs...
             )
         else
             result[k] = propagate_trajectory(
                 traj,
                 tlist;
-                storage=storage[k],
-                initial_state=initial_state[k],
+                storage = storage[k],
+                initial_state = initial_state[k],
                 kwargs...
             )
         end

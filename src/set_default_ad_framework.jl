@@ -35,10 +35,10 @@ To unset the default AD framework, use
 QuantumControl.set_default_ad_framework(nothing)
 ```
 """
-function set_default_ad_framework(mod::Module; quiet=false)
+function set_default_ad_framework(mod::Module; quiet = false)
     return _set_default_ad_framework(mod; quiet)
 end
 
-function set_default_ad_framework(::Nothing; quiet=false)
+function set_default_ad_framework(::Nothing; quiet = false)
     return _set_default_ad_framework(nothing; quiet)
 end

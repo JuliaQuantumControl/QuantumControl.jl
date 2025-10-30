@@ -1,6 +1,6 @@
 using Pkg
 if Base.VERSION < v"1.11"
-    Pkg.develop(path=joinpath(@__DIR__, ".."))
+    Pkg.develop(path = joinpath(@__DIR__, ".."))
 end
 
 using Documenter
@@ -75,14 +75,14 @@ fallbacks = DocumenterInterLinks.ExternalFallbacks(
     "GrapeResult" => "@extref GRAPE :jl:type:`GRAPE.GrapeResult`",
     "make_grape_print_iters" => "@extref GRAPE :jl:function:`GRAPE.make_grape_print_iters`",
     "GrapeWrk" => "@extref GRAPE :jl:type:`GRAPE.GrapeWrk`",
-    automatic=false,
+    automatic = false,
 )
 
 println("Starting makedocs")
 
 include("generate_api.jl")
 
-bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style=:numeric)
+bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style = :numeric)
 
 warnonly = [:linkcheck,]
 if get(ENV, "DOCUMENTER_WARN_ONLY", "0") == "1"  # cf. test/init.jl
@@ -90,17 +90,17 @@ if get(ENV, "DOCUMENTER_WARN_ONLY", "0") == "1"  # cf. test/init.jl
 end
 
 makedocs(;
-    plugins=[bib, links, fallbacks],
-    authors=AUTHORS,
-    sitename="QuantumControl.jl",
+    plugins = [bib, links, fallbacks],
+    authors = AUTHORS,
+    sitename = "QuantumControl.jl",
     # Link checking is disabled in REPL, see `devrepl.jl`.
-    linkcheck=(get(ENV, "DOCUMENTER_CHECK_LINKS", "1") != "0"),
+    linkcheck = (get(ENV, "DOCUMENTER_CHECK_LINKS", "1") != "0"),
     warnonly,
-    doctest=false,  # doctests run as part of test suite
-    format=Documenter.HTML(;
-        prettyurls=true,
-        canonical="https://juliaquantumcontrol.github.io/QuantumControl.jl",
-        assets=[
+    doctest = false,  # doctests run as part of test suite
+    format = Documenter.HTML(;
+        prettyurls = true,
+        canonical = "https://juliaquantumcontrol.github.io/QuantumControl.jl",
+        assets = [
             "assets/custom.css",
             "assets/citations.css",
             asset(
@@ -110,7 +110,7 @@ makedocs(;
                 "https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/assets/topbar/topbar.js"
             ),
         ],
-        mathengine=KaTeX(
+        mathengine = KaTeX(
             Dict(
                 :macros => Dict(
                     "\\Op" => "\\hat{#1}",
@@ -121,10 +121,10 @@ makedocs(;
                 ),
             ),
         ),
-        footer="[$NAME.jl]($GITHUB) v$VERSION docs powered by [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl).",
-        size_threshold=1024 * 1024,
+        footer = "[$NAME.jl]($GITHUB) v$VERSION docs powered by [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl).",
+        size_threshold = 1024 * 1024,
     ),
-    pages=[
+    pages = [
         "Home" => "index.md",
         "Glossary" => "glossary.md",
         "Overview" => "overview.md",
@@ -142,4 +142,4 @@ makedocs(;
 )
 
 println("Finished makedocs")
-deploydocs(; repo="github.com/JuliaQuantumControl/QuantumControl.jl", push_preview=true)
+deploydocs(; repo = "github.com/JuliaQuantumControl/QuantumControl.jl", push_preview = true)

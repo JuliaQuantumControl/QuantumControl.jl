@@ -7,7 +7,7 @@ import QuantumControl.Functionals:
     make_gate_chi, make_automatic_chi, make_automatic_grad_J_a
 
 
-function make_automatic_chi(J_T, trajectories, ::Val{:Zygote}; via=:states)
+function make_automatic_chi(J_T, trajectories, ::Val{:Zygote}; via = :states)
 
     # TODO: At some point, for a large system, we could benchmark if there is
     # any benefit to making χ a closure and using LinearAlgebra.axpby! to
@@ -34,13 +34,13 @@ function make_automatic_chi(J_T, trajectories, ::Val{:Zygote}; via=:states)
         return χ
     end
 
-    function zygote_chi_via_tau(Ψ, trajectories; tau=nothing, τ=tau)
+    function zygote_chi_via_tau(Ψ, trajectories; tau = nothing, τ = tau)
         if isnothing(τ)
             msg = "`chi` returned by `make_chi` with `via=:tau` requires keyword argument tau/τ"
             throw(ArgumentError(msg))
         end
         function _J_T(τ...)
-            -J_T(Ψ, trajectories; tau=τ)
+            -J_T(Ψ, trajectories; tau = τ)
         end
         χ = Vector{eltype(Ψ)}(undef, length(Ψ))
         ∇J = Zygote.gradient(_J_T, τ...)
@@ -66,7 +66,7 @@ function make_automatic_chi(J_T, trajectories, ::Val{:Zygote}; via=:states)
         end
         τ_tgt = ones(ComplexF64, length(trajectories))
         Ψ_undef = similar(Ψ_tgt)
-        if abs(J_T(Ψ_tgt, trajectories) - J_T(Ψ_undef, trajectories; tau=τ_tgt)) > 1e-12
+        if abs(J_T(Ψ_tgt, trajectories) - J_T(Ψ_undef, trajectories; tau = τ_tgt)) > 1e-12
             msg = "`via=:tau` in `make_chi` requires that `J_T`=$(repr(J_T)) can be evaluated solely via `tau`"
             error(msg)
         end

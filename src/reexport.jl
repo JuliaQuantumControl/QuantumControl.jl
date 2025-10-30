@@ -16,6 +16,6 @@ end
 function _exported_names(m::Module)
     return filter!(
         x -> (Base.isexported(m, x) && (x != nameof(m))),
-        names(m; all=true, imported=true)
+        names(m; all = true, imported = true)
     )
 end

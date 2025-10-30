@@ -40,9 +40,9 @@ conditions failed.
 function check_amplitude(
     ampl;
     tlist,
-    for_gradient_optimization=true,
-    quiet=false,
-    _message_prefix=""  # for recursive calling
+    for_gradient_optimization = true,
+    quiet = false,
+    _message_prefix = ""  # for recursive calling
 )
 
     px = _message_prefix
