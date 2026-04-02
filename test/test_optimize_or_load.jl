@@ -5,6 +5,44 @@ using QuantumControl: @optimize_or_load, load_optimization, save_optimization, o
 using QuantumControlTestUtils.DummyOptimization:
     dummy_control_problem, DummyOptimizationResult
 
+
+@testset "check_state_kwargs and check_generator_kwargs" begin
+
+    problem = dummy_control_problem()
+    outdir = mktempdir()
+    outfile = joinpath(outdir, "optimization_check_kwargs.jld2")
+
+    # Smoke test: extra kwargs are accepted
+    captured = IOCapture.capture(passthrough = false) do
+        @optimize_or_load(
+            outfile,
+            problem;
+            method = :dummymethod,
+            force = true,
+            check_state_kwargs = (; atol = 1e-10),
+            check_generator_kwargs = (; atol = 1e-10),
+        )
+    end
+    @test captured.value isa DummyOptimizationResult
+    @test captured.value.converged
+
+    # Test with teeth: for_time_continuous=true fails check_generator for the
+    # pwc dummy controls (array-based controls cannot be evaluated at a
+    # continuous time t)
+    captured2 = IOCapture.capture(rethrow = Union{}, passthrough = false) do
+        @optimize_or_load(
+            outfile,
+            problem;
+            method = :dummymethod,
+            force = true,
+            check_generator_kwargs = (; for_time_continuous = true),
+        )
+    end
+    @test captured2.value isa Exception
+
+end
+
+
 @testset "metadata" begin
 
     problem = dummy_control_problem()
