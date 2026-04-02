@@ -63,6 +63,7 @@ links = InterLinks(
         "https://docs.sciml.ai/RecursiveArrayTools/stable/objects.inv",
         joinpath(@__DIR__, "src", "inventories", "RecursiveArrayTools.toml")
     ),
+    "ArrayInterface" => "https://docs.sciml.ai/ArrayInterface/stable/",
     "DrWatson" => "https://juliadynamics.github.io/DrWatson.jl/stable/",
 )
 
@@ -75,6 +76,7 @@ fallbacks = DocumenterInterLinks.ExternalFallbacks(
     "GrapeResult" => "@extref GRAPE :jl:type:`GRAPE.GrapeResult`",
     "make_grape_print_iters" => "@extref GRAPE :jl:function:`GRAPE.make_grape_print_iters`",
     "GrapeWrk" => "@extref GRAPE :jl:type:`GRAPE.GrapeWrk`",
+    "Operators" => "@extref QuantumPropagators :std:label:`Operators`",
     automatic = false,
 )
 
