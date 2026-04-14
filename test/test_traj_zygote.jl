@@ -31,7 +31,7 @@ end
     grad = Zygote.gradient(traj -> f(traj; Ψtgt, N), traj)[1]
     @test grad isa NamedTuple
     @test grad.initial_state isa Vector
-    expected_grad = -Ψtgt .* conj(dot(Ψ, Ψtgt)) / N
+    expected_grad = -2 .* Ψtgt .* conj(dot(Ψ, Ψtgt)) / N
     @test norm(grad.initial_state - expected_grad) < 1e-14
 
 end
@@ -64,7 +64,7 @@ end
     if grad isa NamedTuple
         @test grad.initial_state isa Nothing
         @test grad.kwargs[:x] isa Vector
-        expected_grad = -Ψtgt .* conj(dot(Ψ, Ψtgt)) / N
+        expected_grad = -2 .* Ψtgt .* conj(dot(Ψ, Ψtgt)) / N
         @test norm(grad.kwargs[:x] - expected_grad) < 1e-14
     end
 
