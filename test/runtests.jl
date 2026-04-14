@@ -59,6 +59,7 @@ end
     println("* Trajectories (test_trajectories.jl):")
     @time @safetestset "Trajectories" begin
         include("test_trajectories.jl")
+        include("test_traj_zygote.jl")
     end
 
     println("* Adjoint Trajectories (test_adjoint_trajectory.jl):")
