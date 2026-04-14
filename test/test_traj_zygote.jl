@@ -23,7 +23,7 @@ end
     N = 4
     H = nothing
     Ψ = rand(rng, ComplexF64, N)
-    Ψ ./ norm(Ψ)
+    Ψ ./= norm(Ψ)
     Ψtgt = zeros(ComplexF64, N)
     Ψtgt[1] = 1.0
     traj = Trajectory(Ψ, H)
@@ -31,6 +31,8 @@ end
     grad = Zygote.gradient(traj -> f(traj; Ψtgt, N), traj)[1]
     @test grad isa NamedTuple
     @test grad.initial_state isa Vector
+    expected_grad = -Ψtgt .* conj(dot(Ψ, Ψtgt)) / N
+    @test grad.initial_state ≈ expected_grad
 
 end
 
@@ -45,14 +47,14 @@ end
     N = 4
     H = nothing
     Ψ = rand(rng, ComplexF64, N)
-    Ψ ./ norm(Ψ)
+    Ψ ./= norm(Ψ)
     Ψtgt = zeros(ComplexF64, N)
     Ψtgt[1] = 1.0
     x = Ψ
     traj = Trajectory(Ψ, H; x)
     @test f(traj; Ψtgt, N) > 0.0
     captured = IOCapture.capture(rethrow = Union{}) do
-        # Without the custom `rrule` in `QuantumControlchainRulesCoreExt`, this
+        # Without the custom `rrule` in `QuantumControlChainRulesCoreExt`, this
         # test would show a potentially very confusing error, and throw an
         # `UndefRefError`. See also: https://discourse.julialang.org/t/136704/
         Zygote.gradient(traj -> f(traj; Ψtgt, N), traj)[1]
@@ -62,6 +64,8 @@ end
     if grad isa NamedTuple
         @test grad.initial_state isa Nothing
         @test grad.kwargs[:x] isa Vector
+        expected_grad = -Ψtgt .* conj(dot(Ψ, Ψtgt)) / N
+        @test grad.kwargs[:x] ≈ expected_grad
     end
 
 end
