@@ -32,7 +32,7 @@ end
     @test grad isa NamedTuple
     @test grad.initial_state isa Vector
     expected_grad = -Ψtgt .* conj(dot(Ψ, Ψtgt)) / N
-    @test grad.initial_state ≈ expected_grad
+    @test norm(grad.initial_state - expected_grad) < 1e-14
 
 end
 
@@ -65,7 +65,7 @@ end
         @test grad.initial_state isa Nothing
         @test grad.kwargs[:x] isa Vector
         expected_grad = -Ψtgt .* conj(dot(Ψ, Ψtgt)) / N
-        @test grad.kwargs[:x] ≈ expected_grad
+        @test norm(grad.kwargs[:x] - expected_grad) < 1e-14
     end
 
 end
