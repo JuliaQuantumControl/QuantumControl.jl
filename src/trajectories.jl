@@ -167,6 +167,11 @@ function Base.setproperty!(traj::Trajectory, name::Symbol, value)
 end
 
 
+# Transparently access properties stored in the `kwargs` field.
+# Note: This also requires a custom ChainRulesCore.rrule for certain operations
+# in Zygote (or other AD frameworks using ChainRules). This is implemented in
+# the QuantumControlChainRulesCoreExt extension module.
+# See `test_traj_zygote.jl` for an example
 function Base.getproperty(traj::Trajectory, name::Symbol)
     if name in (:initial_state, :generator, :target_state, :weight)
         return getfield(traj, name)
