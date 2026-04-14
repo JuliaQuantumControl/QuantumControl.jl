@@ -20,7 +20,7 @@ function ChainRulesCore.rrule(::typeof(getproperty), traj::Trajectory, name::Sym
     else
         # kwargs-stored property: route gradient back into the kwargs Dict
         function kwargs_pullback(Δ)
-            dkwargs = Dict{Symbol,Any}(name => Δ)
+            dkwargs = Dict{Symbol,Any}(name => ChainRulesCore.unthunk(Δ))
             dt = ChainRulesCore.Tangent{typeof(traj)}(; kwargs = dkwargs)
             return NoTangent(), dt, NoTangent()
         end
