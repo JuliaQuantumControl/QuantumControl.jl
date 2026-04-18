@@ -4,7 +4,7 @@ using LinearAlgebra
 
 import FiniteDifferences
 import QuantumControl.Functionals:
-    make_gate_chi, make_automatic_chi, make_automatic_grad_J_a
+    make_gate_chi, make_automatic_chi, make_automatic_grad_J_a, make_automatic_xi
 
 
 function make_automatic_chi(J_T, trajectories, ::Val{:FiniteDifferences}; via = :states)
@@ -97,6 +97,19 @@ function make_gate_chi(J_T_U, trajectories, ::Val{:FiniteDifferences}; kwargs...
 
     return fdm_gate_chi
 
+end
+
+
+function make_automatic_xi(g_b, ::Val{:FiniteDifferences})
+    function automatic_xi(Ψ, trajectory, tlist, n)
+        function _g_b(Ψ)
+            return g_b(Ψ, trajectory, tlist, n)
+        end
+        fdm = FiniteDifferences.central_fdm(5, 1)
+        grad = FiniteDifferences.grad(fdm, _g_b, Ψ)[1]
+        return -0.5 * grad
+    end
+    return automatic_xi
 end
 
 end

@@ -77,6 +77,7 @@ fallbacks = DocumenterInterLinks.ExternalFallbacks(
     "make_grape_print_iters" => "@extref GRAPE :jl:function:`GRAPE.make_grape_print_iters`",
     "GrapeWrk" => "@extref GRAPE :jl:type:`GRAPE.GrapeWrk`",
     "Operators" => "@extref QuantumPropagators :std:label:`Operators`",
+    "Overview-Running-Costs" => "@extref GRAPE :std:label:`Overview-Running-Costs`",
     automatic = false,
 )
 

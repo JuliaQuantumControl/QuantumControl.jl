@@ -4,7 +4,7 @@ using LinearAlgebra
 
 import Zygote
 import QuantumControl.Functionals:
-    make_gate_chi, make_automatic_chi, make_automatic_grad_J_a
+    make_gate_chi, make_automatic_chi, make_automatic_grad_J_a, make_automatic_xi
 
 
 function make_automatic_chi(J_T, trajectories, ::Val{:Zygote}; via = :states)
@@ -109,6 +109,22 @@ function make_gate_chi(J_T_U, trajectories, ::Val{:Zygote}; kwargs...)
 
     return zygote_gate_chi
 
+end
+
+
+function make_automatic_xi(g_b, ::Val{:Zygote})
+    function automatic_xi(Ψ, trajectory, tlist, n)
+        function _g_b(Ψ)
+            return g_b(Ψ, trajectory, tlist, n)
+        end
+        grad = Zygote.gradient(_g_b, Ψ)[1]
+        if isnothing(grad)
+            # g_b does not depend on Ψ
+            return zero(Ψ)
+        end
+        return -0.5 * grad
+    end
+    return automatic_xi
 end
 
 end
