@@ -25,6 +25,7 @@ using Zygote
 using GRAPE: GrapeWrk
 using FiniteDifferences
 using IOCapture
+using Logging
 
 const 𝕚 = 1im
 const ⊗ = kron
@@ -621,6 +622,147 @@ end
             @test norm(ξ_zyg - ξ_analytic) < 1e-12
             @test norm(ξ_fdm - ξ_analytic) < 1e-10
         end
+    end
+
+end
+
+
+@testset "make-xi (analytic path)" begin
+
+    # Register an analytic xi for a custom g_b function.
+    function g_b_with_xi(Ψ, traj, tlist, n)
+        return real(dot(Ψ, Ψ))
+    end
+    function xi_for_g_b(Ψ, traj, tlist, n)
+        return -Ψ
+    end
+    QuantumControl.Functionals.make_analytic_xi(::typeof(g_b_with_xi)) = xi_for_g_b
+
+    tlist = PROBLEM.tlist
+    Ψ = random_state_vector(N_HILBERT; rng = RNG)
+    traj = PROBLEM.trajectories[1]
+
+    xi = make_xi(g_b_with_xi; mode = :analytic)
+    @test xi ≡ xi_for_g_b
+    @test xi(Ψ, traj, tlist, 1) ≈ -Ψ
+
+    # mode=:any uses the analytic path and emits a @debug message
+    captured = IOCapture.capture() do
+        Logging.with_logger(Logging.ConsoleLogger(stderr, Logging.Debug)) do
+            make_xi(g_b_with_xi)
+        end
+    end
+    @test captured.value isa Function
+    @test contains(captured.output, "make_xi for g_b=")
+    @test contains(captured.output, "-> analytic")
+
+end
+
+
+@testset "g_b without analytic derivative" begin
+
+    QuantumControl.set_default_ad_framework(nothing; quiet = true)
+
+    function g_b_no_xi(Ψ, traj, tlist, n)
+        return real(dot(Ψ, Ψ))
+    end
+
+    captured = IOCapture.capture(rethrow = Union{}) do
+        make_xi(g_b_no_xi)
+    end
+    @test contains(captured.output, "fallback to mode=:automatic")
+    @test captured.value isa ErrorException
+    if captured.value isa ErrorException
+        @test contains(captured.value.msg, "no default `automatic`")
+    end
+
+    QuantumControl.set_default_ad_framework(Zygote; quiet = true)
+    captured = IOCapture.capture() do
+        make_xi(g_b_no_xi)
+    end
+    @test captured.value isa Function
+    @test contains(captured.output, "fallback to mode=:automatic")
+
+    captured = IOCapture.capture(rethrow = Union{}) do
+        make_xi(g_b_no_xi; mode = :analytic)
+    end
+    @test captured.value isa ErrorException
+    if captured.value isa ErrorException
+        @test contains(captured.value.msg, "no analytic gradient")
+    end
+
+    QuantumControl.set_default_ad_framework(nothing; quiet = true)
+
+end
+
+
+@testset "Unsupported AD Framework (make_xi)" begin
+
+    QuantumControl.set_default_ad_framework(UnsupportedADFramework; quiet = true)
+
+    function g_b_no_xi(Ψ, traj, tlist, n)
+        return real(dot(Ψ, Ψ))
+    end
+
+    captured = IOCapture.capture(rethrow = Union{}, passthrough = false) do
+        make_xi(g_b_no_xi)
+    end
+    @test contains(captured.output, "fallback to mode=:automatic")
+    @test captured.value isa ErrorException
+    if captured.value isa ErrorException
+        @test contains(
+            captured.value.msg,
+            "no analytic gradient, and no automatic gradient"
+        )
+    end
+
+    captured = IOCapture.capture(rethrow = Union{}, passthrough = false) do
+        make_xi(g_b_no_xi; automatic = UnsupportedADFramework)
+    end
+    @test contains(captured.output, "fallback to mode=:automatic")
+    @test captured.value isa ErrorException
+    if captured.value isa ErrorException
+        @test contains(
+            captured.value.msg,
+            "no analytic gradient, and no automatic gradient"
+        )
+    end
+
+    captured = IOCapture.capture(rethrow = Union{}, passthrough = false) do
+        make_xi(g_b_no_xi; mode = :automatic, automatic = UnsupportedADFramework)
+    end
+    @test captured.value isa ErrorException
+    if captured.value isa ErrorException
+        @test contains(captured.value.msg, "no automatic gradient")
+    end
+
+    QuantumControl.set_default_ad_framework(nothing; quiet = true)
+
+end
+
+
+@testset "make-xi (invalid g_b interface)" begin
+
+    # A g_b with wrong signature: only takes Ψ, not (Ψ, traj, tlist, n).
+    function bad_g_b(Ψ)
+        return 1.0
+    end
+
+    # make_xi itself succeeds (no interface validation at construction time)
+    xi_bad = make_xi(bad_g_b; mode = :automatic, automatic = Zygote)
+    @test xi_bad isa Function
+
+    tlist = PROBLEM.tlist
+    traj = PROBLEM.trajectories[1]
+    Ψ = random_state_vector(N_HILBERT; rng = RNG)
+
+    # Calling the returned xi fails because g_b has the wrong interface
+    captured = IOCapture.capture(rethrow = Union{}) do
+        xi_bad(Ψ, traj, tlist, 1)
+    end
+    @test captured.value isa MethodError
+    if captured.value isa MethodError
+        @test contains(sprint(showerror, captured.value), "bad_g_b")
     end
 
 end
