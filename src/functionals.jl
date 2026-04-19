@@ -4,9 +4,11 @@ export J_T_ss, J_T_sm, J_T_re
 export J_a_fluence
 export gate_functional
 export make_gate_chi
-export make_grad_J_a, make_chi
+export J_b
+export make_grad_J_a, make_chi, make_xi
 
 using LinearAlgebra: axpy!, dot
+using QuantumControl.QuantumPropagators.Storage: get_from_storage
 
 
 function _check_chi(chi; states, trajectories, tau, via)
@@ -372,10 +374,10 @@ grad_J_a = make_grad_J_a(
 )
 ```
 
-returns a function so that `∇J_a = grad_J_a(pulsevals, tlist)` sets
-that returns a vector `∇J_a` containing the vectorized elements
-``∂J_a/∂ϵ_{ln}``. The function `J_a` must have the interface `J_a(pulsevals,
-tlist)`, see, e.g., [`J_a_fluence`](@ref).
+returns a function so that `∇J_a = grad_J_a(pulsevals, tlist)` returns a
+vector `∇J_a` containing the vectorized elements ``∂J_a/∂ϵ_{ln}``.
+The function `J_a` must have the interface `J_a(pulsevals, tlist)`,
+see, e.g., [`J_a_fluence`](@ref).
 
 The parameters `mode` and `automatic` are handled as in [`make_chi`](@ref),
 where `mode` is one of `:any`, `:analytic`, `:automatic`, and `automatic` is
@@ -953,5 +955,186 @@ end
 
 
 make_analytic_grad_J_a(::typeof(J_a_fluence), tlist) = grad_J_a_fluence
+
+
+"""
+Return a function that calculates ``|ξ_k(t_n)⟩ = -∂g_b/∂⟨Ψ_k(t_n)|``.
+
+```julia
+xi = make_xi(g_b; mode=:any, automatic=:default)
+```
+
+returns a function `xi(Ψ, trajectory, tlist, n)` that evaluates
+
+```math
+|ξ_k(t_n)⟩ = -\\frac{∂ (g_b)_{kn}}{∂ ⟨Ψ_k(t_n)|}
+```
+
+where `g_b(Ψ, trajectory, tlist, n) -> Float64` is a per-trajectory,
+per-time-point running cost, cf. [`J_b`](@ref). Note the minus sign, which
+is included in the definition to match the minus sign in [`make_chi`](@ref).
+Both in `g_b` and `xi`, the argument `n` is a one-based index into the time
+grid `tlist`. Since a [`QuantumControl.Trajectory`](@ref) can contain arbitrary
+(custom) properties, a `g_b` function may reference such custom properties
+where appropriate, and `xi` will have access to the same `trajectory` as `g_b`
+itself.
+
+The `mode` and `automatic` parameters work as in
+[`QuantumControl.Functionals.make_chi`](@ref). With `mode=:any` (default),
+an analytic xi is used if available (via `make_analytic_xi`, see below),
+falling back to automatic differentiation otherwise. With `mode=:analytic`,
+only the analytic path is attempted. With `mode=:automatic`, only automatic
+differentiation is used.
+
+The `automatic` parameter specifies the AD backend module (or `:default` to
+use the framework set via [`QuantumControl.set_default_ad_framework`](@ref)). For
+example, with `automatic=Zygote` (loaded via `import Zygote`), `g_b` is
+differentiated with respect to `Ψ` using Wirtinger calculus:
+
+```julia
+xi(Ψ, ...) = -0.5 * Zygote.gradient(psi -> g_b(psi, ...), Ψ)[1]
+```
+
+!!! tip
+
+    In order to extend `make_xi` with an analytic implementation for a new
+    `g_b` function, define a new method `make_analytic_xi` like so:
+
+    ```julia
+    QuantumControl.Functionals.make_analytic_xi(::typeof(my_g_b)) = my_xi
+    ```
+
+    which links `make_xi` for a function `my_g_b` to `my_xi`.
+
+!!! warning
+
+    Zygote is notorious for being buggy (silently returning incorrect
+    gradients). Always test automatic derivatives against finite differences
+    and/or other automatic differentiation frameworks.
+"""
+function make_xi(g_b; mode = :any, automatic = :default)
+    if mode == :any
+        try
+            xi = make_analytic_xi(g_b)
+            @debug "make_xi for g_b=$(g_b) -> analytic"
+            return xi
+        catch exception
+            if exception isa MethodError
+                @info "make_xi for g_b=$(g_b): fallback to mode=:automatic"
+                try
+                    xi = make_automatic_xi(g_b, automatic)
+                    return xi
+                catch exception
+                    if exception isa MethodError
+                        msg = "make_xi for g_b=$(g_b): no analytic gradient, and no automatic gradient with `automatic=$(repr(automatic))`."
+                        error(msg)
+                    else
+                        rethrow()
+                    end
+                end
+            else
+                rethrow()
+            end
+        end
+    elseif mode == :analytic
+        try
+            xi = make_analytic_xi(g_b)
+            return xi
+        catch exception
+            if exception isa MethodError
+                msg = "make_xi for g_b=$(g_b): no analytic gradient. Implement `QuantumControl.Functionals.make_analytic_xi(::typeof(g_b))`"
+                error(msg)
+            else
+                rethrow()
+            end
+        end
+    elseif mode == :automatic
+        try
+            xi = make_automatic_xi(g_b, automatic)
+            return xi
+        catch exception
+            if exception isa MethodError
+                msg = "make_xi for g_b=$(g_b): no automatic gradient with `automatic=$(repr(automatic))`."
+                error(msg)
+            else
+                rethrow()
+            end
+        end
+    else
+        msg = "`mode=$(repr(mode))` must be one of :any, :analytic, :automatic"
+        throw(ArgumentError(msg))
+    end
+end
+
+
+# Generic placeholder
+function make_analytic_xi end
+
+
+# Module to Val{Symbol} dispatch
+function make_automatic_xi(g_b, automatic::Module)
+    return make_automatic_xi(g_b, Val(nameof(automatic)))
+end
+
+# Symbol to Val{Symbol} dispatch
+function make_automatic_xi(g_b, automatic::Symbol)
+    return make_automatic_xi(g_b, Val(automatic))
+end
+
+function make_automatic_xi(g_b, ::Val{:default})
+    if DEFAULT_AD_FRAMEWORK == :nothing
+        msg = "make_xi: no default `automatic`. You must run `QuantumControl.set_default_ad_framework` first, e.g. `import Zygote; QuantumControl.set_default_ad_framework(Zygote)`."
+        error(msg)
+    end
+    xi = make_automatic_xi(g_b, DEFAULT_AD_FRAMEWORK)
+    return xi
+end
+
+
+"""
+Evaluate a state-dependent running cost functional.
+
+```julia
+J_b_val = J_b(storage, trajectories, tlist; g_b)
+```
+
+returns
+
+```math
+J_b = ∑_k ∑_n g_b(|Ψ_k(t_n)⟩) Δt_n
+```
+
+as the piecewise-constant discretization of
+
+```math
+J_b = ∑_k \\int g_b(|Ψ_k(t)⟩) dt
+```
+
+where `storage[k]` contains the forward-propagated states for trajectory `k`
+at each point of `tlist`; for example, the `fw_storage` component of the
+[GRAPE workspace](@extref `GRAPE.GrapeWrk`). The ``Δt_n`` is the
+[time step around the time grid point ``t_n``](@extref GRAPE Overview-Running-Costs).
+
+Note that `g_b` is a mandatory keyword argument and must be a function
+`g_b(Ψ, trajectory, tlist, n) -> Float64`.
+"""
+function J_b(storage, trajectories, tlist; g_b)
+    N = length(trajectories)
+    result = 0.0
+    for k = 1:N
+        Ψ₁ = get_from_storage(storage[k], 1)
+        result += g_b(Ψ₁, trajectories[k], tlist, 1) * (tlist[2] - tlist[1])
+        for n_tl = 2:length(tlist)
+            Ψₙ = get_from_storage(storage[k], n_tl)
+            if n_tl < length(tlist)
+                dt = 0.5 * (tlist[n_tl+1] - tlist[n_tl-1])
+            else
+                dt = tlist[end] - tlist[end-1]
+            end
+            result += g_b(Ψₙ, trajectories[k], tlist, n_tl) * dt
+        end
+    end
+    return result
+end
 
 end

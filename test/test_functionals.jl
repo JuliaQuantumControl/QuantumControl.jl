@@ -9,12 +9,15 @@ using QuantumControl.Functionals:
     grad_J_a_fluence,
     make_grad_J_a,
     make_chi,
+    make_xi,
+    J_b,
     chi_re,
     chi_sm,
     chi_ss,
     gate_functional,
     make_gate_chi
-using QuantumControlTestUtils.RandomObjects: random_state_vector
+using QuantumControlTestUtils.RandomObjects: random_state_vector, random_dynamic_generator
+using QuantumPropagators.Controls: evaluate
 using QuantumControlTestUtils.DummyOptimization: dummy_control_problem
 using TwoQubitWeylChamber: D_PE, gate_concurrence, unitarity
 using StableRNGs: StableRNG
@@ -22,6 +25,7 @@ using Zygote
 using GRAPE: GrapeWrk
 using FiniteDifferences
 using IOCapture
+using Logging
 
 const 𝕚 = 1im
 const ⊗ = kron
@@ -441,6 +445,7 @@ end
     QuantumControl.set_default_ad_framework(nothing; quiet = true)
 
     chi_J_T_C_zyg2 = make_gate_chi(J_T_C, trajectories; automatic = Zygote, w = 0.1)
+
     χ_zyg2 = chi_J_T_C_zyg2(Ψ, trajectories)
 
     chi_J_T_C_fdm2 =
@@ -449,5 +454,365 @@ end
 
     @test maximum(norm.(χ_zyg2 .- χ2)) < 1e-12
     @test maximum(norm.(χ_zyg2 .- χ_fdm2)) < 1e-12
+
+end
+
+
+@testset "make-xi" begin
+
+    # Test that make_xi via Zygote and FiniteDifferences both match the known
+    # analytic derivative for g_b(Ψ, traj, tlist, n) = real(⟨Ψ|traj.D|Ψ⟩),
+    # which has analytic xi = -∂g_b/∂⟨Ψ| = -traj.D|Ψ⟩.
+    # Each trajectory carries its own distinct D matrix as a custom property,
+    # verifying that xi correctly closes over `traj` and not just `Ψ`.
+
+    tlist = PROBLEM.tlist
+    Ψ = [random_state_vector(N_HILBERT; rng = RNG) for k = 1:N]
+
+    # Build trajectories with per-trajectory positive-semidefinite D matrices
+    trajectories = [
+        Trajectory(
+            traj.initial_state,
+            traj.generator;
+            target_state = traj.target_state,
+            D = let A = randn(RNG, ComplexF64, N_HILBERT, N_HILBERT)
+                A * A' / N_HILBERT
+            end
+        ) for traj in PROBLEM.trajectories
+    ]
+    # Confirm D matrices are genuinely distinct across trajectories
+    @test norm(trajectories[1].D - trajectories[2].D) > 1e-2
+
+    function g_b(Ψ, traj, tlist, n)
+        return real(dot(Ψ, traj.D * Ψ))
+    end
+
+    xi_zyg = make_xi(g_b; mode = :automatic, automatic = Zygote)
+    xi_fdm = make_xi(g_b; mode = :automatic, automatic = FiniteDifferences)
+
+    for k = 1:N
+        ξ_analytic = -trajectories[k].D * Ψ[k]
+        ξ_zyg = xi_zyg(Ψ[k], trajectories[k], tlist, 1)
+        ξ_fdm = xi_fdm(Ψ[k], trajectories[k], tlist, 1)
+        @test norm(ξ_zyg - ξ_analytic) < 1e-12
+        @test norm(ξ_fdm - ξ_analytic) < 1e-10
+    end
+
+    # make_xi with mode=:any falls back to :automatic when no analytic xi exists
+    QuantumControl.set_default_ad_framework(Zygote; quiet = true)
+    capture = IOCapture.capture() do
+        make_xi(g_b)
+    end
+    @test capture.value isa Function
+    @test contains(capture.output, "fallback to mode=:automatic")
+    QuantumControl.set_default_ad_framework(nothing; quiet = true)
+
+    # make_xi with mode=:analytic errors when no analytic xi is implemented
+    capture = IOCapture.capture(rethrow = Union{}) do
+        make_xi(g_b; mode = :analytic)
+    end
+    @test capture.value isa ErrorException
+    if capture.value isa ErrorException
+        @test contains(capture.value.msg, "no analytic gradient")
+    end
+
+end
+
+
+@testset "make-xi (time-dependent-discrete D)" begin
+
+    tlist = PROBLEM.tlist
+    N_intervals = length(tlist) - 1
+    Ψ = [random_state_vector(N_HILBERT; rng = RNG) for k = 1:N]
+
+    trajectories = [
+        Trajectory(
+            traj.initial_state,
+            traj.generator;
+            target_state = traj.target_state,
+            D = let H = random_dynamic_generator(
+                    N_HILBERT,
+                    tlist;
+                    rng = RNG,
+                    hermitian = true,
+                    complex = true,
+                )
+                D_int = [Array(evaluate(H, tlist, n)) for n = 1:N_intervals]
+                D_tl = Vector{Matrix{ComplexF64}}(undef, length(tlist))
+                # We use the same interpolation method as in `discretize` for
+                # converting between controls on the intervals of the time
+                # grid to controls on the time grid points
+                D_tl[1] = D_int[1]
+                D_tl[end] = D_int[end]
+                for n = 2:N_intervals
+                    D_tl[n] = 0.5 .* (D_int[n-1] .+ D_int[n])
+                end
+                D_tl
+            end
+        ) for traj in PROBLEM.trajectories
+    ]
+    # D varies across trajectories and across time steps within a trajectory
+    @test norm(trajectories[1].D[1] - trajectories[2].D[1]) > 1e-2
+    @test norm(trajectories[1].D[1] - trajectories[1].D[end]) > 1e-2
+
+    function g_b_td(Ψ, traj, tlist, n)
+        return real(dot(Ψ, traj.D[n] * Ψ))
+    end
+
+    xi_zyg = make_xi(g_b_td; mode = :automatic, automatic = Zygote)
+    xi_fdm = make_xi(g_b_td; mode = :automatic, automatic = FiniteDifferences)
+
+    # Check several time points including the first and last
+    for k = 1:N
+        for n in [1, length(tlist) ÷ 2, length(tlist)]
+            ξ_analytic = -trajectories[k].D[n] * Ψ[k]
+            ξ_zyg = xi_zyg(Ψ[k], trajectories[k], tlist, n)
+            ξ_fdm = xi_fdm(Ψ[k], trajectories[k], tlist, n)
+            @test norm(ξ_zyg - ξ_analytic) < 1e-12
+            @test norm(ξ_fdm - ξ_analytic) < 1e-10
+        end
+    end
+
+end
+
+
+@testset "make-xi (time-dependent-continuous D)" begin
+
+    # Each trajectory has two random Hermitian matrices D1 and D2.
+    # The operator D(t) = cos(t)² D1 + sin(t)² D2 is a smooth, Hermitian
+    # combination that varies continuously over time (the coefficients form a
+    # partition of unity: cos²+sin²=1). g_b uses tlist[n] directly to evaluate
+    # the analytic formula. The analytic xi is -(cos(t)² D1 + sin(t)² D2)|Ψ⟩.
+
+    tlist = PROBLEM.tlist
+    Ψ = [random_state_vector(N_HILBERT; rng = RNG) for k = 1:N]
+
+    trajectories = [
+        Trajectory(
+            traj.initial_state,
+            traj.generator;
+            target_state = traj.target_state,
+            D1 = let A = randn(RNG, ComplexF64, N_HILBERT, N_HILBERT)
+                A + A'
+            end,
+            D2 = let A = randn(RNG, ComplexF64, N_HILBERT, N_HILBERT)
+                A + A'
+            end,
+        ) for traj in PROBLEM.trajectories
+    ]
+    @test norm(trajectories[1].D1 - trajectories[2].D1) > 1e-2
+    @test norm(trajectories[1].D1 - trajectories[1].D2) > 1e-2
+
+    function g_b_analytic_td(Ψ, traj, tlist, n)
+        t = tlist[n]
+        D = cos(t)^2 * traj.D1 + sin(t)^2 * traj.D2
+        return real(dot(Ψ, D * Ψ))
+    end
+
+    xi_zyg = make_xi(g_b_analytic_td; mode = :automatic, automatic = Zygote)
+    xi_fdm = make_xi(g_b_analytic_td; mode = :automatic, automatic = FiniteDifferences)
+
+    for k = 1:N
+        for n in [1, length(tlist) ÷ 2, length(tlist)]
+            t = tlist[n]
+            D = cos(t)^2 * trajectories[k].D1 + sin(t)^2 * trajectories[k].D2
+            ξ_analytic = -D * Ψ[k]
+            ξ_zyg = xi_zyg(Ψ[k], trajectories[k], tlist, n)
+            ξ_fdm = xi_fdm(Ψ[k], trajectories[k], tlist, n)
+            @test norm(ξ_zyg - ξ_analytic) < 1e-12
+            @test norm(ξ_fdm - ξ_analytic) < 1e-10
+        end
+    end
+
+end
+
+
+@testset "make-xi (analytic path)" begin
+
+    # Register an analytic xi for a custom g_b function.
+    function g_b_with_xi(Ψ, traj, tlist, n)
+        return real(dot(Ψ, Ψ))
+    end
+    function xi_for_g_b(Ψ, traj, tlist, n)
+        return -Ψ
+    end
+    QuantumControl.Functionals.make_analytic_xi(::typeof(g_b_with_xi)) = xi_for_g_b
+
+    tlist = PROBLEM.tlist
+    Ψ = random_state_vector(N_HILBERT; rng = RNG)
+    traj = PROBLEM.trajectories[1]
+
+    xi = make_xi(g_b_with_xi; mode = :analytic)
+    @test xi ≡ xi_for_g_b
+    @test xi(Ψ, traj, tlist, 1) ≈ -Ψ
+
+    # mode=:any uses the analytic path and emits a @debug message
+    captured = IOCapture.capture() do
+        Logging.with_logger(Logging.ConsoleLogger(stderr, Logging.Debug)) do
+            make_xi(g_b_with_xi)
+        end
+    end
+    @test captured.value isa Function
+    @test contains(captured.output, "make_xi for g_b=")
+    @test contains(captured.output, "-> analytic")
+
+end
+
+
+@testset "g_b without analytic derivative" begin
+
+    QuantumControl.set_default_ad_framework(nothing; quiet = true)
+
+    function g_b_no_xi(Ψ, traj, tlist, n)
+        return real(dot(Ψ, Ψ))
+    end
+
+    captured = IOCapture.capture(rethrow = Union{}) do
+        make_xi(g_b_no_xi)
+    end
+    @test contains(captured.output, "fallback to mode=:automatic")
+    @test captured.value isa ErrorException
+    if captured.value isa ErrorException
+        @test contains(captured.value.msg, "no default `automatic`")
+    end
+
+    QuantumControl.set_default_ad_framework(Zygote; quiet = true)
+    captured = IOCapture.capture() do
+        make_xi(g_b_no_xi)
+    end
+    @test captured.value isa Function
+    @test contains(captured.output, "fallback to mode=:automatic")
+
+    captured = IOCapture.capture(rethrow = Union{}) do
+        make_xi(g_b_no_xi; mode = :analytic)
+    end
+    @test captured.value isa ErrorException
+    if captured.value isa ErrorException
+        @test contains(captured.value.msg, "no analytic gradient")
+    end
+
+    QuantumControl.set_default_ad_framework(nothing; quiet = true)
+
+end
+
+
+@testset "Unsupported AD Framework (make_xi)" begin
+
+    QuantumControl.set_default_ad_framework(UnsupportedADFramework; quiet = true)
+
+    function g_b_no_xi(Ψ, traj, tlist, n)
+        return real(dot(Ψ, Ψ))
+    end
+
+    captured = IOCapture.capture(rethrow = Union{}, passthrough = false) do
+        make_xi(g_b_no_xi)
+    end
+    @test contains(captured.output, "fallback to mode=:automatic")
+    @test captured.value isa ErrorException
+    if captured.value isa ErrorException
+        @test contains(
+            captured.value.msg,
+            "no analytic gradient, and no automatic gradient"
+        )
+    end
+
+    captured = IOCapture.capture(rethrow = Union{}, passthrough = false) do
+        make_xi(g_b_no_xi; automatic = UnsupportedADFramework)
+    end
+    @test contains(captured.output, "fallback to mode=:automatic")
+    @test captured.value isa ErrorException
+    if captured.value isa ErrorException
+        @test contains(
+            captured.value.msg,
+            "no analytic gradient, and no automatic gradient"
+        )
+    end
+
+    captured = IOCapture.capture(rethrow = Union{}, passthrough = false) do
+        make_xi(g_b_no_xi; mode = :automatic, automatic = UnsupportedADFramework)
+    end
+    @test captured.value isa ErrorException
+    if captured.value isa ErrorException
+        @test contains(captured.value.msg, "no automatic gradient")
+    end
+
+    QuantumControl.set_default_ad_framework(nothing; quiet = true)
+
+end
+
+
+@testset "make-xi (invalid g_b interface)" begin
+
+    # A g_b with wrong signature: only takes Ψ, not (Ψ, traj, tlist, n).
+    function bad_g_b(Ψ)
+        return 1.0
+    end
+
+    # make_xi itself succeeds (no interface validation at construction time)
+    xi_bad = make_xi(bad_g_b; mode = :automatic, automatic = Zygote)
+    @test xi_bad isa Function
+
+    tlist = PROBLEM.tlist
+    traj = PROBLEM.trajectories[1]
+    Ψ = random_state_vector(N_HILBERT; rng = RNG)
+
+    # Calling the returned xi fails because g_b has the wrong interface
+    captured = IOCapture.capture(rethrow = Union{}) do
+        xi_bad(Ψ, traj, tlist, 1)
+    end
+    @test captured.value isa MethodError
+    if captured.value isa MethodError
+        @test contains(sprint(showerror, captured.value), "bad_g_b")
+    end
+
+end
+
+
+@testset "J_b" begin
+
+    # Test that J_b correctly integrates g_b over all trajectories and time.
+    # Uses simple storage (vector of vectors) and a constant g_b = 1 whose
+    # integral is fully determined by the time grid and number of trajectories.
+
+    tlist = PROBLEM.tlist
+    trajectories = PROBLEM.trajectories
+    N_tl = length(tlist)
+
+    # Build fake storage: each trajectory gets a vector of random states
+    storage = [[random_state_vector(N_HILBERT; rng = RNG) for _ = 1:N_tl] for _ = 1:N]
+
+    function g_b_const(Ψ, traj, tlist, n)
+        return 1.0
+    end
+
+    J_b_val = J_b(storage, trajectories, tlist; g_b = g_b_const)
+
+    # Manually reproduce J_b's integration weights for a constant g_b = 1
+    expected = 0.0
+    for _ = 1:N
+        expected += tlist[2] - tlist[1]
+        for n_tl = 2:(N_tl-1)
+            expected += 0.5 * (tlist[n_tl+1] - tlist[n_tl-1])
+        end
+        expected += tlist[end] - tlist[end-1]
+    end
+    @test J_b_val ≈ expected
+
+    # With g_b ∝ n, J_b should reflect the weighted sum over time indices
+    function g_b_index(Ψ, traj, tlist, n)
+        return Float64(n)
+    end
+
+    J_b_idx = J_b(storage, trajectories, tlist; g_b = g_b_index)
+
+    expected_idx = 0.0
+    for _ = 1:N
+        expected_idx += 1.0 * (tlist[2] - tlist[1])
+        for n_tl = 2:(N_tl-1)
+            expected_idx += n_tl * 0.5 * (tlist[n_tl+1] - tlist[n_tl-1])
+        end
+        expected_idx += N_tl * (tlist[end] - tlist[end-1])
+    end
+    @test J_b_idx ≈ expected_idx
 
 end
