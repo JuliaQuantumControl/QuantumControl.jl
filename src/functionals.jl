@@ -1042,7 +1042,7 @@ function make_xi(g_b; mode = :any, automatic = :default)
             return xi
         catch exception
             if exception isa MethodError
-                msg = "make_xi for g_b=$(g_b): no analytic gradient. Implement `GRAPE.make_analytic_xi(::typeof(g_b))`"
+                msg = "make_xi for g_b=$(g_b): no analytic gradient. Implement `QuantumControl.Functionals.make_analytic_xi(::typeof(g_b))`"
                 error(msg)
             else
                 rethrow()
