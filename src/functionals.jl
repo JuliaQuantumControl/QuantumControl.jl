@@ -1122,7 +1122,7 @@ indicates that the terms at the endpoints ``n=0`` and ``n=N_T`` are halved.
 
 Note that `g_b` is a mandatory keyword argument and must be a function
 `g_b(Ψ, trajectory, tlist, n) -> Float64` where `Ψ` is the state ``|Ψ(t)⟩``
-at ``t`` corresponding to the the (one-based) time grid point `tlist[n]`, and
+at ``t`` corresponding to the (one-based) time grid point `tlist[n]`, and
 `trajectory` is a [`QuantumControl.Trajectory`](@ref) that may hold additional
 data in a custom property that is relevant to the calculation of ``g_b``.
 
@@ -1131,19 +1131,20 @@ The definition of `J_b` here is compatible with the
 """
 function J_b(storage, trajectories, tlist; g_b)
     N = length(trajectories)
+    N_T = length(tlist)
     result = 0.0
     for k = 1:N
         Ψ₁ = get_from_storage(storage[k], 1)
         dt = tlist[2] - tlist[1]
         result += g_b(Ψ₁, trajectories[k], tlist, 1) * (dt/2)
-        for n_tl = 2:length(tlist)
-            Ψₙ = get_from_storage(storage[k], n_tl)
-            if n_tl < length(tlist)
-                dt = 0.5 * (tlist[n_tl+1] - tlist[n_tl-1])
-                result += g_b(Ψₙ, trajectories[k], tlist, n_tl) * dt
+        for n = 2:N_T
+            Ψₙ = get_from_storage(storage[k], n)
+            if n < N_T
+                dt = 0.5 * (tlist[n+1] - tlist[n-1])
+                result += g_b(Ψₙ, trajectories[k], tlist, n) * dt
             else
                 dt = tlist[end] - tlist[end-1]
-                result += g_b(Ψₙ, trajectories[k], tlist, n_tl) * (dt/2)
+                result += g_b(Ψₙ, trajectories[k], tlist, n) * (dt/2)
             end
         end
     end
