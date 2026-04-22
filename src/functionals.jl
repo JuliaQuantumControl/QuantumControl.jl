@@ -1101,37 +1101,51 @@ J_b_val = J_b(storage, trajectories, tlist; g_b)
 returns
 
 ```math
-J_b = ∑_k ∑_n g_b(|Ψ_k(t_n)⟩) Δt_n
+J_b = ∑_k ∑_{n=0}^{N_T}{}^′ g_b(|Ψ_k(t_n)⟩) Δt_n
 ```
 
-as the piecewise-constant discretization of
+as the [trapezoid discretization](https://en.wikipedia.org/wiki/Trapezoidal_rule)
+of the integral
 
 ```math
-J_b = ∑_k \\int g_b(|Ψ_k(t)⟩) dt
+J_b = ∑_k ∫_0^T g_b(|Ψ_k(t)⟩) dt ,
 ```
 
 where `storage[k]` contains the forward-propagated states for trajectory `k`
-at each point of `tlist`; for example, the `fw_storage` component of the
-[GRAPE workspace](@extref `GRAPE.GrapeWrk`). The ``Δt_n`` is the
-[time step around the time grid point ``t_n``](@extref GRAPE Overview-Running-Costs).
+at each time grid point in `tlist`, ``t_0 = 0, t_1, … t_{N_T} = T``;
+for example, the `fw_storage` component of the
+[GRAPE workspace](@extref `GRAPE.GrapeWrk`). The ``Δt_n`` are defined at
+the endpoints as ``Δt_0 = t_1 - t_0`` and ``Δt_{N_T} = (t_{N_T} - t_{N_T-1})``,
+and at the interior points as ``Δt_n = \\frac{(t_{n+1} - t_{n-1})}{2}``.
+For uniform time grids, ``Δt_n ≡ dt``. The prime in the sum over ``n``
+indicates that the terms at the endpoints ``n=0`` and ``n=N_T`` are halved.
 
 Note that `g_b` is a mandatory keyword argument and must be a function
-`g_b(Ψ, trajectory, tlist, n) -> Float64`.
+`g_b(Ψ, trajectory, tlist, n) -> Float64` where `Ψ` is the state ``|Ψ(t)⟩``
+at ``t`` corresponding to the (one-based) time grid point `tlist[n]`, and
+`trajectory` is a [`QuantumControl.Trajectory`](@ref) that may hold additional
+data in a custom property that is relevant to the calculation of ``g_b``.
+
+The definition of `J_b` here is compatible with the
+[treatment of running costs in GRAPE](@extref GRAPE Overview-Running-Costs).
 """
 function J_b(storage, trajectories, tlist; g_b)
     N = length(trajectories)
+    N_T = length(tlist)
     result = 0.0
     for k = 1:N
         Ψ₁ = get_from_storage(storage[k], 1)
-        result += g_b(Ψ₁, trajectories[k], tlist, 1) * (tlist[2] - tlist[1])
-        for n_tl = 2:length(tlist)
-            Ψₙ = get_from_storage(storage[k], n_tl)
-            if n_tl < length(tlist)
-                dt = 0.5 * (tlist[n_tl+1] - tlist[n_tl-1])
+        dt = tlist[2] - tlist[1]
+        result += g_b(Ψ₁, trajectories[k], tlist, 1) * (dt/2)
+        for n = 2:N_T
+            Ψₙ = get_from_storage(storage[k], n)
+            if n < N_T
+                dt = 0.5 * (tlist[n+1] - tlist[n-1])
+                result += g_b(Ψₙ, trajectories[k], tlist, n) * dt
             else
                 dt = tlist[end] - tlist[end-1]
+                result += g_b(Ψₙ, trajectories[k], tlist, n) * (dt/2)
             end
-            result += g_b(Ψₙ, trajectories[k], tlist, n_tl) * dt
         end
     end
     return result
