@@ -1,0 +1,35 @@
+name: Test downstream GRAPE
+on:
+  push:
+    branches:
+      - master
+      - dev
+      - 'release-*'
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - master
+env:
+  GKSwstype: 100
+  JULIA_PKG_PRECOMPILE_AUTO: false
+jobs:
+  test-grape:
+    name: Test GRAPE
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v6
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'
+      - uses: julia-actions/cache@v3
+      - name: "Instantiate test environment"
+        run: |
+          wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
+          julia --project=test installorg.jl
+      - name: "Run GRAPE tests"
+        shell: julia --color=yes --project=test --code-coverage="@" --depwarn="yes" --check-bounds="yes" {0}
+        run: |
+          using Pkg
+          Pkg.test("GRAPE", coverage=true)
