@@ -771,32 +771,27 @@ end
 @testset "J_b" begin
 
     # Test that J_b correctly integrates g_b over all trajectories and time.
-    # Uses simple storage (vector of vectors) and a constant g_b = 1 whose
-    # integral is fully determined by the time grid and number of trajectories.
+    # Uses simple storage (vector of vectors) and a constant g_b = |Ψ| = 1
+    # whose integral is fully determined by the time grid and number of
+    # trajectories.
 
     tlist = PROBLEM.tlist
+    T = tlist[end]
     trajectories = PROBLEM.trajectories
+    N = length(trajectories)
     N_tl = length(tlist)
 
     # Build fake storage: each trajectory gets a vector of random states
     storage = [[random_state_vector(N_HILBERT; rng = RNG) for _ = 1:N_tl] for _ = 1:N]
 
     function g_b_const(Ψ, traj, tlist, n)
-        return 1.0
+        return norm(Ψ)
     end
 
     J_b_val = J_b(storage, trajectories, tlist; g_b = g_b_const)
 
-    # Manually reproduce J_b's integration weights for a constant g_b = 1
-    expected = 0.0
-    for _ = 1:N
-        expected += tlist[2] - tlist[1]
-        for n_tl = 2:(N_tl-1)
-            expected += 0.5 * (tlist[n_tl+1] - tlist[n_tl-1])
-        end
-        expected += tlist[end] - tlist[end-1]
-    end
-    @test J_b_val ≈ expected
+    # Trapezoidal rule for integral should return the exact result
+    @test J_b_val ≈ T * N
 
     # With g_b ∝ n, J_b should reflect the weighted sum over time indices
     function g_b_index(Ψ, traj, tlist, n)
@@ -805,14 +800,7 @@ end
 
     J_b_idx = J_b(storage, trajectories, tlist; g_b = g_b_index)
 
-    expected_idx = 0.0
-    for _ = 1:N
-        expected_idx += 1.0 * (tlist[2] - tlist[1])
-        for n_tl = 2:(N_tl-1)
-            expected_idx += n_tl * 0.5 * (tlist[n_tl+1] - tlist[n_tl-1])
-        end
-        expected_idx += N_tl * (tlist[end] - tlist[end-1])
-    end
-    @test J_b_idx ≈ expected_idx
+    # Again, the integral should be exact
+    @test J_b_idx ≈ ((N_tl - 1) / 2 + 1) * T * N
 
 end
