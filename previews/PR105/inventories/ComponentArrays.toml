@@ -1,0 +1,193 @@
+# DocInventory version 1
+project = "ComponentArrays.jl"
+version = "0.15.11"
+
+[[jl.method]]
+name = "ComponentArrays.getaxes-Tuple{ComponentArray}"
+uri = "api/#ComponentArrays.getaxes-Tuple%7BComponentArray%7D"
+[[jl.method]]
+name = "ComponentArrays.getdata-Tuple{ComponentArray}"
+uri = "api/#ComponentArrays.getdata-Tuple%7BComponentArray%7D"
+[[jl.method]]
+name = "ComponentArrays.label2index-Tuple{ComponentVector{T, A, Axes} where {T, A, Axes}, Any}"
+uri = "api/#ComponentArrays.label2index-Tuple%7BComponentVector%7BT%2C%20A%2C%20Axes%7D%20where%20%7BT%2C%20A%2C%20Axes%7D%2C%20Any%7D"
+[[jl.method]]
+name = "ComponentArrays.labels-Tuple{ComponentVector{T, A, Axes} where {T, A, Axes}}"
+uri = "api/#ComponentArrays.labels-Tuple%7BComponentVector%7BT%2C%20A%2C%20Axes%7D%20where%20%7BT%2C%20A%2C%20Axes%7D%7D"
+[[jl.method]]
+name = "ComponentArrays.valkeys-Tuple{AbstractAxis}"
+uri = "api/#ComponentArrays.valkeys-Tuple%7BAbstractAxis%7D"
+
+[[jl.type]]
+name = "ComponentArrays.Axis"
+uri = "api/#$"
+[[jl.type]]
+name = "ComponentArrays.ComponentArray"
+uri = "api/#$"
+[[jl.type]]
+name = "ComponentArrays.ComponentMatrix"
+uri = "api/#$"
+[[jl.type]]
+name = "ComponentArrays.ComponentVector"
+uri = "api/#$"
+[[jl.type]]
+name = "ComponentArrays.KeepIndex"
+uri = "api/#$"
+[[jl.type]]
+name = "ComponentArrays.LazyArray"
+uri = "api/#$"
+[[jl.type]]
+name = "ComponentArrays.PartitionedAxis"
+uri = "api/#$"
+[[jl.type]]
+name = "ComponentArrays.ShapedAxis"
+uri = "api/#$"
+[[jl.type]]
+name = "ComponentArrays.ViewAxis"
+uri = "api/#$"
+
+[[std.doc]]
+dispname = "API"
+name = "api"
+uri = "api/"
+[[std.doc]]
+dispname = "Neural ODEs with DiffEqFlux"
+name = "examples/DiffEqFlux"
+uri = "examples/DiffEqFlux/"
+[[std.doc]]
+dispname = "ODE with Jacobian"
+name = "examples/ODE_jac"
+uri = "examples/ODE_jac/"
+[[std.doc]]
+dispname = "Model Reference Adaptive Control"
+name = "examples/adaptive_control"
+uri = "examples/adaptive_control/"
+[[std.doc]]
+dispname = "Home"
+name = "index"
+uri = ""
+[[std.doc]]
+dispname = "Indexing Behavior"
+name = "indexing_behavior"
+uri = "indexing_behavior/"
+[[std.doc]]
+dispname = "Quick Start"
+name = "quickstart"
+uri = "quickstart/"
+[[std.doc]]
+dispname = "Unpacking to StaticArrays"
+name = "static_unpack"
+uri = "static_unpack/"
+
+[[std.label]]
+dispname = "A sliding block with two different friction models"
+name = "A-sliding-block-with-two-different-friction-models"
+uri = "examples/coulomb_control/#$"
+[[std.label]]
+name = "API"
+uri = "api/#$"
+[[std.label]]
+dispname = "Closed-Loop Response"
+name = "Closed-Loop-Response"
+uri = "examples/coulomb_control/#$"
+[[std.label]]
+dispname = "Component Functions"
+name = "Component-Functions"
+uri = "examples/coulomb_control/#$"
+[[std.label]]
+name = "ComponentArrays.jl"
+uri = "#$"
+[[std.label]]
+dispname = "Control of a sliding block"
+name = "Control-of-a-sliding-block"
+uri = "examples/coulomb_control/#$"
+[[std.label]]
+dispname = "Derivative Functions"
+name = "Derivative-Functions"
+uri = "examples/adaptive_control/#$"
+[[std.label]]
+name = "Example"
+uri = "static_unpack/#$"
+[[std.label]]
+dispname = "General use"
+name = "General-use"
+uri = "quickstart/#$"
+[[std.label]]
+dispname = "Helper Functions"
+name = "Helper-Functions"
+uri = "examples/adaptive_control/#$"
+[[std.label]]
+dispname = "Indexing Behavior"
+name = "Indexing-Behavior"
+uri = "indexing_behavior/#$"
+[[std.label]]
+dispname = "Indexing with multiple symbols"
+name = "Indexing-with-multiple-symbols"
+uri = "indexing_behavior/#$"
+[[std.label]]
+dispname = "Insufficient Excitation and Rohr's Example"
+name = "Insufficient-Excitation-and-Rohr's-Example"
+uri = "examples/adaptive_control/#Insufficient-Excitation-and-Rohr%27s-Example"
+[[std.label]]
+dispname = "Laplace Domain Model Specification"
+name = "Laplace-Domain-Model-Specification"
+uri = "examples/adaptive_control/#$"
+[[std.label]]
+dispname = "Model Reference Adaptive Control"
+name = "Model-Reference-Adaptive-Control"
+uri = "examples/adaptive_control/#$"
+[[std.label]]
+name = "Motivation"
+uri = "examples/adaptive_control/#$"
+[[std.label]]
+dispname = "Neural ODEs with DiffEqFlux"
+name = "Neural-ODEs-with-DiffEqFlux"
+uri = "examples/DiffEqFlux/#$"
+[[std.label]]
+dispname = "ODE with Jacobian"
+name = "ODE-with-Jacobian"
+uri = "examples/ODE_jac/#$"
+[[std.label]]
+dispname = "Open-Loop Response"
+name = "Open-Loop-Response"
+uri = "examples/coulomb_control/#$"
+[[std.label]]
+dispname = "PID feedback control"
+name = "PID-feedback-control"
+uri = "examples/coulomb_control/#$"
+[[std.label]]
+dispname = "Problem Setup"
+name = "Problem-Setup"
+uri = "examples/coulomb_control/#$"
+[[std.label]]
+dispname = "Quick Start"
+name = "Quick-Start"
+uri = "quickstart/#$"
+[[std.label]]
+dispname = "Retaining component labels through index operations"
+name = "Retaining-component-labels-through-index-operations"
+uri = "indexing_behavior/#$"
+[[std.label]]
+dispname = "Set Up Simulation"
+name = "Set-Up-Simulation"
+uri = "examples/adaptive_control/#$"
+[[std.label]]
+dispname = "Simulation Inputs"
+name = "Simulation-Inputs"
+uri = "examples/adaptive_control/#$"
+[[std.label]]
+dispname = "Unmodeled Dynamics"
+name = "Unmodeled-Dynamics"
+uri = "examples/adaptive_control/#$"
+[[std.label]]
+dispname = "Unpacking to StaticArrays"
+name = "Unpacking-to-StaticArrays"
+uri = "static_unpack/#$"
+[[std.label]]
+dispname = "Views and slices"
+name = "Views-and-slices"
+uri = "indexing_behavior/#$"
+[[std.label]]
+dispname = "Why not just have static ComponentArrays?"
+name = "Why-not-just-have-static-ComponentArrays?"
+uri = "static_unpack/#Why-not-just-have-static-ComponentArrays%3F"
