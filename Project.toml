@@ -17,12 +17,14 @@ UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 [weakdeps]
 ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
 FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
+Piccolo = "c4671d76-df94-11ed-2057-43d4fd632fad"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [extensions]
 QuantumControlChainRulesCoreExt = "ChainRulesCore"
 QuantumControlFiniteDifferencesExt = "FiniteDifferences"
 QuantumControlZygoteExt = "Zygote"
+QuantumControlPiccoloExt = "Piccolo"
 
 [compat]
 FileIO = "1"
@@ -31,6 +33,7 @@ IOCapture = "0.2.4, 1"
 JLD2 = "0.4, 0.5, 0.6"
 LinearAlgebra = "1"
 Logging = "1"
+Piccolo = "1.8.0"
 Printf = "1"
 QuantumPropagators = ">=0.8.2"
 Zygote = "0.6, 0.7"
