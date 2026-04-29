@@ -1,0 +1,33 @@
+h5 {font-size: 1em!important; display:inline; line-height: 1.5!important;}
+h5::after {content: "—   ";}
+h5 + p {display:inline;}
+th.rotated-text {
+    height: 140px;
+    white-space: nowrap;
+    padding: 0 !important;
+}
+
+th.rotated-text > div {
+    transform:
+        translate(13px, 8em)
+        rotate(310deg);
+    width: 30px;
+}
+
+th.rotated-text > div > span {
+    padding: 5px 10px;
+}
+th.non-rotated-text {
+    height: 10em;
+    white-space: nowrap;
+    padding: 0 !important;
+}
+
+th.non-rotated-text > div {
+    transform:
+        translate(0px, 8em);
+}
+
+th.non-rotated-text > div > span {
+    padding: 5px 10px;
+}
