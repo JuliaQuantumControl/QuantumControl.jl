@@ -1,5 +1,5 @@
 using QuantumPropagators.Generators: Generator, Operator, _make_generator, evaluate
-using QuantumPropagators.Amplitudes: LockedAmplitude, ShapedAmplitude
+using QuantumPropagators.Amplitudes: LockedAmplitude, ShapedAmplitude, GuidedAmplitude
 
 
 """Get a vector of the derivatives of `generator` w.r.t. each control.
@@ -101,4 +101,7 @@ get_control_deriv(operator::Operator, control) = nothing
 get_control_deriv(ampl::LockedAmplitude, control) = 0.0
 
 get_control_deriv(ampl::ShapedAmplitude, control) =
+    (control ≡ ampl.control) ? LockedAmplitude(ampl.shape) : 0.0
+
+get_control_deriv(ampl::GuidedAmplitude, control) =
     (control ≡ ampl.control) ? LockedAmplitude(ampl.shape) : 0.0

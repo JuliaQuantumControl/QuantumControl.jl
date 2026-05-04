@@ -1,12 +1,11 @@
 using Test
 using LinearAlgebra
 using QuantumControl.Controls: get_control_deriv, get_control_derivs
-using QuantumPropagators.Generators
-using QuantumPropagators.Controls
 using QuantumPropagators: Generator, Operator
+using QuantumPropagators.Controls: evaluate, get_controls
 using QuantumControlTestUtils.RandomObjects: random_matrix, random_state_vector
 using QuantumControl.Interfaces: check_generator, check_amplitude
-using QuantumPropagators.Amplitudes: LockedAmplitude, ShapedAmplitude
+using QuantumPropagators.Amplitudes: LockedAmplitude, ShapedAmplitude, GuidedAmplitude
 import QuantumPropagators
 import QuantumControl
 
@@ -151,6 +150,32 @@ end
 
     ampl1 = ShapedAmplitude(control; shape)
     ampl2 = ShapedAmplitude(control, tlist; shape)
+
+    @test get_control_deriv(ampl1, t -> 0.0) == 0.0
+    @test get_control_deriv(ampl1, shape) == 0.0
+    @test get_control_deriv(ampl1, control) == LockedAmplitude(shape)
+
+    @test get_control_deriv(ampl2, t -> 0.0) == 0.0
+    @test get_control_deriv(ampl2, shape) == 0.0
+    control2 = get_controls(ampl2)[1]
+    @test control2 ≢ control  # should have been discretized
+    @test ampl2.shape ≢ shape  # should have been discretized
+    @test control2 isa Vector{Float64}
+    @test ampl2.shape isa Vector{Float64}
+    @test get_control_deriv(ampl2, control2) == LockedAmplitude(ampl2.shape)
+
+end
+
+
+@testset "GuidedAmplitude  get_control_derivs" begin
+
+    shape(t) = 1.0
+    guide(t) = 0.1
+    control(t) = 0.5
+    tlist = [0.0, 0.5, 1.0]
+
+    ampl1 = GuidedAmplitude(control; shape, guide)
+    ampl2 = GuidedAmplitude(control, tlist; shape, guide)
 
     @test get_control_deriv(ampl1, t -> 0.0) == 0.0
     @test get_control_deriv(ampl1, shape) == 0.0
