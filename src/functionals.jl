@@ -379,6 +379,12 @@ vector `∇J_a` containing the vectorized elements ``∂J_a/∂ϵ_{ln}``.
 The function `J_a` must have the interface `J_a(pulsevals, tlist)`,
 see, e.g., [`J_a_fluence`](@ref).
 
+In `pulsevals`, the values ``ϵ_{nl}`` are vectorized with `n` (time interval
+index) varying faster than `l` (control index), i.e.,
+`pulsevals = [ϵ₁₁, ϵ₂₁, …, ϵ_{N_T,1}, ϵ₁₂, ϵ₂₂, …, ϵ_{N_T,2}, …]`,
+where ``N_T = `` `length(tlist) - 1`. The pulse values for each control are
+contiguous.
+
 The parameters `mode` and `automatic` are handled as in [`make_chi`](@ref),
 where `mode` is one of `:any`, `:analytic`, `:automatic`, and `automatic` is
 he loaded module of an automatic differentiation framework, where `:default`
@@ -924,16 +930,24 @@ J_a = J_a_fluence(pulsevals, tlist)
 calculates
 
 ```math
-J_a = \sum_l \int_0^T |ϵ_l(t)|^2 dt = \left(\sum_{nl} |ϵ_{nl}|^2 \right) dt
+J_a = \sum_l \int_0^T |ϵ_l(t)|^2 dt \approx \sum_{nl} |ϵ_{nl}|^2 \, dt_n
 ```
 
-where ``ϵ_{nl}`` are the values in the (vectorized) `pulsevals`, `n` is the
-index of the intervals of the time grid, and ``dt`` is the time step, taken
-from the first time interval of `tlist` and assumed to be uniform.
+where ``ϵ_{nl}`` are the values in `pulsevals`, with `n`
+the index of the time interval and `l` the index of the control, and
+``dt_n = `` `tlist[n+1] - tlist[n]` is the duration of interval `n`.
+The `pulsevals` are vectorized as ``[ϵ₁₁, ϵ₂₁, …, ϵ_{N_T,1}, ϵ₁₂, ϵ₂₂, …]``,
+where `N_T = length(tlist) - 1`. Supports non-uniform time grids.
+
+# See also
+
+* [`grad_J_a_fluence`](@ref) — analytic (automatic) gradient
 """
 function J_a_fluence(pulsevals, tlist)
-    dt = tlist[begin+1] - tlist[begin]
-    return sum(abs2.(pulsevals)) * dt
+    N_T = length(tlist) - 1
+    dt = reshape(diff(tlist), :, 1)     # (N_T, 1) for column broadcasting
+    pv = reshape(pulsevals, N_T, :)     # (N_T, N_L), no copy
+    return sum(abs2.(pv) .* dt)
 end
 
 
@@ -943,14 +957,16 @@ end
 ∇J_a = grad_J_a_fluence(pulsevals, tlist)
 ```
 
-returns the `∇J_a`, which contains the (vectorized) elements ``2 ϵ_{nl} dt``,
-where ``ϵ_{nl}`` are the (vectorized) elements of `pulsevals` and ``dt`` is the
-time step, taken from the first time interval of `tlist` and assumed to be
-uniform.
+returns `∇J_a`, which contains the (vectorized) elements ``2 ϵ_{nl} dt_n``,
+where ``ϵ_{nl}`` are the (vectorized) elements of `pulsevals` and
+``dt_n = `` `tlist[n+1] - tlist[n]` is the duration of interval `n`.
+Supports non-uniform time grids.
 """
 function grad_J_a_fluence(pulsevals, tlist)
-    dt = tlist[begin+1] - tlist[begin]
-    return (2 * dt) * pulsevals
+    N_T = length(tlist) - 1
+    dt = reshape(diff(tlist), :, 1)     # (N_T, 1) for column broadcasting
+    pv = reshape(pulsevals, N_T, :)     # (N_T, N_L), no copy
+    return vec(2 .* dt .* pv)
 end
 
 

@@ -125,6 +125,29 @@ end
 end
 
 
+@testset "J_a_fluence non-uniform grid" begin
+
+    # Non-uniform tlist with 4 intervals, 2 controls
+    # pulsevals layout: [ϵ₁₁, ϵ₂₁, ϵ₃₁, ϵ₄₁, ϵ₁₂, ϵ₂₂, ϵ₃₂, ϵ₄₂]
+    tlist_nu = [0.0, 0.1, 0.3, 0.6, 1.0]
+    dt_nu = [0.1, 0.2, 0.3, 0.4]
+    pv1 = [1.0, 2.0, 3.0, 4.0]
+    pv2 = [0.5, 1.5, 2.5, 3.5]
+    pulsevals_nu = vcat(pv1, pv2)
+
+    J_expected = sum(abs2.(pv1) .* dt_nu) + sum(abs2.(pv2) .* dt_nu)
+    @test J_a_fluence(pulsevals_nu, tlist_nu) ≈ J_expected
+
+    G_expected = vcat(2 .* pv1 .* dt_nu, 2 .* pv2 .* dt_nu)
+    @test grad_J_a_fluence(pulsevals_nu, tlist_nu) ≈ G_expected
+
+    grad_J_a_zygote_nu =
+        make_grad_J_a(J_a_fluence, tlist_nu; mode = :automatic, automatic = Zygote)
+    @test norm(grad_J_a_zygote_nu(pulsevals_nu, tlist_nu) - G_expected) < 1e-12
+
+end
+
+
 @testset "J_T without analytic derivative" begin
 
     QuantumControl.set_default_ad_framework(nothing; quiet = true)
