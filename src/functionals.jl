@@ -1,7 +1,7 @@
 module Functionals
 
 export J_T_ss, J_T_sm, J_T_re
-export J_a_fluence
+export J_a_fluence, J_a_avg_zero
 export gate_functional
 export make_gate_chi
 export J_b
@@ -971,6 +971,60 @@ end
 
 
 make_analytic_grad_J_a(::typeof(J_a_fluence), tlist) = grad_J_a_fluence
+
+
+@doc raw"""Running cost penalizing a non-zero pulse area.
+
+```julia
+J_a = J_a_avg_zero(pulsevals, tlist)
+```
+
+calculates
+
+```math
+J_a = \sum_l \left(\int_0^T ϵ_l(t)\, dt\right)^2 \approx \sum_l A_l^2\,,
+\quad A_l = \sum_n ϵ_{nl}\, dt_n\,,
+```
+
+where ``ϵ_{nl}`` and ``dt_n`` are as in [`J_a_fluence`](@ref). The functional
+is zero when every control integrates to zero over the time grid, and positive
+otherwise.
+
+In conjunction with [`QuantumPropagators.Amplitudes.GuidedAmplitude`](@ref),
+this enables an optimization that preserves the pulse area of a given `guide`.
+
+# See also
+
+* [`grad_J_a_avg_zero`](@ref) — analytic (automatic) gradient
+"""
+function J_a_avg_zero(pulsevals, tlist)
+    N_T = length(tlist) - 1
+    dt = diff(tlist)                        # (N_T,)
+    pv = reshape(pulsevals, N_T, :)         # (N_T, N_L), no copy
+    A = vec(dt' * pv)                       # (N_L,): time integral per control
+    return sum(abs2.(A))
+end
+
+
+"""Analytic derivative for [`J_a_avg_zero`](@ref).
+
+```julia
+∇J_a = grad_J_a_avg_zero(pulsevals, tlist)
+```
+
+returns `∇J_a` with elements ``2 A_l\\, dt_n``, where
+``A_l = \\sum_n ϵ_{nl}\\, dt_n`` is the time integral of control `l`.
+"""
+function grad_J_a_avg_zero(pulsevals, tlist)
+    N_T = length(tlist) - 1
+    dt = diff(tlist)                        # (N_T,)
+    pv = reshape(pulsevals, N_T, :)         # (N_T, N_L), no copy
+    A = vec(dt' * pv)                       # (N_L,): time integral per control
+    return vec(2 .* reshape(dt, :, 1) .* reshape(A, 1, :))
+end
+
+
+make_analytic_grad_J_a(::typeof(J_a_avg_zero), tlist) = grad_J_a_avg_zero
 
 
 """

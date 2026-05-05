@@ -7,6 +7,8 @@ using QuantumControl.Functionals:
     J_T_ss,
     J_a_fluence,
     grad_J_a_fluence,
+    J_a_avg_zero,
+    grad_J_a_avg_zero,
     make_grad_J_a,
     make_chi,
     make_xi,
@@ -144,6 +146,36 @@ end
     grad_J_a_zygote_nu =
         make_grad_J_a(J_a_fluence, tlist_nu; mode = :automatic, automatic = Zygote)
     @test norm(grad_J_a_zygote_nu(pulsevals_nu, tlist_nu) - G_expected) < 1e-12
+
+end
+
+
+@testset "J_a_avg_zero" begin
+
+    # Two controls on a non-uniform grid
+    tlist_nu = [0.0, 0.1, 0.3, 0.6, 1.0]
+    dt_nu = [0.1, 0.2, 0.3, 0.4]           # diff(tlist_nu)
+    pv1 = [1.0, -2.0, 3.0, -1.0]           # A₁ = 0.1 - 0.4 + 0.9 - 0.4 = 0.2
+    pv2 = [2.0, -1.0, -1.0, 0.0]           # A₂ = 0.2 - 0.2 - 0.3 + 0.0 = -0.3
+    pulsevals_nu = vcat(pv1, pv2)
+
+    A1 = dot(pv1, dt_nu)
+    A2 = dot(pv2, dt_nu)
+    @test J_a_avg_zero(pulsevals_nu, tlist_nu) ≈ A1^2 + A2^2
+
+    # Zero when each control integrates to zero:
+    # 1*0.1 + 0*0.2 + 0*0.3 + (-0.25)*0.4 = 0.1 - 0.1 = 0
+    pv_zeroA = [1.0, 0.0, 0.0, -0.25]
+    @test J_a_avg_zero(vcat(pv_zeroA, pv_zeroA), tlist_nu) ≈ 0.0 atol = 1e-15
+
+    # Analytic gradient matches manual calculation
+    G_expected = vcat(2 * A1 .* dt_nu, 2 * A2 .* dt_nu)
+    @test grad_J_a_avg_zero(pulsevals_nu, tlist_nu) ≈ G_expected
+
+    # Analytic gradient matches Zygote
+    grad_J_a_zygote =
+        make_grad_J_a(J_a_avg_zero, tlist_nu; mode = :automatic, automatic = Zygote)
+    @test norm(grad_J_a_zygote(pulsevals_nu, tlist_nu) - G_expected) < 1e-12
 
 end
 
