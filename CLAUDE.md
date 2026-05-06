@@ -59,3 +59,12 @@ QuantumControl.jl is a high-level interface package that provides a coherent API
 - Tests for interfaces, propagation, optimization, parameterization, and workflows
 - Coverage reporting and CI integration
 - Downstream testing of Krotov and GRAPE packages
+
+
+## Docstrings
+
+The docstring for some function or type can be obtained from the fully qualified name, e.g. `QuantumControl.ControlProblem`:
+
+```bash
+julia --project=. -e 'using REPL; using QuantumControl; print(Base.doc(QuantumControl.ControlProblem))'
+```
