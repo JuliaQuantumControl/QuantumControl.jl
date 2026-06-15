@@ -57,3 +57,14 @@ QuantumControl.jl is a high-level interface package that provides a coherent API
 - Tests for interfaces, propagation, optimization, parameterization, and workflows
 - Coverage reporting and CI integration
 - Downstream testing of Krotov and GRAPE packages
+
+## Changelog
+
+`CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) / [SemVer](https://semver.org/). Non-obvious conventions:
+
+* Record user-facing changes under `## [Unreleased]` as bullets with an inline category prefix (`Added:`/`Changed:`/`Deprecated:`/`Removed:`/`Fixed:`/`Security:`), not `###` subsections; link issues/PRs as `[[#123]]`, issue before its resolving PR (`[[#91], [#93]]`). Exclude CI, dependency bumps, formatting, and internal-only changes — a leading underscore (e.g. `_helper`) marks a name as internal.
+* Pre-1.0, Julia treats every `v0.x.0` as breaking, so non-breaking changes go into a `v0.x.y` bugfix release.
+* Version links point to the release page (`[vX.Y.Z]: …/releases/tag/vX.Y.Z`); only `[Unreleased]` uses a compare link (`…/compare/v<latest>..HEAD`).
+* `pull/` vs `issues/` can't be verified by loading the URL (GitHub redirects between them); confirm the category with `gh api repos/JuliaQuantumControl/QuantumControl.jl/issues/<N> --jq 'if has("pull_request") then "pull" else "issue" end'`.
+* Releasing on a `release-*` branch: rename `## [Unreleased]` to `## [vX.Y.Z] — YYYY-MM-DD` and point `[Unreleased]` at `…/compare/vX.Y.Z..HEAD`, but do **not** add a fresh `## [Unreleased]` heading — re-add it when merging back to `master`.
+* `make check-changelog` validates links (textual, no network; also run in CI via `make codestyle`); `make changelog` additionally fills in missing `[#N]` targets, so you can just write `[[#123]]`. Neither verifies that links resolve — check that, and the issue/PR category, manually.

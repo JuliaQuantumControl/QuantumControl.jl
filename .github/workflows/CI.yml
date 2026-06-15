@@ -122,6 +122,8 @@ jobs:
               println("Version $VERSION OK on $BRANCH")
           end
           exit(0)
+      - name: Changelog Check
+        run: julia test/check_changelog.jl
       - name: Get codestyle settings
         run: wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/.JuliaFormatter.toml
       - name: Install JuliaFormatter and format
