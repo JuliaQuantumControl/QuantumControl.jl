@@ -2,23 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Commands
+## Contributor Workflow
 
-### Testing and Development
-- `make test` - Run the complete test suite in a subprocess with coverage
-- `julia --project=test --banner=no --startup-file=yes -e 'include("devrepl.jl"); test()'` - Run tests directly
-- `include("test/runtests.jl")` - Run tests from within Julia REPL
+This package follows the organization-wide contributor workflow (running tests, building docs, formatting, and the release process). Read these shared guidelines and act in line with how a human contributor would:
 
-### Code Quality and Formatting
-- `make codestyle` - Apply JuliaFormatter to the entire project
+@../.github/CONTRIBUTING.md
 
-### Documentation
-- `make docs` - Build the documentation using Documenter.jl
-- `include("docs/make.jl")` - Build docs from within Julia REPL
+If the `@`-reference above did not load its contents (the org-wide `.github` checkout is not present), fetch the guidelines from <https://raw.githubusercontent.com/JuliaQuantumControl/.github/master/CONTRIBUTING.md> instead.
 
-### Maintenance
-- `make clean` - Clean up build/doc/testing artifacts
-- `make distclean` - Restore to a clean checkout state
+Key commands:
+
+- `make test` — run the full test suite (or `julia --project=test -e 'include("test/runtests.jl")'`)
+- `make devrepl` — start the development REPL (Revise, JuliaFormatter, coverage helpers); alternatively `julia -i --banner=no devrepl.jl`
+- `make docs` — build the documentation
+- `make codestyle` — apply JuliaFormatter (version pinned in `test/Project.toml`)
+- `make clean` / `make distclean` — remove build/test artifacts
 
 ## Package Architecture
 

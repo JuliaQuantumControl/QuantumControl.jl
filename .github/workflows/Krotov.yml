@@ -27,7 +27,7 @@ jobs:
       - name: "Instantiate test environment"
         run: |
           wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
-          julia --project=test installorg.jl
+          julia --project=test installorg.jl --no-precompile
       - name: "Run Krotov tests"
         shell: julia --color=yes --project=test --code-coverage="@" --depwarn="yes" --check-bounds="yes" {0}
         run: |

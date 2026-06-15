@@ -33,7 +33,7 @@ jobs:
       - name: "Instantiate test environment"
         run: |
           wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
-          julia --project=test installorg.jl
+          julia --project=test installorg.jl --no-precompile
       - name: "Run tests"
         shell: julia --color=yes --project=test --code-coverage="@" --depwarn="yes" --check-bounds="yes" {0}
         run: |
@@ -41,7 +41,7 @@ jobs:
       - uses: julia-actions/julia-processcoverage@v1
       - name: "Summarize coverage"
         run: julia --project=test -e 'using QuantumControlTestUtils; show_coverage();'
-      - uses: codecov/codecov-action@v6
+      - uses: codecov/codecov-action@v7
         with:
           files: lcov.info
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -128,7 +128,7 @@ jobs:
         shell: julia {0}
         run: |
           using Pkg
-          Pkg.add(PackageSpec(name="JuliaFormatter"))
+          Pkg.add(PackageSpec(name="JuliaFormatter", version="2.3.0"))
           using JuliaFormatter
           format(".", verbose=true)
       - name: Format Check
