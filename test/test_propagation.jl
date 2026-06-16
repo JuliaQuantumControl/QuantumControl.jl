@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT
+
 using Test
 using QuantumPropagators: ExpProp
 using QuantumPropagators.Shapes: flattop

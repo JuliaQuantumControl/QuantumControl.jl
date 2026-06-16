@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+
+SPDX-License-Identifier: MIT OR CC0-1.0
+-->
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.

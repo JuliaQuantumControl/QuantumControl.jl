@@ -1,3 +1,8 @@
+```@meta
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+# SPDX-License-Identifier: MIT OR CC-BY-4.0
+```
+
 # Control Methods
 
 All optimizations in the `QuantumControl` package are done by calling `QuantumControl.optimize`, or preferably the high-level wrapper [`@optimize_or_load`](@ref). The actual control methods are implemented in separate packages. The module implementing a particular method should be passed to `optimize` as the `method` keyword argument.

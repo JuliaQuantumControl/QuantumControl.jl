@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT
+
 # I'm aware of Reexport.jl, but it doesn't work for QuantumControl.jl
 #
 # For one thing, `@reexport using QuantumPropagators` re-exports not just the

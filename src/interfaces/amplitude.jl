@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT
+
 using QuantumPropagators
 using QuantumPropagators.Controls: get_controls, evaluate
 using QuantumPropagators.Interfaces: catch_abbreviated_backtrace

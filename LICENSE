@@ -1,3 +1,12 @@
+This project follows the REUSE specification for copyright and licensing
+information. The authoritative copyright and licensing information is provided
+by SPDX notices in individual files and, where applicable, by REUSE.toml.
+
+The primary source code for the package is licensed under the MIT License
+(below). The full license texts for the licenses used in this project are
+located in the LICENSES/ directory. See https://reuse.software/ for more
+information about the REUSE specification.
+
 MIT License
 
 Copyright (c) 2024 Michael Goerz <mail@michaelgoerz.net>, and contributors

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT
+
 # Validate (and optionally fix) the reference-style links in CHANGELOG.md.
 #
 # The default check mode is purely textual: it makes no network calls and

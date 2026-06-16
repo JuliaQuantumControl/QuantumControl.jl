@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+
+SPDX-License-Identifier: MIT OR CC0-1.0
+-->
+
 # Release Notes
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -13,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Changed: `J_a_fluence` now also works on non-uniform time grids [[#108]]
 * Changed: `J_b` is now evaluated using the trapezoidal rule [[#105]]
 * Fixed: Compatibility with Zygote 0.7
+* Added: The project now follows the [REUSE specification](https://reuse.software/) for copyright and licensing information, with SPDX headers on all files
 
 ## [v0.11.3] — 2025-09-30
 

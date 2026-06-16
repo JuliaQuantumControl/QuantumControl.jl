@@ -1,3 +1,8 @@
+```@meta
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+# SPDX-License-Identifier: MIT OR CC-BY-4.0
+```
+
 # Overview
 
 This page describes the API of the `QuantumControl` package by outlining the general procedure for defining and solving quantum control problems. See the [API](@ref) for a detailed reference.

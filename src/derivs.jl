@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT
+
 using QuantumPropagators.Generators: Generator, Operator, _make_generator, evaluate
 using QuantumPropagators.Amplitudes: LockedAmplitude, ShapedAmplitude, GuidedAmplitude
 

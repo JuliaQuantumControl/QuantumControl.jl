@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT
+
 using Base.Threads
 using Base.Threads: threadid, threading_run
 @static if Base.VERSION ≥ v"1.9-rc1"

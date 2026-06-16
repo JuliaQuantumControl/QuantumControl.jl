@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT
+
 using ComponentArrays
 using RecursiveArrayTools  # to ensure extension is loaded
 using UnPack: @unpack

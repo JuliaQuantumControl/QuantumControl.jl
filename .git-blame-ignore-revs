@@ -1,2 +1,6 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT OR CC0-1.0
+
 # Change to project .JuliaFormatter.toml: use spaces around keyword arguments
 37a40bcb05e63e034db46fbc2f0ccd21b5643535

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT
+
 using .Functionals: _set_default_ad_framework
 """Set the default provider for automatic differentiation.
 

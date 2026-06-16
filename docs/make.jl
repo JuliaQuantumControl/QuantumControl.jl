@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT OR CC0-1.0
+
 using Pkg
 if Base.VERSION < v"1.11"
     Pkg.develop(path = joinpath(@__DIR__, ".."))

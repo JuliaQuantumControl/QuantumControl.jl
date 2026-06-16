@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT
+
 using Test
 using QuantumPropagators: Cheby
 using QuantumPropagators.Controls: substitute, get_controls

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT
+
 # COV_EXCL_START
 OBJECTIVE_MSG = """
 `Objective` has been renamed to `Trajectory`. This also affects related

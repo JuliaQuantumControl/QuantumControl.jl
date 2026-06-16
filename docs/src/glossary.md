@@ -1,3 +1,8 @@
+```@meta
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+# SPDX-License-Identifier: MIT OR CC-BY-4.0
+```
+
 # Glossary
 
 In the context of the JuliaQuantumControl ecosystem, we apply the following nomenclature.

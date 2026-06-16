@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+#
+# SPDX-License-Identifier: MIT OR CC0-1.0
+
+name: REUSE
+on:
+  push:
+    branches:
+      - master
+      - dev
+      - 'release-*'
+  pull_request:
+    branches:
+      - master
+jobs:
+  reuse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: REUSE Compliance Check
+        uses: fsfe/reuse-action@v6
