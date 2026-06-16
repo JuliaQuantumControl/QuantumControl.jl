@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.11.4] — 2026-06-16
+
 * Added: `J_a_avg_zero`, a running cost that penalizes a non-zero average pulse value [[#109]]
 * Added: A derivative for `GuidedAmplitude` [[#107]]
 * Added: Support for state-dependent running costs [[#103]]
@@ -19,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Changed: `J_a_fluence` now also works on non-uniform time grids [[#108]]
 * Changed: `J_b` is now evaluated using the trapezoidal rule [[#105]]
 * Fixed: Compatibility with Zygote 0.7
+* Fixed: Properly declare minimum supported Julia version as 1.10
+* Updated: Require `QuantumPropagators v0.9`
+* Fixed: Properly declare the minimum supported versions of the `ChainRulesCore`, `FileIO`, `FiniteDifferences`, `JLD2`, and `Zygote` dependencies
 * Added: The project now follows the [REUSE specification](https://reuse.software/) for copyright and licensing information, with SPDX headers on all files
 
 ## [v0.11.3] — 2025-09-30
@@ -120,7 +125,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial public release.
 
-[Unreleased]: https://github.com/JuliaQuantumControl/QuantumControl.jl/compare/v0.11.3..HEAD
+[Unreleased]: https://github.com/JuliaQuantumControl/QuantumControl.jl/compare/v0.11.4..HEAD
+[v0.11.4]: https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.11.4
 [v0.11.3]: https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.11.3
 [v0.11.2]: https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.11.2
 [v0.11.1]: https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.11.1

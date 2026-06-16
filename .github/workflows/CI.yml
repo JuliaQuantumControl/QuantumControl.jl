@@ -49,6 +49,47 @@ jobs:
         with:
           files: lcov.info
           token: ${{ secrets.CODECOV_TOKEN }}
+  testoldest:
+    name: Test Lower Compat Bounds
+    runs-on: ubuntu-latest
+    # Only run on release branches: pinning QuantumControl's direct dependencies
+    # to the lowest versions allowed by their `[compat]` bounds generally only
+    # has a consistent solution for a released version, not while a breaking
+    # sibling version is still under development on `master`/`dev`.
+    if: startsWith(github.ref, 'refs/heads/release-')
+    # Informational only: a failure here must not fail the overall workflow.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v6
+      - uses: julia-actions/setup-julia@v3
+        with:
+          # Oldest supported Julia (the `julia` compat lower bound).
+          version: '1.10'
+      - uses: julia-actions/cache@v3
+      - name: "Pin direct dependencies to their compat floors"
+        # Rewrite the `[compat]` entries in the root Project.toml to their lowest
+        # allowed versions (`strict`), so QuantumControl's *direct* dependencies
+        # are tested at their floor.
+        uses: julia-actions/julia-downgrade-compat@v1
+        with:
+          projects: "."
+          strict: "true"
+          skip: "LinearAlgebra,Logging,Printf"
+      - name: "Instantiate test environment"
+        shell: julia --color=yes --project=test {0}
+        run: |
+          import Pkg
+          # Dev-install the package under test from the current checkout, so the
+          # downgraded compat bounds above take effect. On Julia < 1.11 the
+          # `[sources]` entry in test/Project.toml is ignored, so QuantumControl
+          # would otherwise be taken from the registry.
+          Pkg.develop(Pkg.PackageSpec(path=pwd()))
+          Pkg.instantiate()
+          Pkg.status()
+      - name: "Run tests"
+        shell: julia --color=yes --project=test --depwarn="yes" --check-bounds="yes" {0}
+        run: |
+          include(joinpath(pwd(), "test", "runtests.jl"))
   docs:
     name: Documentation
     runs-on: ubuntu-latest
