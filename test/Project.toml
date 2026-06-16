@@ -55,4 +55,4 @@ QuantumControl = {path = ".."}
 Documenter = "1.4"
 DocumenterInterLinks = "1.1"
 JuliaFormatter = "=2.3.0"
-julia = "1.9"
+julia = "1.10"
