@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net>
+//
+// SPDX-License-Identifier: MIT OR CC0-1.0
+
 document.addEventListener("DOMContentLoaded", function() {
     var metaTag = document.querySelector('meta[name="description"]');
     var name = "";

@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: © 2021 Michael Goerz <mail@michaelgoerz.net> */
+/* SPDX-License-Identifier: MIT OR CC0-1.0 */
+
 h5 {font-size: 1em!important; display:inline; line-height: 1.5!important;}
 h5::after {content: "—   ";}
 h5 + p {display:inline;}
