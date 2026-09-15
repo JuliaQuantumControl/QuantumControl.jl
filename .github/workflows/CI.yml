@@ -70,7 +70,7 @@ jobs:
         # Rewrite the `[compat]` entries in the root Project.toml to their lowest
         # allowed versions (`strict`), so QuantumControl's *direct* dependencies
         # are tested at their floor.
-        uses: julia-actions/julia-downgrade-compat@v2
+        uses: julia-actions/julia-downgrade-compat@v2.6.2
         with:
           projects: "."
           strict: "true"
