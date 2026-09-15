@@ -154,12 +154,15 @@ docs/Manifest.toml: docs/Project.toml
 	$(JULIA) --startup-file=no -e "$$INSTANTIATE_JLSCRIPT" docs
 	@touch $@
 
+# `make test` and `make coverage` put only the `test` environment on the LOAD_PATH
+# (like `Pkg.test` on CI), so that a dependency missing from test/Project.toml is
+# an error
 test: test/Manifest.toml  ## Run the test suite
-	$(JULIA) --project=test --check-bounds=yes --depwarn=yes -e 'include("test/runtests.jl")'
+	JULIA_LOAD_PATH="@" $(JULIA) --project=test --startup-file=no --check-bounds=yes --depwarn=yes -e 'include("test/runtests.jl")'
 
 coverage: test/Manifest.toml  ## Run the test suite with coverage, write lcov.info, and show a summary
 	@find . \( -name '*.jl.*.cov' -o -name '*.jl.cov' \) -type f -delete
-	$(JULIA) --project=test --check-bounds=yes --depwarn=yes --code-coverage=@ -e 'include("test/runtests.jl")'
+	JULIA_LOAD_PATH="@" $(JULIA) --project=test --startup-file=no --check-bounds=yes --depwarn=yes --code-coverage=@ -e 'include("test/runtests.jl")'
 	$(JULIA) --startup-file=no -e "$$COVERAGE_JLSCRIPT"
 
 htmlcoverage: coverage  ## Run the test suite with coverage and write an HTML report to ./coverage (requires genhtml)
