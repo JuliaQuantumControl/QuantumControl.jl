@@ -16,13 +16,16 @@ This package follows the organization-wide contributor workflow (running tests, 
 
 If the `@`-reference above did not load its contents (the org-wide `.github` checkout is not present), fetch the guidelines from <https://raw.githubusercontent.com/JuliaQuantumControl/.github/master/CONTRIBUTING.md> instead.
 
-Key commands:
+Key commands (see `make help`):
 
-- `make test` — run the full test suite (or `julia --project=test -e 'include("test/runtests.jl")'`)
-- `make devrepl` — start the development REPL (Revise, JuliaFormatter, coverage helpers); alternatively `julia -i --banner=no devrepl.jl`
-- `make docs` — build the documentation
-- `make codestyle` — apply JuliaFormatter (version pinned in `test/Project.toml`)
-- `make clean` / `make distclean` — remove build/test artifacts
+- `make test`: run the full test suite in the `test` environment (or `julia --project=test -e 'include("test/runtests.jl")'`)
+- `make devrepl`: REPL with the `test` environment active and the `docs` environment stacked; run individual test files or `include("docs/make.jl")` from there
+- `make docs`: build the documentation in the `docs` environment
+- `make coverage` / `make htmlcoverage`: test coverage
+- `make codestyle`: apply JuliaFormatter (version pinned in the `Makefile`), check `CHANGELOG.md` and `[sources]`
+- `make clean` / `make distclean`: remove build/test artifacts
+
+Sibling packages (QuantumPropagators, Krotov, GRAPE, …) come from their registered releases, or temporarily from a GitHub branch via a URL `[sources]` entry in `test/Project.toml` / `docs/Project.toml`. Never commit a `path` source for a sibling (as written by `../scripts/installorg.jl`).
 
 ## Package Architecture
 
@@ -49,7 +52,6 @@ QuantumControl.jl is a high-level interface package that provides a coherent API
 - `src/interfaces/` - Interface validation for amplitudes and generators
 
 ### Development Environment
-- Uses `devrepl.jl` for development setup with automatic package installation
 - Test environment in `test/` with comprehensive suite covering all major functionality
 - Documentation system uses Documenter.jl with custom themes and API generation
 
@@ -62,6 +64,7 @@ QuantumControl.jl is a high-level interface package that provides a coherent API
 - Comprehensive test suite with SafeTestsets for isolation
 - Tests for interfaces, propagation, optimization, parameterization, and workflows
 - Coverage reporting and CI integration
+- `QuantumControl.DummyOptimization` (experimental, not public API) provides `dummy_control_problem` and the `:dummymethod` optimization method for tests here and in downstream packages
 - Downstream testing of Krotov and GRAPE packages
 
 ## Changelog

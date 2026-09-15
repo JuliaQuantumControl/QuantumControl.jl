@@ -5,7 +5,7 @@
 using Test
 using LinearAlgebra
 using QuantumControl: Trajectory
-using QuantumControlTestUtils.DummyOptimization: dummy_control_problem
+using QuantumControl.DummyOptimization: dummy_control_problem
 
 
 @testset "Sparse trajectory adjoint" begin
@@ -37,7 +37,7 @@ end
 
 @testset "Non-Hermitian trajectory adjoint" begin
 
-    traj = dummy_control_problem(sparsity = 1.0, hermitian = false).trajectories[1]
+    traj = dummy_control_problem(density = 1.0, hermitian = false).trajectories[1]
     adj = adjoint(traj)
 
     @test norm(adj.initial_state - traj.initial_state) ≈ 0

@@ -4,7 +4,7 @@
 
 using Test
 
-using QuantumControl: Trajectory, propagate_trajectory
+using QuantumControl: Trajectory, propagate_trajectory, hamiltonian
 using QuantumPropagators: Cheby, ExpProp
 using QuantumPropagators.Controls: substitute, get_controls
 using QuantumControlTestUtils.RandomObjects: random_state_vector, random_dynamic_generator
@@ -21,7 +21,7 @@ using TestingUtilities: @Test  # better for string comparison
     Ψ₀ = random_state_vector(N; rng)
     Ψtgt = random_state_vector(N; rng)
     tlist = [0.0, 1.0]
-    H = random_dynamic_generator(N, tlist)
+    H = hamiltonian(random_dynamic_generator(N, tlist)...)
 
     traj = Trajectory(Ψ₀, H)
     @test startswith(repr(traj), "Trajectory(ComplexF64[")
@@ -84,7 +84,7 @@ end
     tlist = [0.0, 1.0]
     ϵ1(t) = 0.0
     ϵ2(t) = 1.0
-    H = random_dynamic_generator(N, tlist; amplitudes = [ϵ1])
+    H = hamiltonian(random_dynamic_generator(N, tlist; amplitudes = [ϵ1])...)
 
     traj = Trajectory(Ψ₀, H)
     @test get_controls([traj]) == (ϵ1,)
@@ -106,7 +106,7 @@ end
     Ψ₀ = random_state_vector(N; rng)
     Ψtgt = random_state_vector(N; rng)
     tlist = [0.0, 0.5, 1.0]
-    H = random_dynamic_generator(N, tlist)
+    H = hamiltonian(random_dynamic_generator(N, tlist)...)
 
     traj = Trajectory(Ψ₀, H)
     captured = IOCapture.capture(rethrow = Union{}) do

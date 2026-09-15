@@ -75,12 +75,14 @@ fallbacks = DocumenterInterLinks.ExternalFallbacks(
     "GRAPE-Background" => "@extref GRAPE :std:label:`GRAPE-Background`",
     "QuantumGradientGenerators.GradVector" => "@extref QuantumGradientGenerators :jl:type:`QuantumGradientGenerators.GradVector`",
     "howto_parameterized" => "@extref QuantumPropagators :std:label:`howto_parameterized`",
+    "Krotov-Background" => "@extref Krotov :std:label:`Krotov-Background`",
     "KrotovResult" => "@extref Krotov :jl:type:`Krotov.KrotovResult`",
     "KrotovWrk" => "@extref Krotov :jl:type:`Krotov.KrotovWrk`",
     "GrapeResult" => "@extref GRAPE :jl:type:`GRAPE.GrapeResult`",
     "make_grape_print_iters" => "@extref GRAPE :jl:function:`GRAPE.make_grape_print_iters`",
     "GrapeWrk" => "@extref GRAPE :jl:type:`GRAPE.GrapeWrk`",
     "Operators" => "@extref QuantumPropagators :std:label:`Operators`",
+    "storage-contract" => "@extref QuantumPropagators :std:label:`storage-contract`",
     "Overview-Running-Costs" => "@extref GRAPE :std:label:`Overview-Running-Costs`",
     automatic = false,
 )
@@ -92,15 +94,29 @@ include("generate_api.jl")
 bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style = :numeric)
 
 warnonly = [:linkcheck,]
-if get(ENV, "DOCUMENTER_WARN_ONLY", "0") == "1"  # cf. test/init.jl
+if get(ENV, "DOCUMENTER_WARN_ONLY", "0") == "1"
     warnonly = true
+end
+
+# A sibling package from a URL `[sources]` entry (instead of a registered
+# release) is not a git checkout, so Documenter needs an explicit remote for the
+# "source" links in the docstrings of that package
+remotes = Dict()
+for (name, source) in
+    get(Pkg.TOML.parsefile(joinpath(@__DIR__, "Project.toml")), "sources", Dict())
+    if haskey(source, "url") && isdefined(Main, Symbol(name))
+        m = match(r"github\.com/([^/]+)/([^/]+?)(\.git)?/?$", source["url"])
+        remote = Documenter.Remotes.GitHub(m.captures[1], m.captures[2])
+        remotes[pkgdir(getfield(Main, Symbol(name)))] = (remote, source["rev"])
+    end
 end
 
 makedocs(;
     plugins = [bib, links, fallbacks],
     authors = AUTHORS,
     sitename = "QuantumControl.jl",
-    # Link checking is disabled in REPL, see `devrepl.jl`.
+    remotes,
+    # Link checking is disabled in `make devrepl`
     linkcheck = (get(ENV, "DOCUMENTER_CHECK_LINKS", "1") != "0"),
     warnonly,
     doctest = false,  # doctests run as part of test suite

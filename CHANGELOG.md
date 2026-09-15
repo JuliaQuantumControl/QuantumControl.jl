@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* Added: Experimental `QuantumControl.DummyOptimization` module with `dummy_control_problem` and the `:dummymethod` optimization method, for testing. This replaces `QuantumControlTestUtils.DummyOptimization`. The module is not part of the public API and is not covered by semantic versioning.
+
 ## [v0.11.4] — 2026-06-16
 
 * Added: `J_a_avg_zero`, a running cost that penalizes a non-zero average pulse value [[#109]]

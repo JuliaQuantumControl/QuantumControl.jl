@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: MIT OR CC0-1.0
 
+# Run the tests of the downstream Krotov package (master branch) against the
+# current QuantumControl. This is informational: a failure indicates that Krotov
+# must be adapted, which does not necessarily block changes in QuantumControl.
 name: Test downstream Krotov
 on:
   push:
@@ -14,26 +17,46 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+permissions:
+  contents: read
 env:
   GKSwstype: 100
-  JULIA_PKG_PRECOMPILE_AUTO: false
 jobs:
   test-krotov:
     name: Test Krotov
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     continue-on-error: true
+    permissions:
+      actions: write  # for julia-actions/cache to delete the caches it created
+      contents: read
     steps:
       - uses: actions/checkout@v7
+        with:
+          path: QuantumControl.jl
+      - uses: actions/checkout@v7
+        with:
+          repository: JuliaQuantumControl/Krotov.jl
+          path: Krotov.jl
       - uses: julia-actions/setup-julia@v3
         with:
+          # Requires Julia >= 1.13: `Pkg.develop` fails on earlier versions if
+          # the Krotov test environment has a URL `[sources]` entry for
+          # QuantumControl
           version: '1'
       - uses: julia-actions/cache@v3
-      - name: "Instantiate test environment"
+      - name: "Instantiate Krotov test environment with the current QuantumControl"
+        working-directory: Krotov.jl
+        shell: julia --color=yes --project=test {0}
         run: |
-          wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/scripts/installorg.jl
-          julia --project=test installorg.jl --no-precompile
+          import Pkg
+          Pkg.develop(path = joinpath("..", "QuantumControl.jl"))
+          Pkg.instantiate()
+          Pkg.status()
       - name: "Run Krotov tests"
-        shell: julia --color=yes --project=test --code-coverage="@" --depwarn="yes" --check-bounds="yes" {0}
-        run: |
-          using Pkg
-          Pkg.test("Krotov", coverage=true)
+        working-directory: Krotov.jl
+        run: julia --color=yes --project=test --depwarn=yes --check-bounds=yes -e 'include("test/runtests.jl")'
