@@ -32,11 +32,20 @@ if endswith(VERSION, "dev")
     DEV_OR_STABLE = "dev/"
 end
 
+# Sibling packages that come from a URL `[sources]` entry are development
+# versions, so their `dev` documentation is the one that matches, even when this
+# package is being released. See CONTRIBUTING.md.
+DOCS_SOURCES =
+    get(Pkg.TOML.parsefile(joinpath(@__DIR__, "Project.toml")), "sources", Dict())
+url_sourced(pkgname) = haskey(get(DOCS_SOURCES, pkgname, Dict()), "url")
+
 function org_inv(pkgname)
     objects_inv =
         joinpath(@__DIR__, "..", "..", "$pkgname.jl", "docs", "build", "objects.inv")
     if isfile(objects_inv)
         return ("https://juliaquantumcontrol.github.io/$pkgname.jl/dev/", objects_inv,)
+    elseif url_sourced(pkgname)
+        return "https://juliaquantumcontrol.github.io/$pkgname.jl/dev/"
     else
         return "https://juliaquantumcontrol.github.io/$pkgname.jl/$DEV_OR_STABLE"
     end
@@ -102,8 +111,7 @@ end
 # release) is not a git checkout, so Documenter needs an explicit remote for the
 # "source" links in the docstrings of that package
 remotes = Dict()
-for (name, source) in
-    get(Pkg.TOML.parsefile(joinpath(@__DIR__, "Project.toml")), "sources", Dict())
+for (name, source) in DOCS_SOURCES
     if haskey(source, "url") && isdefined(Main, Symbol(name))
         m = match(r"github\.com/([^/]+)/([^/]+?)(\.git)?/?$", source["url"])
         remote = Documenter.Remotes.GitHub(m.captures[1], m.captures[2])
