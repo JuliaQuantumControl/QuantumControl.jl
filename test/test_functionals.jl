@@ -4,7 +4,7 @@
 
 using Test
 using LinearAlgebra
-using QuantumControl: QuantumControl, Trajectory
+using QuantumControl: QuantumControl, Trajectory, hamiltonian
 using QuantumControl.Functionals:
     J_T_sm,
     J_T_re,
@@ -24,7 +24,7 @@ using QuantumControl.Functionals:
     make_gate_chi
 using QuantumControlTestUtils.RandomObjects: random_state_vector, random_dynamic_generator
 using QuantumPropagators.Controls: evaluate
-using QuantumControlTestUtils.DummyOptimization: dummy_control_problem
+using QuantumControl.DummyOptimization: dummy_control_problem
 using TwoQubitWeylChamber: D_PE, gate_concurrence, unitarity
 using StableRNGs: StableRNG
 using Zygote
@@ -589,12 +589,14 @@ end
             traj.initial_state,
             traj.generator;
             target_state = traj.target_state,
-            D = let H = random_dynamic_generator(
-                    N_HILBERT,
-                    tlist;
-                    rng = RNG,
-                    hermitian = true,
-                    complex = true,
+            D = let H = hamiltonian(
+                    random_dynamic_generator(
+                        N_HILBERT,
+                        tlist;
+                        rng = RNG,
+                        hermitian = true,
+                        complex = true,
+                    )...
                 )
                 D_int = [Array(evaluate(H, tlist, n)) for n = 1:N_intervals]
                 D_tl = Vector{Matrix{ComplexF64}}(undef, length(tlist))

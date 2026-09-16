@@ -6,8 +6,7 @@ using Test
 
 using IOCapture
 using QuantumControl: @optimize_or_load, load_optimization, save_optimization, optimize
-using QuantumControlTestUtils.DummyOptimization:
-    dummy_control_problem, DummyOptimizationResult
+using QuantumControl.DummyOptimization: dummy_control_problem, DummyOptimizationResult
 
 
 @testset "check_state_kwargs and check_generator_kwargs" begin

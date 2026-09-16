@@ -13,3 +13,4 @@
 /.JuliaFormatter.toml
 /lcov.info
 /coverage
+/.coverage/

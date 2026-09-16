@@ -88,5 +88,7 @@ include("workflows.jl")  # submodule Workflows
 using .Workflows: run_or_load, @optimize_or_load, save_optimization, load_optimization
 export run_or_load, @optimize_or_load, save_optimization, load_optimization
 
+include("dummy_optimization.jl")  # submodule DummyOptimization (experimental)
+
 
 end

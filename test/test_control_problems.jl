@@ -5,7 +5,7 @@
 using Test
 using QuantumPropagators: Cheby
 using QuantumPropagators.Controls: substitute, get_controls
-using QuantumControl: Trajectory, ControlProblem
+using QuantumControl: Trajectory, ControlProblem, hamiltonian
 using QuantumControlTestUtils.RandomObjects: random_state_vector, random_dynamic_generator
 using StableRNGs
 
@@ -18,7 +18,7 @@ using StableRNGs
     Ψ0_tgt = random_state_vector(N; rng)
     Ψ1_tgt = random_state_vector(N; rng)
     tlist = collect(range(0, 5; length = 101))
-    H = random_dynamic_generator(N, tlist)
+    H = hamiltonian(random_dynamic_generator(N, tlist)...)
 
     problem = ControlProblem(
         [
@@ -72,7 +72,7 @@ end
     tlist = collect(range(0, 5; length = 101))
     ϵ1(t) = 0.0
     ϵ2(t) = 1.0
-    H = random_dynamic_generator(N, tlist; amplitudes = [ϵ1])
+    H = hamiltonian(random_dynamic_generator(N, tlist; amplitudes = [ϵ1])...)
 
     problem = ControlProblem(
         [

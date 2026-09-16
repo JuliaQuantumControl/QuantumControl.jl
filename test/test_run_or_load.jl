@@ -9,7 +9,6 @@ using Logging
 using IOCapture
 using JLD2: load_object
 
-using QuantumControlTestUtils: QuantumTestLogger
 
 using QuantumControl: run_or_load
 

@@ -75,7 +75,13 @@ quantum_control_reexported_members = [
     m for m in quantum_control_members if m ∉ quantum_control_local_members
 ]
 
-quantum_control_sub_modules = get_submodules(QuantumControl)
+# Experimental submodules are not part of the public API. They are only listed
+# in the reference, with a note that they are experimental.
+experimental_sub_modules = [:DummyOptimization]
+quantum_control_sub_modules = filter(
+    m -> m ∉ experimental_sub_modules,
+    get_submodules(QuantumControl)
+)
 
 
 subpackages = [
@@ -306,6 +312,13 @@ open(outfile, "w") do out
     end
     for name in quantum_control_sub_modules
         write_module_api(out, getfield(QuantumControl, name))
+    end
+    for name in experimental_sub_modules
+        write_module_api(
+            out,
+            getfield(QuantumControl, name),
+            "The `QuantumControl.$name` module is **experimental**. It is not part of the public API and is not covered by semantic versioning."
+        )
     end
 end
 

@@ -7,7 +7,7 @@ using Test
 using QuantumControl: optimize
 using QuantumControl.Controls: get_controls, substitute
 
-using QuantumControlTestUtils.DummyOptimization: dummy_control_problem
+using QuantumControl.DummyOptimization: dummy_control_problem
 
 @testset "dummy optimization" begin
 
