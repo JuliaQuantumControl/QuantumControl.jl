@@ -105,15 +105,18 @@ jobs:
       - name: "Run tests"
         run: julia --color=yes --project=test --depwarn=yes --check-bounds=yes -e 'include("test/runtests.jl")'
   docs:
+    # The build runs arbitrary code (all documentation dependencies), so it
+    # gets no write access; the `docs-deploy` job deploys the result
     name: Documentation
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
       actions: write  # for julia-actions/cache to delete the caches it created
-      contents: write  # for Documenter to deploy to the `gh-pages` branch
-      statuses: write
+      contents: read
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: julia-actions/setup-julia@v3
         with:
           version: '1'
@@ -126,24 +129,52 @@ jobs:
         run: julia --project=docs -e 'using Pkg; Pkg.instantiate()'
       - name: "Build documentation"
         run: julia --project=docs docs/make.jl
+      - uses: actions/upload-artifact@v7
+        # For the `docs-deploy` job, and for reviewing pull requests from forks,
+        # which get no preview
+        name: Upload documentation
+        with:
+          name: docs-build
+          path: |
+            docs/build
+            docs/Manifest.toml
+          include-hidden-files: true  # for `.documenter-siteinfo.json`
+          if-no-files-found: error
+  docs-deploy:
+    name: Deploy documentation
+    needs: docs
+    # Previews are deployed only for pull requests from branches of this
+    # repository, not from forks (which cannot get a write token) or from
+    # Dependabot (to not give write access to new versions of dependencies
+    # before review). The author of a pull request, unlike `github.actor`,
+    # cannot be spoofed.
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write  # for Documenter to deploy to the `gh-pages` branch
+      pull-requests: read  # for Documenter to check the origin of a pull request
+      statuses: write  # for Documenter to report the deployment status
+    steps:
+      # No `julia-actions/cache`: a cache written by the `docs` job must not be
+      # restored in a job with write access
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v8
+        with:
+          name: docs-build
+          path: docs
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+      - name: "Deploy documentation"
+        run: julia --startup-file=no docs/deploy.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
-      - name: "Install Python dependencies"
-        run: |
-          set -x
-          /usr/bin/python3 -m pip install zip-files
-      - name: Zip the HTML documentation
-        run: zip-folder --debug --auto-root --outfile "docs.zip" docs/build
-      - uses: actions/upload-artifact@v7
-        name: Upload documentation artifacts
-        with:
-          name: QuantumControl
-          # We need at least two files in the artifact to avoid a weird
-          # double-zip file. Hence README.md
-          path: |
-            README.md
-            ./docs.zip
   codestyle:
     name: Codestyle
     runs-on: ubuntu-latest
