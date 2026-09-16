@@ -1,0 +1,76 @@
+# DocInventory version 1
+project = "RecursiveArrayTools.jl"
+version = "3.12.0"
+
+[[jl.function]]
+name = "RecursiveArrayTools.copyat_or_push!"
+uri = "recursive_array_functions/#RecursiveArrayTools.copyat_or_push%21"
+[[jl.function]]
+name = "RecursiveArrayTools.recursivecopy"
+uri = "recursive_array_functions/#$"
+[[jl.function]]
+name = "RecursiveArrayTools.recursivecopy!"
+uri = "recursive_array_functions/#RecursiveArrayTools.recursivecopy%21"
+[[jl.function]]
+name = "RecursiveArrayTools.vecvecapply"
+uri = "recursive_array_functions/#$"
+
+[[jl.type]]
+name = "RecursiveArrayTools.ArrayPartition"
+uri = "array_types/#$"
+[[jl.type]]
+name = "RecursiveArrayTools.DiffEqArray"
+uri = "array_types/#$"
+[[jl.type]]
+name = "RecursiveArrayTools.NamedArrayPartition"
+uri = "array_types/#$"
+[[jl.type]]
+name = "RecursiveArrayTools.VectorOfArray"
+uri = "array_types/#$"
+
+[[std.doc]]
+dispname = "Recursive Array Types"
+name = "array_types"
+uri = "array_types/"
+[[std.doc]]
+dispname = "Home"
+name = "index"
+uri = ""
+[[std.doc]]
+dispname = "Recursive Array Functions"
+name = "recursive_array_functions"
+uri = "recursive_array_functions/"
+
+[[std.label]]
+dispname = "Abstract Types"
+name = "Abstract-Types"
+uri = "array_types/#$"
+[[std.label]]
+dispname = "Concrete Types"
+name = "Concrete-Types"
+uri = "array_types/#$"
+[[std.label]]
+name = "Contributing"
+uri = "#$"
+[[std.label]]
+dispname = "Function List"
+name = "Function-List"
+uri = "recursive_array_functions/#$"
+[[std.label]]
+name = "Installation"
+uri = "#$"
+[[std.label]]
+dispname = "Recursive Array Functions"
+name = "Recursive-Array-Functions"
+uri = "recursive_array_functions/#$"
+[[std.label]]
+dispname = "Recursive Array Types"
+name = "Recursive-Array-Types"
+uri = "array_types/#$"
+[[std.label]]
+dispname = "RecursiveArrayTools.jl: Arrays of Arrays and Even Deeper"
+name = "RecursiveArrayTools.jl:-Arrays-of-Arrays-and-Even-Deeper"
+uri = "#RecursiveArrayTools.jl%3A-Arrays-of-Arrays-and-Even-Deeper"
+[[std.label]]
+name = "Reproducibility"
+uri = "#$"
