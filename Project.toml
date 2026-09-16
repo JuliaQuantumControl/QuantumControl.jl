@@ -1,7 +1,7 @@
 name = "QuantumControl"
 uuid = "8a270532-f23f-47a8-83a9-b33d10cad486"
 authors = ["Michael Goerz <mail@michaelgoerz.net>"]
-version = "0.11.4+dev"
+version = "0.11.5"
 
 [deps]
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
@@ -36,7 +36,7 @@ LinearAlgebra = "1"
 Logging = "1"
 Pkg = "1"
 Printf = "1"
-QuantumPropagators = ">=0.9"
+QuantumPropagators = "0.9"
 Random = "1"
 SparseArrays = "1"
 UUIDs = "1"
