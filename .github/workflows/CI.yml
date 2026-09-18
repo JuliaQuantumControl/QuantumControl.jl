@@ -191,7 +191,7 @@ jobs:
       - name: Get typos settings
         run: wget https://raw.githubusercontent.com/JuliaQuantumControl/JuliaQuantumControl/master/typos.toml
       - name: Spell Check
-        uses: crate-ci/typos@v1.50.0
+        uses: crate-ci/typos@v1.50.2
       - name: Version Check
         shell: julia {0}
         run: |
