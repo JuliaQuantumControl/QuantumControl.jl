@@ -70,6 +70,25 @@ where `:Krotov` is the name of the module implementing the method. The above is
 also the method signature that a `Module` wishing to implement a control method
 must define.
 
+Optimization methods typically initialize the propagators for each trajectory
+with [`init_prop_trajectory`](@ref), using keyword arguments with a `prop_`
+prefix as options for the propagator, e.g., `prop_method`. Methods may also
+use more specific prefixes, e.g., `fw_prop_` and `bw_prop_` for the forward
+and backward propagation. The same options can be set as properties of each
+[`Trajectory`](@ref). The precedence of these options is as follows:
+
+* Keyword arguments (given to `optimize` or stored in `problem`) take
+  precedence over the properties of a trajectory, regardless of prefix.
+* Among keyword arguments, or among the properties of a trajectory, a more
+  specific prefix like `fw_prop_` takes precedence over `prop_`.
+
+For example, for a trajectory with the property `fw_prop_method = ExpProp`,
+`optimize(problem; method, prop_method = Cheby)` uses `Cheby` for the forward
+propagation. To use different propagation methods for different trajectories,
+set them as properties of the trajectories and do not pass the corresponding
+keyword argument. A warning is shown if a keyword argument with the `prop_`
+prefix overrides a trajectory property with a more specific prefix.
+
 The returned `result` object is specific to the optimization method, but should
 be a subtype of [`QuantumControl.AbstractOptimizationResult`](@ref).
 """
@@ -100,13 +119,18 @@ function optimize(
     if print_iters
         push!(callbacks, make_print_iters(method; temp_kwargs...))
     end
-    if !isempty(callbacks)
-        if length(callbacks) > 1
-            temp_kwargs[:callback] = chain_callbacks(callbacks...)
-        else
-            temp_kwargs[:callback] = callbacks[1]
-        end
+    if isempty(callbacks)
+        # A `callback = nothing` in `problem.kwargs` must not reach the
+        # optimization method, and neither may a callback in `problem.kwargs`
+        # if `optimize` was called with an explicit `callback = nothing`.
+        delete!(temp_kwargs, :callback)
+    elseif length(callbacks) > 1
+        temp_kwargs[:callback] = chain_callbacks(callbacks...)
+    else
+        temp_kwargs[:callback] = callbacks[1]
     end
+
+    _warn_overridden_prop_properties(problem.trajectories, temp_kwargs)
 
     temp_problem = ControlProblem(;
         trajectories = problem.trajectories,
@@ -134,6 +158,62 @@ function optimize(
     return optimize(temp_problem, method)
 
 end
+
+# Warn if a keyword argument `prop_<name>` overrides a trajectory property with
+# a more specific prefix, `<x>_prop_<name>` (e.g., `fw_prop_method`). Since
+# keyword arguments take precedence over trajectory properties regardless of
+# prefix (see `init_prop_trajectory`), the trajectory property has no effect,
+# which is unlikely to be intended: prefixes like `fw_prop_` only have a
+# meaning in an optimization. There is no warning if the values are equal, or
+# if the keyword argument `<x>_prop_<name>` is also given, as that explicitly
+# overrides the trajectory property. Overriding a trajectory property with the
+# same prefix (e.g., `prop_method`) is intentional and does not warn.
+function _warn_overridden_prop_properties(trajectories, kwargs)
+    any(key -> startswith(string(key), "prop_"), keys(kwargs)) || return
+    overridden = Dict{Tuple{Symbol,Symbol},Vector{Int}}()  # (kw, prop) => [k…]
+    for (k, traj) in enumerate(trajectories)
+        for name in propertynames(traj)
+            m = match(r"^[^_]+_prop_(.+)$", string(name))
+            isnothing(m) && continue
+            key = Symbol("prop_" * m.captures[1])
+            if haskey(kwargs, key) &&
+               !haskey(kwargs, name) &&
+               !isequal(kwargs[key], getproperty(traj, name))
+                push!(get!(overridden, (key, name), Int[]), k)
+            end
+        end
+    end
+    isempty(overridden) && return
+    lines = String[]
+    sorted = sort!(collect(overridden); by = first)
+    for ((key, name), indices) in sorted
+        trajs = length(indices) == 1 ? "trajectory" : "trajectories"
+        push!(lines, "* `$key` overrides `$name` of $trajs $(_fmt_indices(indices))")
+    end
+    @warn """
+    Keyword arguments override trajectory properties with a more specific prefix:
+    $(join(lines, "\n"))
+    Keyword arguments (including those stored in the ControlProblem) take precedence over the properties of a Trajectory, regardless of prefix. To use the trajectory properties, omit the keyword argument. To use the keyword argument and silence this warning, pass the more specific keyword argument (e.g., `$(sorted[1][1][2])`) explicitly.
+    """
+end
+
+
+# Format a sorted list of integers, combining consecutive runs into ranges,
+# e.g. [1, 2, 3, 5] -> "1:3, 5"
+function _fmt_indices(indices)
+    parts = String[]
+    i = 1
+    while i <= length(indices)
+        j = i
+        while (j < length(indices)) && (indices[j+1] == indices[j] + 1)
+            j += 1
+        end
+        push!(parts, j > i + 1 ? "$(indices[i]):$(indices[j])" : join(indices[i:j], ", "))
+        i = j + 1
+    end
+    return join(parts, ", ")
+end
+
 
 optimize(problem::ControlProblem, method::Symbol) = optimize(problem, Val(method))
 optimize(problem::ControlProblem, method::Module) = optimize(problem, Val(nameof(method)))
