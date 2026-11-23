@@ -88,7 +88,7 @@ are determined as follows:
   example, if `traj.prop_method` is defined, `method=traj.prop_method` will be
   passed to `init_prop`. Similarly, `traj.prop_inplace` would be passed as
   `inplace=traj.prop_inplace`, etc.
-* Any explicitly keyword argument to `init_prop_trajectory` overrides the values
+* Any explicit keyword argument to `init_prop_trajectory` overrides the values
   from the properties of `traj`.
 
 Note that the propagation `method` in particular must be specified, as it is a
@@ -122,6 +122,13 @@ function init_prop_trajectory(
     #    allows to pass the keyword arguments from `optimize` directly to
     #    `init_prop_trajectory`. By convention, these use the same
     #    `prop`/`fw_prop`/`bw_prop` prefixes as the properties of `traj`.
+    #    Keys in `kwargs` without one of the `_prefixes` are ignored.
+    #    Precedence: any keyword argument overrides any property of `traj`,
+    #    regardless of prefix. Among the keyword arguments, and among the
+    #    properties of `traj`, later (more specific) `_prefixes` override
+    #    earlier ones. Thus, `_prefixes` must be ordered from general to
+    #    specific, e.g. `["prop_", "fw_prop_"]`. See also
+    #    `_warn_overridden_prop_properties` in `optimize.jl`.
     # * `_kwargs_dict`: A dictionary Symbol => Any that collects the arguments
     #   for `init_prop`. This allows to keep a copy of those arguments,
     #   especially for arguments that cannot be obtained from the resulting
