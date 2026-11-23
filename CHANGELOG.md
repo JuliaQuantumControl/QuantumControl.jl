@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* Added: `QuantumControl.remove_atexit_save_optimization(hook)` removes the callback registered by `set_atexit_save_optimization`. Optimization methods should call it in a `finally` block instead of using `popfirst!(Base.atexit_hooks)`, so that the callback is removed even if the optimization throws an exception or another `atexit` hook was registered in the meantime. Otherwise, a callback left over from a failed optimization in an interactive session overwrites the output file of `@optimize_or_load` when Julia exits. [[#125]]
+* Changed: `set_atexit_save_optimization` returns the registered callback, for use with `remove_atexit_save_optimization` [[#125]]
+
 
 ## [v0.11.6] — 2026-11-23
 
@@ -193,3 +196,4 @@ Initial public release.
 [#107]: https://github.com/JuliaQuantumControl/QuantumControl.jl/pull/107
 [#108]: https://github.com/JuliaQuantumControl/QuantumControl.jl/pull/108
 [#109]: https://github.com/JuliaQuantumControl/QuantumControl.jl/pull/109
+[#125]: https://github.com/JuliaQuantumControl/QuantumControl.jl/pull/125

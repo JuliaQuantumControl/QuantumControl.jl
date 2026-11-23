@@ -292,6 +292,7 @@ open(outfile, "w") do out
     QuantumControl.chain_callbacks
     QuantumControl.init_prop_trajectory
     QuantumControl.make_print_iters
+    QuantumControl.remove_atexit_save_optimization
     QuantumControl.set_atexit_save_optimization
     QuantumControl.set_default_ad_framework
     ```
