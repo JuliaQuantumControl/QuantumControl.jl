@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [v0.11.6] — 2026-11-23
+
 * Added: `optimize` warns if a keyword argument with the `prop_` prefix (e.g., `prop_method`) overrides a trajectory property with a more specific prefix (e.g., `fw_prop_method`). Keyword arguments take precedence over trajectory properties regardless of prefix; the `optimize` docstring now documents this.
 * Fixed: A `callback = nothing` stored in a `ControlProblem` is no longer passed to the optimization method when `optimize` is called with `print_iters = false`. Likewise, `optimize(problem; callback = nothing, print_iters = false)` now disables a callback stored in `problem`.
 
@@ -156,7 +159,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial public release.
 
-[Unreleased]: https://github.com/JuliaQuantumControl/QuantumControl.jl/compare/v0.11.5..HEAD
+[Unreleased]: https://github.com/JuliaQuantumControl/QuantumControl.jl/compare/v0.11.6..HEAD
+[v0.11.6]: https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.11.6
 [v0.11.5]: https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.11.5
 [v0.11.4]: https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.11.4
 [v0.11.3]: https://github.com/JuliaQuantumControl/QuantumControl.jl/releases/tag/v0.11.3
