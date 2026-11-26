@@ -12,11 +12,8 @@ using QuantumPropagators.Amplitudes: LockedAmplitude, ShapedAmplitude, GuidedAmp
 get_control_derivs(generator, controls)
 ```
 
-return as vector containing the derivative of `generator` with respect to each
-control in `controls`. The elements of the vector are either `nothing` if
-`generator` does not depend on that particular control, or a function `μ(α)`
-that evaluates the derivative for a particular value of the control, see
-[`get_control_deriv`](@ref).
+returns a vector containing the derivative of `generator` with respect to each
+control in `controls`, as obtained from [`get_control_deriv`](@ref).
 """
 function get_control_derivs(generator, controls)
     controlderivs = []
