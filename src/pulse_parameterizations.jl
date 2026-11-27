@@ -396,30 +396,20 @@ struct ShapedParameterizationContinuousDerivative <: ControlAmplitude
     shape
 end
 
-function evaluate(deriv::ParameterizationDerivative, args...; vals_dict = IdDict())
-    ϵ = evaluate(deriv.control, args...; vals_dict)
+function evaluate(deriv::ParameterizationDerivative, args...; kwargs...)
+    ϵ = evaluate(deriv.control, args...; kwargs...)
     return deriv.func(ϵ)
 end
 
-function evaluate(
-    deriv::ShapedParameterizationPulseDerivative,
-    tlist,
-    n;
-    vals_dict = IdDict()
-)
-    ϵ = evaluate(deriv.control, tlist, n; vals_dict)
-    S = evaluate(deriv.shape, tlist, n; vals_dict)
+function evaluate(deriv::ShapedParameterizationPulseDerivative, tlist, n; kwargs...)
+    ϵ = evaluate(deriv.control, tlist, n; kwargs...)
+    S = evaluate(deriv.shape, tlist, n; kwargs...)
     return S * deriv.func(ϵ)
 end
 
-function evaluate(
-    deriv::ShapedParameterizationContinuousDerivative,
-    tlist,
-    n;
-    vals_dict = IdDict()
-)
-    ϵ = evaluate(deriv.control, tlist, n; vals_dict)
-    S = evaluate(deriv.shape, tlist, n; vals_dict)
+function evaluate(deriv::ShapedParameterizationContinuousDerivative, tlist, n; kwargs...)
+    ϵ = evaluate(deriv.control, tlist, n; kwargs...)
+    S = evaluate(deriv.shape, tlist, n; kwargs...)
     return S * deriv.func(ϵ)
 end
 
