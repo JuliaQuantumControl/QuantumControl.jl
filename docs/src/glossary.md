@@ -20,7 +20,7 @@ Examples for supported forms a Hamiltonian are the following, from the most gene
 ```
 
 In Eq. (G1), ``Ĥ_0`` is the [Drift Term](@ref) (which may be zero) and each term under the sum over ``l`` is a [Control Term](@ref). Each control term is a Hamiltonian that depends on a set of [control functions](#Control-Function) (or simply "controls"). The controls are the functions directly tunable via optimal control.
-The control term may also contain an explicit time dependence outside of the controls. This most general form (G1) is supported only via custom user-implemented generator objects, see the documentation of the [QuantumPropagators package](https://juliaquantumcontrol.github.io/QuantumPropagators.jl/stable/).
+The control term may also contain an explicit time dependence outside of the controls. This most general form (G1) is supported only via custom user-implemented generator objects, see the documentation of the [QuantumPropagators package](@extref QuantumPropagators :doc:`index`).
 
 More commonly, each control term is separable into the [Control Amplitude](@ref) ``a_l(t)`` and the [Control Operator](@ref) ``Ĥ_l``, as in Eq. (G2). This is the most general form supported by the built-in [`Generator`](@ref) object, which can be initialized via the [`hamiltonian`](@ref) or [`liouvillian`](@ref) functions. The control amplitude ``a_l(t)`` depends in turn on one ore more function ``\{ϵ_{l'}(t)\}``, where each ``ϵ_{l'}(t)`` is as [Control Function](@ref). It may also contain an explicit time dependence.
 

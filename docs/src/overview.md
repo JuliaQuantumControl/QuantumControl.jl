@@ -30,7 +30,7 @@ The controls that the `QuantumControl` package optimizes are implicit in the dyn
 
 The [`QuantumControl.Controls.get_controls`](@ref) method extracts the controls from the trajectories. Each control is typically time-dependent, e.g., a function ``ϵ(t)`` or a vector of pulse values on a time grid. For each control, [`QuantumControl.Controls.discretize`](@ref) and [`QuantumControl.Controls.discretize_on_midpoints`](@ref) discretizes the control to an existing time grid. For controls that are implemented through some custom type, these methods must be defined to enable piecewise-constant time propagation or an optimization that assumes piecewise-constant control (most notably, Krotov's method). See [`QuantumControl.Interfaces.check_control`](@ref) for the full interface required of a control.
 
-See also the [section on Dynamical Generators in the `QuantumPropagators` documentation](https://juliaquantumcontrol.github.io/QuantumPropagators.jl/stable/generators/) and [`QuantumControl.Interfaces.check_generator`](@ref) for details on how generators and controls relate.
+See also the [section on Dynamical Generators in the `QuantumPropagators` documentation](@extref QuantumPropagators :doc:`generators`) and [`QuantumControl.Interfaces.check_generator`](@ref) for details on how generators and controls relate.
 
 ## Time propagation
 
