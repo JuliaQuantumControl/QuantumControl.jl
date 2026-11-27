@@ -90,6 +90,8 @@ Non-time-dependent parameters that a [Control Function](@ref) depends on, ``ϵ(t
 
 More generally, the control parameters could also be spectral coefficients (CRAB) or simple parameters for an analytic pulse shape (e.g., position, width, and amplitude of a Gaussian shape). All optimal control methods find optimized control fields by varying the control parameters.
 
+In the code, the control parameters of a control are a [Parameter Block](@ref) that the control holds. The function [`get_parameters`](@ref QuantumControl.Controls.get_parameters) returns the parameters of a control, a generator, or a control problem as a single vector that combines all the blocks that the object holds or inherits (from its controls, and from a custom generator type, if it holds blocks itself). See [How to work with control parameters](@extref QuantumPropagators howto_parameters). A tunable parameter of the drift is a control that is constant in time, see [`StaticParameter`](@ref QuantumControl.Controls.StaticParameter).
+
 ----
 
 ##### Pulse
@@ -113,7 +115,19 @@ The derivative of the dynamical [Generator](@ref) with respect to the control ``
 
 ##### Parameter Derivative
 
-The derivative of a control with respect to a single control parameter. The derivative of the dynamical [Generator](@ref) with respect to that control parameter is then the product of the [Control Derivative](@ref) and the parameter derivative.
+The derivative ``∂ϵ_l(t)/∂u_n`` of a control with respect to a single control parameter. The derivative of the dynamical [Generator](@ref) with respect to that control parameter is the sum, over all controls that depend on the parameter, of the product of the [Control Derivative](@ref) and the parameter derivative of the control,
+
+```math
+\frac{∂Ĥ(t)}{∂u_n} = \sum_l \frac{∂Ĥ(t)}{∂ϵ_l(t)} \frac{∂ϵ_l(t)}{∂u_n}\,.
+```
+
+For the parameters that a custom generator type holds in its own fields, the derivative of the generator does not involve any control derivative. See [`get_parameter_deriv`](@ref QuantumControl.Controls.get_parameter_deriv) and [Controls and Derivatives](@ref ControlsAndDerivatives).
+
+----
+
+##### Parameter Block
+
+A vector of [Control Parameters](@ref) stored as one object, typically the `parameters` field of a [`ParameterizedFunction`](@ref QuantumControl.Controls.ParameterizedFunction). A control *holds* its block, and two controls share parameters by holding the same block. An amplitude or a generator *inherits* the blocks of the controls that it contains. A parameter is identified by its block (compared by identity) and an index into the block. See [Parameter Blocks](@extref QuantumPropagators ParameterBlocks) in the `QuantumPropagators` documentation for the requirements on a block.
 
 ----
 

@@ -14,6 +14,7 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 QuantumControl = "8a270532-f23f-47a8-83a9-b33d10cad486"
 QuantumControlTestUtils = "d3fd27c9-1dfb-4e67-b0c0-90d0d87a1e48"
+QuantumGradientGenerators = "a563f35e-61db-434d-8c01-8b9e3ccdfd85"
 QuantumPropagators = "7bf12567-5742-4b91-a078-644e72a65fc1"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
@@ -28,6 +29,10 @@ Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [sources]
 QuantumControl = {path = ".."}
+GRAPE = {url = "https://github.com/JuliaQuantumControl/GRAPE.jl", rev = "master"}
+Krotov = {url = "https://github.com/JuliaQuantumControl/Krotov.jl", rev = "master"}
+QuantumGradientGenerators = {url = "https://github.com/JuliaQuantumControl/QuantumGradientGenerators.jl", rev = "master"}
+QuantumPropagators = {url = "https://github.com/JuliaQuantumControl/QuantumPropagators.jl", rev = "master"}
 
 [compat]
 QuantumControlTestUtils = "0.4"

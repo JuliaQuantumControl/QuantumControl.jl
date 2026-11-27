@@ -93,12 +93,17 @@ fallbacks = DocumenterInterLinks.ExternalFallbacks(
     "Operators" => "@extref QuantumPropagators :std:label:`Operators`",
     "storage-contract" => "@extref QuantumPropagators :std:label:`storage-contract`",
     "Overview-Running-Costs" => "@extref GRAPE :std:label:`Overview-Running-Costs`",
+    "ParameterBlocks" => "@extref QuantumPropagators ParameterBlocks",
+    "TimeDependentControls" => "@extref QuantumPropagators TimeDependentControls",
+    "howto_parameters" => "@extref QuantumPropagators howto_parameters",
+    "howto_custom_parameters" => "@extref QuantumPropagators howto_custom_parameters",
     automatic = false,
 )
 
 println("Starting makedocs")
 
 include("generate_api.jl")
+include("control_diagrams.jl")  # module ControlDiagrams
 
 bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style = :numeric)
 
@@ -134,6 +139,7 @@ makedocs(;
         assets = [
             "assets/custom.css",
             "assets/citations.css",
+            "assets/control_diagrams.css",
             asset(
                 "https://juliaquantumcontrol.github.io/QuantumControl.jl/dev/assets/topbar/topbar.css"
             ),
@@ -154,11 +160,13 @@ makedocs(;
         ),
         footer = "[$NAME.jl]($GITHUB) v$VERSION docs powered by [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl).",
         size_threshold = 1024 * 1024,
+        example_size_threshold = 16 * 1024,  # inline SVG diagrams
     ),
     pages = [
         "Home" => "index.md",
         "Glossary" => "glossary.md",
         "Overview" => "overview.md",
+        "Controls and Derivatives" => "controls.md",
         "Control Methods" => "methods.md",
         "How-to Guides" => "howto.md",
         "Examples" => "examples/index.md",
