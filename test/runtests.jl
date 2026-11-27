@@ -30,6 +30,11 @@ end
         include("test_derivs.jl")
     end
 
+    println("\n* Parameter derivatives (test_parameter_derivs.jl):")
+    @time @safetestset "Parameter derivatives" begin
+        include("test_parameter_derivs.jl")
+    end
+
     println("\n* Parameterization (test_parameterization.jl):")
     @time @safetestset "Parameterization" begin
         include("test_parameterization.jl")

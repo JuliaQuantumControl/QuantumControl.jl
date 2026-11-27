@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 using ComponentArrays
-using RecursiveArrayTools  # to ensure extension is loaded
+using RecursiveArrayTools: ArrayPartition
 using UnPack: @unpack
 using QuantumPropagators: hamiltonian
 using QuantumPropagators.Controls: ParameterizedFunction, get_parameters
@@ -256,7 +256,7 @@ _ENANTIOMER_PARAMETERS = ComponentVector(
     @test p isa AbstractVector
     @test eltype(p) == Float64
     @test length(p) == 9
-    @test p === _ENANTIOMER_PARAMETERS
+    @test p.x === (_ENANTIOMER_PARAMETERS,)
 end
 
 
@@ -313,7 +313,8 @@ end
     @test eltype(p) == Float64
     @test length(p) == 108
     @test p[2] == 0.4
-    @test length(p.x) == 2
-    @test length(p.x[1]) == 54
-    @test length(p.x[1].x) == 6
+    # The result is flat: 6 blocks of 9 parameters for each generator
+    @test length(p.x) == 12
+    @test all(length(block) == 9 for block in p.x)
+    @test !any(block isa ArrayPartition for block in p.x)
 end

@@ -20,7 +20,7 @@ Examples for supported forms a Hamiltonian are the following, from the most gene
 ```
 
 In Eq. (G1), ``Ĥ_0`` is the [Drift Term](@ref) (which may be zero) and each term under the sum over ``l`` is a [Control Term](@ref). Each control term is a Hamiltonian that depends on a set of [control functions](#Control-Function) (or simply "controls"). The controls are the functions directly tunable via optimal control.
-The control term may also contain an explicit time dependence outside of the controls. This most general form (G1) is supported only via custom user-implemented generator objects, see the documentation of the [QuantumPropagators package](https://juliaquantumcontrol.github.io/QuantumPropagators.jl/stable/).
+The control term may also contain an explicit time dependence outside of the controls. This most general form (G1) is supported only via custom user-implemented generator objects, see the documentation of the [QuantumPropagators package](@extref QuantumPropagators :doc:`index`).
 
 More commonly, each control term is separable into the [Control Amplitude](@ref) ``a_l(t)`` and the [Control Operator](@ref) ``Ĥ_l``, as in Eq. (G2). This is the most general form supported by the built-in [`Generator`](@ref) object, which can be initialized via the [`hamiltonian`](@ref) or [`liouvillian`](@ref) functions. The control amplitude ``a_l(t)`` depends in turn on one ore more function ``\{ϵ_{l'}(t)\}``, where each ``ϵ_{l'}(t)`` is as [Control Function](@ref). It may also contain an explicit time dependence.
 
@@ -90,6 +90,8 @@ Non-time-dependent parameters that a [Control Function](@ref) depends on, ``ϵ(t
 
 More generally, the control parameters could also be spectral coefficients (CRAB) or simple parameters for an analytic pulse shape (e.g., position, width, and amplitude of a Gaussian shape). All optimal control methods find optimized control fields by varying the control parameters.
 
+In the code, the control parameters of a control are a [Parameter Block](@ref) that the control holds. The function [`get_parameters`](@ref QuantumControl.Controls.get_parameters) returns the parameters of a control, a generator, or a control problem as a single vector that combines all the blocks that the object holds or inherits (from its controls, and from a custom generator type, if it holds blocks itself). See [How to work with control parameters](@extref QuantumPropagators howto_parameters). A tunable parameter of the drift is a control that is constant in time, see [`StaticParameter`](@ref QuantumControl.Controls.StaticParameter).
+
 ----
 
 ##### Pulse
@@ -113,7 +115,19 @@ The derivative of the dynamical [Generator](@ref) with respect to the control ``
 
 ##### Parameter Derivative
 
-The derivative of a control with respect to a single control parameter. The derivative of the dynamical [Generator](@ref) with respect to that control parameter is then the product of the [Control Derivative](@ref) and the parameter derivative.
+The derivative ``∂ϵ_l(t)/∂u_n`` of a control with respect to a single control parameter. The derivative of the dynamical [Generator](@ref) with respect to that control parameter is the sum, over all controls that depend on the parameter, of the product of the [Control Derivative](@ref) and the parameter derivative of the control,
+
+```math
+\frac{∂Ĥ(t)}{∂u_n} = \sum_l \frac{∂Ĥ(t)}{∂ϵ_l(t)} \frac{∂ϵ_l(t)}{∂u_n}\,.
+```
+
+For the parameters that a custom generator type holds in its own fields, the derivative of the generator does not involve any control derivative. See [`get_parameter_deriv`](@ref QuantumControl.Controls.get_parameter_deriv) and [Controls and Derivatives](@ref ControlsAndDerivatives).
+
+----
+
+##### Parameter Block
+
+A vector of [Control Parameters](@ref) stored as one object, typically the `parameters` field of a [`ParameterizedFunction`](@ref QuantumControl.Controls.ParameterizedFunction). A control *holds* its block, and two controls share parameters by holding the same block. An amplitude or a generator *inherits* the blocks of the controls that it contains. A parameter is identified by its block (compared by identity) and an index into the block. See [Parameter Blocks](@extref QuantumPropagators ParameterBlocks) in the `QuantumPropagators` documentation for the requirements on a block.
 
 ----
 

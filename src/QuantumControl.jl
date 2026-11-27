@@ -27,6 +27,11 @@ module Controls
     @reexport_members(QuantumPropagators_Controls)
     include("derivs.jl")
     export get_control_deriv, get_control_derivs
+    export get_parameter_deriv, get_parameter_derivs
+    # Public, but not exported (for implementing `get_parameters` of custom types)
+    @static if VERSION >= v"1.11.0-DEV.469"
+        eval(Meta.parse("public combine_parameters"))
+    end
 end
 
 
@@ -55,11 +60,12 @@ end
 
 
 module Interfaces
-    using QuantumPropagators.Interfaces: check_state, check_operator, check_control, check_parameterized_function, check_parameterized, supports_inplace
-    export check_state, check_operator, check_control, check_parameterized_function, check_parameterized, supports_inplace
+    using QuantumPropagators.Interfaces: check_state, check_operator, check_parameterized_function, check_parameterized, supports_inplace
+    export check_state, check_operator, check_parameterized_function, check_parameterized, supports_inplace
+    include("interfaces/control.jl")
     include("interfaces/amplitude.jl")
     include("interfaces/generator.jl")
-    export check_generator, check_amplitude
+    export check_control, check_generator, check_amplitude
 end
 
 

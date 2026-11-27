@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* Added: `get_parameter_deriv(object, block, i)` and `get_parameter_derivs(object, parameters)` in `QuantumControl.Controls` return the derivatives of a control, an amplitude, or a generator with respect to control parameters, identified by a parameter block and an index into it. The author of a `ParameterizedFunction` defines the two-argument method `get_parameter_deriv(control, i)`; amplitudes (via the chain rule) and the built-in `Generator` need no new methods. A derivative reads the parameter values when it is evaluated, so it stays valid while an optimizer mutates the parameters. [[#126], [#127]]
+* Added: Parameter derivatives of any order for `CRABFunction`, `VariedFrequencyCRABFunction`, and `StaticParameter` [[#126], [#127]]
+* Added: With `for_parameterization=true` and `for_gradient_optimization=true`, `QuantumControl.Interfaces.check_generator` verifies the parameter derivatives of the generator and of its controls against finite differences. The new keyword argument `for_hessian` also verifies second derivatives. [[#126], [#127]]
+* Added: `QuantumControl.Controls.combine_parameters` (public, but not exported) from QuantumPropagators, for implementing `get_parameters` for a custom generator type that holds parameter blocks in its own fields [[#126], [#127]]
+* Added: Documentation page "Controls and Derivatives" [[#126], [#127]]
+* Changed: `QuantumControl.Interfaces.check_control` is now a separate function that extends `QuantumPropagators.Interfaces.check_control` with the keyword arguments `for_gradient_optimization` and `for_hessian`. With `for_parameterization=true` and `for_gradient_optimization=true` (the defaults), it verifies the parameter derivatives of the control against finite differences. Previously, it was identical to the function in QuantumPropagators. A `ParameterizedFunction` without `get_parameter_deriv` now fails this check unless it is called with `for_gradient_optimization=false`. To adapt, define the two-argument method `get_parameter_deriv(control, i)` for the type, or pass `for_gradient_optimization=false` if the control is not meant for gradient-based optimization of its parameters. [[#126], [#127]]
+* Changed: `get_parameters` (re-exported from QuantumPropagators 0.10) always returns a flat `ArrayPartition` of the parameter blocks of an object, for a control, a generator, trajectories, or a `ControlProblem`. This is a breaking change. Previously, it returned the block itself for an object with a single block, and `Float64[]` for an object without parameters. For trajectories and a `ControlProblem`, it uses `combine_parameters`, so that every block appears only once. To adapt: code that indexes into the result, iterates over it, or writes to it with `copyto!` needs no change. Code that accesses the values by name (e.g., `get_parameters(problem).A` for a `ComponentVector`) or compares the result with a block must go through the block instead: the `parameters` field of the control that holds it, or an element of the tuple `get_parameters(problem).x` of all blocks. [[#126], [#127]]
+* Changed: Requires QuantumPropagators 0.10 [[#126], [#127]]
+
 
 ## [v0.11.7] — 2026-11-26
 
@@ -201,3 +210,5 @@ Initial public release.
 [#108]: https://github.com/JuliaQuantumControl/QuantumControl.jl/pull/108
 [#109]: https://github.com/JuliaQuantumControl/QuantumControl.jl/pull/109
 [#125]: https://github.com/JuliaQuantumControl/QuantumControl.jl/pull/125
+[#126]: https://github.com/JuliaQuantumControl/QuantumControl.jl/issues/126
+[#127]: https://github.com/JuliaQuantumControl/QuantumControl.jl/pull/127

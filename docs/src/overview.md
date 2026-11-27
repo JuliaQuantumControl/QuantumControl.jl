@@ -30,7 +30,9 @@ The controls that the `QuantumControl` package optimizes are implicit in the dyn
 
 The [`QuantumControl.Controls.get_controls`](@ref) method extracts the controls from the trajectories. Each control is typically time-dependent, e.g., a function ``ϵ(t)`` or a vector of pulse values on a time grid. For each control, [`QuantumControl.Controls.discretize`](@ref) and [`QuantumControl.Controls.discretize_on_midpoints`](@ref) discretizes the control to an existing time grid. For controls that are implemented through some custom type, these methods must be defined to enable piecewise-constant time propagation or an optimization that assumes piecewise-constant control (most notably, Krotov's method). See [`QuantumControl.Interfaces.check_control`](@ref) for the full interface required of a control.
 
-See also the [section on Dynamical Generators in the `QuantumPropagators` documentation](https://juliaquantumcontrol.github.io/QuantumPropagators.jl/stable/generators/) and [`QuantumControl.Interfaces.check_generator`](@ref) for details on how generators and controls relate.
+A control may depend on [Control Parameters](@ref), e.g., the amplitude and width of a Gaussian, or the coefficients of a [`CRABFunction`](@ref QuantumPropagators.ParameterizedFunctions.CRABFunction). The page [Time-Dependent Controls](@extref QuantumPropagators TimeDependentControls) in the `QuantumPropagators` documentation explains how generators, amplitudes, controls, and [parameter blocks](@extref QuantumPropagators ParameterBlocks) relate. The page [Controls and Derivatives](@ref ControlsAndDerivatives) explains the derivatives with respect to the controls ([`get_control_deriv`](@ref QuantumControl.Controls.get_control_deriv)) and with respect to the control parameters ([`get_parameter_deriv`](@ref QuantumControl.Controls.get_parameter_deriv)) that gradient-based optimization methods need.
+
+See also the [section on Dynamical Generators in the `QuantumPropagators` documentation](@extref QuantumPropagators :doc:`generators`) and [`QuantumControl.Interfaces.check_generator`](@ref) for details on how generators and controls relate.
 
 ## Time propagation
 

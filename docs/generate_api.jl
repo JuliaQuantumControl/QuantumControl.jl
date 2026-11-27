@@ -36,6 +36,10 @@ function _parentmodule(m, pkg)
 end
 
 
+# A label for a public name that is not exported (declared with `public`)
+_not_exported(mod, name) = Base.isexported(mod, name) ? "" : " (not exported)"
+
+
 """Return a list of symbols for all the sub-modules of `pkg`.
 """
 function get_submodules(pkg)
@@ -148,7 +152,7 @@ open(outfile, "w") do out
             if name ≠ submod
                 obj = getfield(getfield(QuantumControl, submod), name)
                 ref = canonical_name(obj)
-                println(out, "* [`QuantumControl.$submod.$name`](@ref $ref)")
+                println(out, "* [`QuantumControl.$submod.$name`](@ref $ref)$(_not_exported(getfield(QuantumControl, submod), name))")
             end
         end
     end
@@ -195,7 +199,12 @@ function write_module_api(out, mod, description="")
 
     reexported_members = [
         m for m in members
-        if m ∉ public_members
+        if (m ∉ public_members) && Base.isexported(mod, m)
+    ]
+
+    imported_public_members = [
+        m for m in members
+        if (m ∉ public_members) && !Base.isexported(mod, m)
     ]
 
     write(out, "\n\n## [`$mod`](@id $(local_module_api_id(mod)))\n\n")
@@ -207,13 +216,22 @@ function write_module_api(out, mod, description="")
     if length(public_members) > 0
         write(out, "\nPublic Symbols:\n\n")
         for name ∈ public_members
-            println(out, "* [`$name`](@ref $mod.$name)")
+            println(out, "* [`$name`](@ref $mod.$name)$(_not_exported(mod, name))")
         end
         write(out, "\n")
     end
     if length(reexported_members) > 0
         write(out, "\nRe-exported Symbols:\n\n")
         for name ∈ reexported_members
+            obj = getfield(mod, name)
+            ref = canonical_name(obj)
+            println(out, "* [`$name`](@ref $ref)")
+        end
+        write(out, "\n")
+    end
+    if length(imported_public_members) > 0
+        write(out, "\nPublic Symbols from Other Modules (not exported):\n\n")
+        for name ∈ imported_public_members
             obj = getfield(mod, name)
             ref = canonical_name(obj)
             println(out, "* [`$name`](@ref $ref)")
@@ -424,7 +442,7 @@ for (pkgname::Symbol, outfilename) in subpackages
             if length(public_members) > 0
                 write(out, "\nPublic:\n\n")
                 for name in public_members
-                    write(out, "* [`$name`](@ref $pkgname.$submodname.$name)\n")
+                    write(out, "* [`$name`](@ref $pkgname.$submodname.$name)$(_not_exported(submod, name))\n")
                 end
             end
             if length(documented_private_members) > 0
