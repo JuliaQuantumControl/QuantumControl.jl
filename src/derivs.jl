@@ -532,15 +532,14 @@ end
 # `VariedFrequencyCRABFunction`), and `k` is the index of the frequency.
 function _crab_parameter(crab, j)
     checkbounds(crab.parameters, j)
-    N = length(crab.frequencies)
     if crab.scale_guess && (j == 1)
         return (:guess, 0)
-    elseif (crab.parity != :odd) && (crab.i_cos < j <= crab.i_cos + N)
-        return (:cos, j - crab.i_cos)
-    elseif (crab.parity != :even) && (crab.i_sin < j <= crab.i_sin + N)
-        return (:sin, j - crab.i_sin)
-    else
-        return (:r, j - (length(crab.parameters) - N))
+    elseif j in crab.cos_indices
+        return (:cos, j - first(crab.cos_indices) + 1)
+    elseif j in crab.sin_indices
+        return (:sin, j - first(crab.sin_indices) + 1)
+    else  # only for a VariedFrequencyCRABFunction
+        return (:r, j - first(crab.r_indices) + 1)
     end
 end
 
@@ -609,19 +608,18 @@ end
 function (f::VariedFrequencyCRABFunctionDeriv)(t)
     crab = f.crab
     p = f.parameters
-    N = length(crab.frequencies)
     k = f.k
     m = f.order
     ωt = crab.frequencies[k] * t
-    x = p[end-N+k] * ωt
+    x = p[crab.r_indices[k]] * ωt
     if f.coeff == :cos
         val = _cos_deriv(x, m)
     elseif f.coeff == :sin
         val = _sin_deriv(x, m)
     else
         val = 0.0
-        (crab.parity != :odd) && (val += p[crab.i_cos+k] * _cos_deriv(x, m))
-        (crab.parity != :even) && (val += p[crab.i_sin+k] * _sin_deriv(x, m))
+        (crab.parity != :odd) && (val += p[crab.cos_indices[k]] * _cos_deriv(x, m))
+        (crab.parity != :even) && (val += p[crab.sin_indices[k]] * _sin_deriv(x, m))
     end
     (m > 0) && (val *= ωt^m)
     isnothing(crab.shape) || (val *= crab.shape(t))
