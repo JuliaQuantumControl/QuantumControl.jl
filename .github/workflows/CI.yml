@@ -93,14 +93,13 @@ jobs:
           mode: "alldeps"
           julia_version: "min"  # must match the Julia version of the job
       - name: "Instantiate test environment"
-        # Julia 1.10 ignores `[sources]`, so they are applied explicitly. The
-        # downgrade also floors the test-only dependencies (including sibling
-        # packages) to versions that may not be compatible with the package;
-        # pinning the dependencies of the package to their lowest versions
-        # re-resolves the remaining test dependencies.
+        # The downgrade also floors the test-only dependencies (including
+        # sibling packages) to versions that may not be compatible with the
+        # package; pinning the dependencies of the package to their lowest
+        # versions re-resolves the remaining test dependencies. This also
+        # applies the `[sources]`, which Julia 1.10 ignores.
         run: |
           cp test/Manifest.toml test/Manifest.lowest.toml
-          julia --startup-file=no "$RUNNER_TEMP/envcheck.jl" apply-sources test
           julia --startup-file=no "$RUNNER_TEMP/envcheck.jl" pin-lowest test test/Manifest.lowest.toml
       - name: "Run tests"
         run: julia --color=yes --project=test --depwarn=yes --check-bounds=yes -e 'include("test/runtests.jl")'
