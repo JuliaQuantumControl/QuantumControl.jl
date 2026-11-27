@@ -415,8 +415,7 @@ end
             shape = S
         )
         u = vf.parameters  # the block
-        N = length(vf.frequencies)
-        u[(end-N+1):end] .= [0.9, 1.2]  # rᵢ
+        u[vf.r_indices] .= [0.9, 1.2]  # rᵢ
         @test check_control(vf; tlist, for_hessian = true)
         for i in eachindex(u)
             d = get_parameter_deriv(vf, u, i)
@@ -428,9 +427,9 @@ end
             end
         end
         # Explicit third derivatives
-        r₁ = length(u) - N + 1
-        c₁ = vf.i_cos + 1  # :cos for :even/:evenodd, :sin for :odd
-        (parity == :odd) && (c₁ = vf.i_sin + 1)
+        r₁ = first(vf.r_indices)
+        # :cos for :even/:evenodd, :sin for :odd
+        c₁ = first(isempty(vf.cos_indices) ? vf.sin_indices : vf.cos_indices)
         for (i, j, k) in ((r₁, r₁, r₁), (c₁, r₁, r₁), (r₁, c₁, r₁))
             d2 = get_parameter_deriv(get_parameter_deriv(vf, u, i), u, j)
             d3 = get_parameter_deriv(d2, u, k)
