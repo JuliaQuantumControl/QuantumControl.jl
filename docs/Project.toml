@@ -13,9 +13,6 @@ QuantumPropagators = "7bf12567-5742-4b91-a078-644e72a65fc1"
 
 [sources]
 QuantumControl = {path = ".."}
-GRAPE = {url = "https://github.com/JuliaQuantumControl/GRAPE.jl", rev = "master"}
-Krotov = {url = "https://github.com/JuliaQuantumControl/Krotov.jl", rev = "master"}
-QuantumGradientGenerators = {url = "https://github.com/JuliaQuantumControl/QuantumGradientGenerators.jl", rev = "master"}
 
 [compat]
 Documenter = "1.4"

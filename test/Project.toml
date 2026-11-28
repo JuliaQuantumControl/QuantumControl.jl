@@ -29,9 +29,6 @@ Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [sources]
 QuantumControl = {path = ".."}
-GRAPE = {url = "https://github.com/JuliaQuantumControl/GRAPE.jl", rev = "master"}
-Krotov = {url = "https://github.com/JuliaQuantumControl/Krotov.jl", rev = "master"}
-QuantumGradientGenerators = {url = "https://github.com/JuliaQuantumControl/QuantumGradientGenerators.jl", rev = "master"}
 
 [compat]
 QuantumControlTestUtils = "0.4"
